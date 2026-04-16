@@ -526,6 +526,32 @@ async function submitBooking() {
     localStorage.setItem('bookings', JSON.stringify(local));
   }
 
+  // Send push notification to Reid's phone
+  try {
+    await fetch('https://ntfy.sh/pristine-pwash-reid-bookings', {
+      method: 'POST',
+      headers: {
+        'Title': 'New Booking: ' + booking.service + ' ($' + booking.price + ')',
+        'Priority': 'high',
+        'Tags': 'droplet,moneybag'
+      },
+      body: booking.name + ' — ' + booking.phone + '\n' + booking.address + (booking.notes ? '\nNotes: ' + booking.notes : '')
+    });
+  } catch (e) { console.warn('Notification failed:', e); }
+
+  // Send email notification
+  try {
+    await fetch('https://ntfy.sh/pristine-pwash-reid-bookings', {
+      method: 'POST',
+      headers: {
+        'Email': 'reidwcoleman@gmail.com',
+        'Title': 'New Pristine Powerwash Booking: ' + booking.service,
+        'Tags': 'droplet'
+      },
+      body: 'New booking from ' + booking.name + '!\n\nService: ' + booking.service + ' ($' + booking.price + ')\nPhone: ' + booking.phone + '\nAddress: ' + booking.address + (booking.notes ? '\nNotes: ' + booking.notes : '') + '\n\nText them back to confirm!'
+    });
+  } catch (e) { console.warn('Email notification failed:', e); }
+
   btn.textContent = 'Confirm & Book ✓';
   btn.disabled = false;
   showStep('success');

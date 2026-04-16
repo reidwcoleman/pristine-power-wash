@@ -408,86 +408,110 @@ svc.includes.forEach(item => {
   grid.appendChild(el);
 });
 
-// ===== GENERATE TIME SLOTS =====
-let selectedSlot = null;
+// ===== LOAD TIME SLOTS FROM FIREBASE =====
+let selectedSlot = null;     // display text: "Wednesday, Apr 16 at 9:30 AM"
+let selectedSlotId = null;   // Firestore doc ID
 
-function generateSlots() {
+async function loadSlots() {
   const container = document.getElementById('slotsContainer');
+  container.innerHTML = '<p style="color:#5a7590;text-align:center;padding:24px">Loading available times...</p>';
+
   const now = new Date();
+  const today = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+
   const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-  const timeSlots = [
-    { time: '8:00 AM', period: 'Morning' },
-    { time: '9:30 AM', period: 'Morning' },
-    { time: '11:00 AM', period: 'Late Morning' },
-    { time: '1:00 PM', period: 'Afternoon' },
-    { time: '2:30 PM', period: 'Afternoon' },
-    { time: '4:00 PM', period: 'Late Afternoon' }
-  ];
+  try {
+    const snap = await db.collection('availableSlots')
+      .where('date', '>=', today)
+      .where('booked', '==', false)
+      .get();
 
-  // Generate for the next 7 days (skip Sundays)
-  for (let i = 0; i < 8; i++) {
-    const date = new Date(now);
-    date.setDate(date.getDate() + i);
-
-    // Skip Sundays
-    if (date.getDay() === 0) continue;
-
-    const isToday = i === 0;
-    const dayLabel = isToday ? 'Today' : (i === 1 ? 'Tomorrow' : dayNames[date.getDay()]);
-    const dateStr = monthNames[date.getMonth()] + ' ' + date.getDate();
-
-    const group = document.createElement('div');
-    group.className = 'day-group';
-
-    let labelHTML = `<span>${dayLabel}, ${dateStr}</span>`;
-    if (isToday) labelHTML += '<span class="today">Today</span>';
-
-    group.innerHTML = `<div class="day-label">${labelHTML}</div><div class="slot-grid" id="slots-${i}"></div>`;
-    container.appendChild(group);
-
-    const slotGrid = group.querySelector('.slot-grid');
-
-    timeSlots.forEach((slot, si) => {
-      // For today, skip slots that have already passed
-      if (isToday) {
-        const [hourStr] = slot.time.split(':');
-        let hour = parseInt(hourStr);
-        if (slot.time.includes('PM') && hour !== 12) hour += 12;
-        if (slot.time.includes('AM') && hour === 12) hour = 0;
-        if (hour <= now.getHours()) return;
-      }
-
-      // Randomly mark some as taken (for realism — ~20% chance)
-      const seed = (date.getDate() * 7 + si * 13 + serviceName.length) % 10;
-      const taken = seed < 2;
-
-      const slotEl = document.createElement('div');
-      slotEl.className = 'slot' + (taken ? ' taken' : '');
-      slotEl.innerHTML = `<div class="slot-time">${slot.time}</div><div class="slot-period">${slot.period}</div>`;
-
-      if (!taken) {
-        const slotValue = `${dayLabel}, ${dateStr} at ${slot.time}`;
-        slotEl.addEventListener('click', () => selectSlot(slotEl, slotValue));
-      }
-
-      slotGrid.appendChild(slotEl);
+    // Group by date
+    const byDate = {};
+    snap.forEach(doc => {
+      const d = doc.data();
+      if (!byDate[d.date]) byDate[d.date] = [];
+      byDate[d.date].push({ id: doc.id, ...d });
     });
+
+    // Sort dates
+    const sortedDates = Object.keys(byDate).sort();
+
+    container.innerHTML = '';
+
+    if (sortedDates.length === 0) {
+      container.innerHTML = `
+        <div style="text-align:center;padding:32px 16px;background:var(--foam);border-radius:14px;border:1px solid rgba(15,74,122,.08)">
+          <p style="font-size:16px;font-weight:700;color:var(--ink);margin-bottom:8px">No time slots available right now</p>
+          <p style="font-size:14px;color:#5a7590">Text or call <strong>(984) 344-6217</strong> to schedule a time that works for you.</p>
+        </div>`;
+      return;
+    }
+
+    sortedDates.forEach(dateStr => {
+      const [y, m, d] = dateStr.split('-').map(Number);
+      const dateObj = new Date(y, m - 1, d);
+      const diffDays = Math.round((dateObj - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / 86400000);
+      const isToday = diffDays === 0;
+      const dayLabel = isToday ? 'Today' : (diffDays === 1 ? 'Tomorrow' : dayNames[dateObj.getDay()]);
+      const displayDate = monthNames[dateObj.getMonth()] + ' ' + dateObj.getDate();
+
+      // Sort slots by their sort order
+      const slots = byDate[dateStr].sort((a, b) => (a.sort || 0) - (b.sort || 0));
+
+      // For today, filter out past time slots
+      const filteredSlots = isToday ? slots.filter(s => {
+        const [hourStr] = s.time.split(':');
+        let hour = parseInt(hourStr);
+        if (s.time.includes('PM') && hour !== 12) hour += 12;
+        if (s.time.includes('AM') && hour === 12) hour = 0;
+        return hour > now.getHours();
+      }) : slots;
+
+      if (filteredSlots.length === 0) return;
+
+      const group = document.createElement('div');
+      group.className = 'day-group';
+
+      let labelHTML = `<span>${dayLabel}, ${displayDate}</span>`;
+      if (isToday) labelHTML += '<span class="today">Today</span>';
+
+      group.innerHTML = `<div class="day-label">${labelHTML}</div><div class="slot-grid"></div>`;
+      container.appendChild(group);
+
+      const slotGrid = group.querySelector('.slot-grid');
+
+      filteredSlots.forEach(slot => {
+        const slotEl = document.createElement('div');
+        slotEl.className = 'slot';
+        slotEl.innerHTML = `<div class="slot-time">${slot.time}</div><div class="slot-period">${slot.period}</div>`;
+
+        const slotDisplayValue = `${dayLabel}, ${displayDate} at ${slot.time}`;
+        slotEl.addEventListener('click', () => selectSlot(slotEl, slotDisplayValue, slot.id));
+
+        slotGrid.appendChild(slotEl);
+      });
+    });
+  } catch (e) {
+    console.error('Failed to load slots:', e);
+    container.innerHTML = '<p style="color:#5a7590;text-align:center;padding:24px">Unable to load time slots. Please try refreshing the page.</p>';
   }
 }
 
-function selectSlot(el, value) {
+function selectSlot(el, displayValue, slotId) {
   document.querySelectorAll('.slot.selected').forEach(s => s.classList.remove('selected'));
   el.classList.add('selected');
-  selectedSlot = value;
+  selectedSlot = displayValue;
+  selectedSlotId = slotId;
   document.getElementById('selectedSlotDisplay').classList.add('show');
-  document.getElementById('selectedSlotText').textContent = value;
+  document.getElementById('selectedSlotText').textContent = displayValue;
 }
 
-generateSlots();
+loadSlots();
 
-// ===== FORM SUBMISSION =====
+// ===== FORM SUBMISSION (with Firestore transaction to prevent double-booking) =====
 async function submitBooking() {
   const name = document.getElementById('bName').value.trim();
   const phone = document.getElementById('bPhone').value.trim();
@@ -496,13 +520,13 @@ async function submitBooking() {
 
   if (!name || !phone) { alert('Please fill in your name and phone number.'); return; }
   if (!address) { alert('Please enter your address.'); return; }
-  if (!selectedSlot) { alert('Please select a time slot.'); return; }
+  if (!selectedSlot || !selectedSlotId) { alert('Please select a time slot.'); return; }
 
   const btn = document.getElementById('submitBtn');
   btn.textContent = 'Booking\u2026';
   btn.disabled = true;
 
-  const booking = {
+  const bookingData = {
     service: serviceName,
     price: svc.price,
     name: name,
@@ -510,16 +534,35 @@ async function submitBooking() {
     address: address,
     notes: notes,
     timeSlot: selectedSlot,
+    slotId: selectedSlotId,
     timestamp: new Date().toISOString(),
     status: 'pending'
   };
 
   try {
-    await db.collection('bookings').add(booking);
+    // Use a transaction to prevent double-booking
+    const slotRef = db.collection('availableSlots').doc(selectedSlotId);
+    const bookingRef = db.collection('bookings').doc();
+
+    await db.runTransaction(async (transaction) => {
+      const slotDoc = await transaction.get(slotRef);
+      if (!slotDoc.exists || slotDoc.data().booked) {
+        throw new Error('SLOT_TAKEN');
+      }
+      transaction.set(bookingRef, bookingData);
+      transaction.update(slotRef, { booked: true, bookingId: bookingRef.id });
+    });
   } catch (e) {
-    console.warn('Firebase write failed, saving locally:', e);
+    if (e.message === 'SLOT_TAKEN') {
+      alert('Sorry, that time slot was just taken by someone else. Please pick another.');
+      btn.textContent = 'Confirm & Book';
+      btn.disabled = false;
+      loadSlots(); // Refresh slots
+      return;
+    }
+    console.warn('Firebase transaction failed, saving locally:', e);
     const local = JSON.parse(localStorage.getItem('bookings') || '[]');
-    local.push(booking);
+    local.push(bookingData);
     localStorage.setItem('bookings', JSON.stringify(local));
   }
 
@@ -528,11 +571,11 @@ async function submitBooking() {
     await fetch('https://ntfy.sh/pristine-pwash-reid-bookings', {
       method: 'POST',
       headers: {
-        'Title': 'New Booking: ' + booking.service + ' ($' + booking.price + ')',
+        'Title': 'New Booking: ' + bookingData.service + ' ($' + bookingData.price + ')',
         'Priority': 'high',
         'Tags': 'droplet,moneybag'
       },
-      body: booking.name + ' \u2014 ' + booking.phone + '\n' + booking.address + '\nTime: ' + booking.timeSlot + (booking.notes ? '\nNotes: ' + booking.notes : '')
+      body: bookingData.name + ' \u2014 ' + bookingData.phone + '\n' + bookingData.address + '\nTime: ' + bookingData.timeSlot + (bookingData.notes ? '\nNotes: ' + bookingData.notes : '')
     });
   } catch (e) { console.warn('Notification failed:', e); }
 
@@ -542,10 +585,10 @@ async function submitBooking() {
       method: 'POST',
       headers: {
         'Email': 'reidwcoleman@gmail.com',
-        'Title': 'New Pristine Powerwash Booking: ' + booking.service,
+        'Title': 'New Pristine Powerwash Booking: ' + bookingData.service,
         'Tags': 'droplet'
       },
-      body: 'New booking from ' + booking.name + '!\n\nService: ' + booking.service + ' ($' + booking.price + ')\nPhone: ' + booking.phone + '\nAddress: ' + booking.address + '\nTime Slot: ' + booking.timeSlot + (booking.notes ? '\nNotes: ' + booking.notes : '') + '\n\nText them back to confirm!'
+      body: 'New booking from ' + bookingData.name + '!\n\nService: ' + bookingData.service + ' ($' + bookingData.price + ')\nPhone: ' + bookingData.phone + '\nAddress: ' + bookingData.address + '\nTime Slot: ' + bookingData.timeSlot + (bookingData.notes ? '\nNotes: ' + bookingData.notes : '') + '\n\nText them back to confirm!'
     });
   } catch (e) { console.warn('Email notification failed:', e); }
 

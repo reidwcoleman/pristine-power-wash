@@ -123,49 +123,6 @@ section.dark .s-head p{color:var(--mist)}
 .meta a{color:var(--aqua-lt)!important}
 .meta .owner{margin-top:10px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.15);font-size:10px;letter-spacing:.35em;text-transform:uppercase;color:var(--aqua-lt);font-weight:800}
 
-/* ===== BOOKING MODAL ===== */
-.modal-overlay{position:fixed;inset:0;z-index:999;background:rgba(4,22,40,.75);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .35s}
-.modal-overlay.open{opacity:1;pointer-events:all}
-.modal{background:var(--ink);border:1px solid rgba(59,196,242,.15);border-radius:24px;width:90%;max-width:520px;max-height:90vh;overflow-y:auto;transform:translateY(30px) scale(.96);transition:transform .35s;position:relative;box-shadow:0 40px 80px rgba(0,0,0,.5)}
-.modal-overlay.open .modal{transform:translateY(0) scale(1)}
-.modal-close{position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.15);background:transparent;color:#fff;font-size:18px;cursor:pointer;display:grid;place-items:center;transition:all .2s;z-index:2}
-.modal-close:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3)}
-
-.modal-header{padding:32px 32px 0;text-align:center}
-.modal-header .sel-svc{font-size:11px;font-weight:800;letter-spacing:.35em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
-.modal-header h3{font-family:'Fraunces',serif;font-weight:900;font-size:28px;color:#fff;margin-bottom:4px}
-.modal-header .sel-price{font-family:'Fraunces',serif;font-weight:900;font-size:44px;color:var(--aqua);letter-spacing:-.03em}
-.modal-header .sel-price .d{font-size:20px;font-style:italic;font-weight:500;vertical-align:top;opacity:.85}
-
-/* Steps */
-.steps{display:flex;justify-content:center;gap:8px;padding:24px 32px 4px}
-.step-dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.15);transition:all .3s}
-.step-dot.active{background:var(--aqua);box-shadow:0 0 12px rgba(59,196,242,.4)}
-.step-dot.done{background:var(--gold)}
-
-.modal-body{padding:20px 32px 32px}
-.form-step{display:none;animation:fadeUp .3s ease}
-.form-step.active{display:block}
-@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-
-.field{margin-bottom:14px}
-.field label{display:block;font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--mist);margin-bottom:6px}
-.field input,.field textarea{width:100%;font-family:'Manrope',sans-serif;font-size:16px;font-weight:500;padding:14px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;outline:none;transition:border .2s}
-.field input::placeholder,.field textarea::placeholder{color:rgba(255,255,255,.35)}
-.field input:focus,.field textarea:focus{border-color:var(--aqua)}
-.field textarea{resize:vertical;min-height:70px}
-
-.modal-actions{display:flex;gap:10px;margin-top:20px}
-.modal-actions .btn{flex:1;padding:14px;font-size:16px;justify-content:center}
-.btn.ghost{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:var(--mist)!important}
-.btn.ghost:hover{background:rgba(255,255,255,.1);color:#fff!important}
-
-/* Success */
-.success-view{text-align:center;padding:40px 32px 48px}
-.success-check{width:72px;height:72px;border-radius:50%;background:var(--aqua);color:var(--ink);display:grid;place-items:center;margin:0 auto 20px;animation:pop .5s cubic-bezier(.17,.67,.32,1.4)}
-@keyframes pop{0%{transform:scale(0)}100%{transform:scale(1)}}
-.success-view h3{font-family:'Fraunces',serif;font-weight:900;font-size:28px;color:#fff;margin-bottom:8px}
-.success-view p{color:var(--mist);font-size:15px;margin-bottom:24px;line-height:1.5}
 
 /* ===== FOOTER ===== */
 footer{background:#020e1a;color:#6b8ba8;text-align:center;padding:34px 24px;font-size:13px}
@@ -343,72 +300,6 @@ footer .f-brand{font-family:'Fraunces',serif;font-weight:800;font-size:16px;colo
   <div style="margin-top:8px">&copy; 2026 Pristine Powerwashing. All rights reserved.</div>
 </footer>
 
-<!-- BOOKING MODAL -->
-<div class="modal-overlay" id="modal">
-  <div class="modal">
-    <button class="modal-close" id="modalClose">&times;</button>
-
-    <!-- Header: shows selected service -->
-    <div class="modal-header" id="modalHeader">
-      <div class="sel-svc" id="selTag">Soap Wash</div>
-      <h3 id="selName">Sidewalks</h3>
-      <div class="sel-price"><span class="d">$</span><span id="selPrice">25</span></div>
-    </div>
-
-    <!-- Step dots -->
-    <div class="steps">
-      <div class="step-dot active" data-step="1"></div>
-      <div class="step-dot" data-step="2"></div>
-      <div class="step-dot" data-step="3"></div>
-    </div>
-
-    <!-- Step 1: Your Info -->
-    <div class="modal-body">
-      <div class="form-step active" data-step="1">
-        <div class="field"><label>Your Name</label><input type="text" id="bName" placeholder="First &amp; last name" required></div>
-        <div class="field"><label>Phone Number</label><input type="tel" id="bPhone" placeholder="(555) 123-4567" required></div>
-        <div class="modal-actions"><button class="btn gold" onclick="nextStep(2)">Next →</button></div>
-      </div>
-
-      <!-- Step 2: Address -->
-      <div class="form-step" data-step="2">
-        <div class="field"><label>Address</label><input type="text" id="bAddress" placeholder="123 Main Street" required></div>
-        <div class="field"><label>Notes (optional)</label><textarea id="bNotes" placeholder="Gate code, specific areas, etc."></textarea></div>
-        <div class="modal-actions">
-          <button class="btn ghost" onclick="prevStep(1)">← Back</button>
-          <button class="btn gold" onclick="nextStep(3)">Next →</button>
-        </div>
-      </div>
-
-      <!-- Step 3: Confirm -->
-      <div class="form-step" data-step="3">
-        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:18px;margin-bottom:18px">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:14px;color:var(--mist)">
-            <div><strong style="color:#fff">Service</strong><br><span id="cService">—</span></div>
-            <div><strong style="color:#fff">Price</strong><br><span id="cPrice">—</span></div>
-            <div><strong style="color:#fff">Name</strong><br><span id="cName">—</span></div>
-            <div><strong style="color:#fff">Phone</strong><br><span id="cPhone">—</span></div>
-            <div style="grid-column:1/3"><strong style="color:#fff">Address</strong><br><span id="cAddress">—</span></div>
-          </div>
-        </div>
-        <div class="modal-actions">
-          <button class="btn ghost" onclick="prevStep(2)">← Back</button>
-          <button class="btn gold" id="submitBtn" onclick="submitBooking()">Confirm &amp; Book ✓</button>
-        </div>
-      </div>
-
-      <!-- Success -->
-      <div class="form-step" data-step="success">
-        <div class="success-view">
-          <div class="success-check"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></div>
-          <h3>You're booked!</h3>
-          <p>I'll text you within a few hours to confirm your time slot. See you this week!</p>
-          <button class="btn gold" onclick="closeModal()">Done</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
 <script>
 // ===== FIREBASE SETUP =====
@@ -441,136 +332,13 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.15 });
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-// ===== BOOKING MODAL =====
-let currentStep = 1;
-let selectedService = {};
-
-// Click any service card to open modal
+// ===== SERVICE CARD NAVIGATION =====
+// Clicking a service card navigates to the full booking page
 document.querySelectorAll('.svc').forEach(card => {
   card.addEventListener('click', () => {
-    selectedService = {
-      name: card.dataset.service,
-      price: card.dataset.price,
-      tag: card.dataset.tag
-    };
-    document.getElementById('selTag').textContent = selectedService.tag;
-    document.getElementById('selName').textContent = selectedService.name;
-    document.getElementById('selPrice').textContent = selectedService.price;
-    currentStep = 1;
-    showStep(1);
-    document.getElementById('modal').classList.add('open');
-    document.body.style.overflow = 'hidden';
+    const service = card.dataset.service;
+    window.location.href = 'book.html?service=' + encodeURIComponent(service);
   });
-});
-
-function showStep(n) {
-  document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
-  const target = n === 'success' ? '[data-step="success"]' : `[data-step="${n}"]`;
-  document.querySelector(`.form-step${target}`).classList.add('active');
-
-  document.querySelectorAll('.step-dot').forEach(d => {
-    const ds = parseInt(d.dataset.step);
-    d.classList.remove('active', 'done');
-    if (n === 'success' || ds < n) d.classList.add('done');
-    else if (ds === n) d.classList.add('active');
-  });
-}
-
-function nextStep(n) {
-  // Validate current step
-  if (currentStep === 1) {
-    const name = document.getElementById('bName').value.trim();
-    const phone = document.getElementById('bPhone').value.trim();
-    if (!name || !phone) { alert('Please fill in your name and phone.'); return; }
-  }
-  if (currentStep === 2) {
-    const addr = document.getElementById('bAddress').value.trim();
-    if (!addr) { alert('Please enter your address.'); return; }
-  }
-  if (n === 3) {
-    // Populate confirmation
-    document.getElementById('cService').textContent = selectedService.name;
-    document.getElementById('cPrice').textContent = '$' + selectedService.price;
-    document.getElementById('cName').textContent = document.getElementById('bName').value;
-    document.getElementById('cPhone').textContent = document.getElementById('bPhone').value;
-    document.getElementById('cAddress').textContent = document.getElementById('bAddress').value;
-  }
-  currentStep = n;
-  showStep(n);
-}
-
-function prevStep(n) { currentStep = n; showStep(n); }
-
-async function submitBooking() {
-  const btn = document.getElementById('submitBtn');
-  btn.textContent = 'Booking…';
-  btn.disabled = true;
-
-  const booking = {
-    service: selectedService.name,
-    price: parseInt(selectedService.price),
-    name: document.getElementById('bName').value.trim(),
-    phone: document.getElementById('bPhone').value.trim(),
-    address: document.getElementById('bAddress').value.trim(),
-    notes: document.getElementById('bNotes').value.trim(),
-    timestamp: new Date().toISOString(),
-    status: 'pending'
-  };
-
-  try {
-    await db.collection('bookings').add(booking);
-  } catch (e) {
-    console.warn('Firebase write failed, saving locally:', e);
-    const local = JSON.parse(localStorage.getItem('bookings') || '[]');
-    local.push(booking);
-    localStorage.setItem('bookings', JSON.stringify(local));
-  }
-
-  // Send push notification to Reid's phone
-  try {
-    await fetch('https://ntfy.sh/pristine-pwash-reid-bookings', {
-      method: 'POST',
-      headers: {
-        'Title': 'New Booking: ' + booking.service + ' ($' + booking.price + ')',
-        'Priority': 'high',
-        'Tags': 'droplet,moneybag'
-      },
-      body: booking.name + ' — ' + booking.phone + '\n' + booking.address + (booking.notes ? '\nNotes: ' + booking.notes : '')
-    });
-  } catch (e) { console.warn('Notification failed:', e); }
-
-  // Send email notification
-  try {
-    await fetch('https://ntfy.sh/pristine-pwash-reid-bookings', {
-      method: 'POST',
-      headers: {
-        'Email': 'reidwcoleman@gmail.com',
-        'Title': 'New Pristine Powerwash Booking: ' + booking.service,
-        'Tags': 'droplet'
-      },
-      body: 'New booking from ' + booking.name + '!\n\nService: ' + booking.service + ' ($' + booking.price + ')\nPhone: ' + booking.phone + '\nAddress: ' + booking.address + (booking.notes ? '\nNotes: ' + booking.notes : '') + '\n\nText them back to confirm!'
-    });
-  } catch (e) { console.warn('Email notification failed:', e); }
-
-  btn.textContent = 'Confirm & Book ✓';
-  btn.disabled = false;
-  showStep('success');
-}
-
-function closeModal() {
-  document.getElementById('modal').classList.remove('open');
-  document.body.style.overflow = '';
-  // Reset form
-  document.getElementById('bName').value = '';
-  document.getElementById('bPhone').value = '';
-  document.getElementById('bAddress').value = '';
-  document.getElementById('bNotes').value = '';
-  currentStep = 1;
-}
-
-document.getElementById('modalClose').addEventListener('click', closeModal);
-document.getElementById('modal').addEventListener('click', e => {
-  if (e.target === e.currentTarget) closeModal();
 });
 </script>
 

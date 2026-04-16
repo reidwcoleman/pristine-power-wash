@@ -1,0 +1,1 @@
+{ "rules": { "bookings": { ".read": true, ".write": true } } }

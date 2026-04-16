@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<meta name="theme-color" content="#0a1629" media="(prefers-color-scheme: dark)"/>
-<meta name="theme-color" content="#eef4fb" media="(prefers-color-scheme: light)"/>
+<meta name="theme-color" content="#0b1d3a"/>
 <title>Pristine Powerwashing — Professional Exterior Cleaning</title>
 <meta name="description" content="Pristine Powerwashing: sidewalks, patios, driveways &amp; trash cans. Flat-rate pricing. Schedule online or text today."/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,7 +33,30 @@
   --shadow-lg:0 24px 48px -12px rgba(15,23,42,.18), 0 10px 20px -8px rgba(15,23,42,.1);
   --shadow-blue:0 18px 44px -14px rgba(37,99,235,.35);
 
-  /* Light theme (default) */
+  /* Dark theme (default — automatic dark, softer blues) */
+  --bg:#0b1d3a;
+  --bg-alt:#102849;
+  --surface:#163261;
+  --surface-2:#1b3d72;
+  --surface-glass:rgba(22,50,97,.72);
+  --border:rgba(96,165,250,.2);
+  --border-strong:rgba(96,165,250,.32);
+  --text:#e9f0fc;
+  --text-muted:#b2c5e0;
+  --text-subtle:#8aa2c2;
+  --accent:var(--brand-400);
+  --accent-hover:var(--brand-300);
+  --accent-contrast:#061432;
+  --ring:rgba(96,165,250,.45);
+  --hero-bg:radial-gradient(120% 100% at 50% 0%,#2b52b8 0%,#12294f 55%,#071330 100%);
+  --hero-text:#eaf2ff;
+  --hero-muted:#a7c0e2;
+  --card-grad:linear-gradient(180deg,#163261 0%,#102749 100%);
+  --premium-grad:linear-gradient(135deg,#0d2150 0%,#1a3a80 55%,#2563eb 100%);
+}
+
+/* Light theme override — only when user explicitly toggles */
+[data-theme="light"]{
   --bg:#eef4fb;
   --bg-alt:#dde9f6;
   --surface:#ffffff;
@@ -56,46 +78,9 @@
   --premium-grad:linear-gradient(135deg,#0b1c36 0%,#1e3a8a 55%,#1d4ed8 100%);
 }
 
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#06101f;
-    --bg-alt:#091a31;
-    --surface:#0e2142;
-    --surface-2:#142b55;
-    --surface-glass:rgba(14,33,66,.72);
-    --border:rgba(96,165,250,.16);
-    --border-strong:rgba(96,165,250,.28);
-    --text:#e6eefc;
-    --text-muted:#a9bdd9;
-    --text-subtle:#7d94b8;
-    --accent:var(--brand-400);
-    --accent-hover:var(--brand-300);
-    --accent-contrast:#051226;
-    --ring:rgba(96,165,250,.45);
-    --hero-bg:radial-gradient(120% 100% at 50% 0%,#1e3a8a 0%,#0a1a36 55%,#030916 100%);
-    --hero-text:#eaf2ff;
-    --hero-muted:#9ab7de;
-    --card-grad:linear-gradient(180deg,#0e2142 0%,#0a1a34 100%);
-    --premium-grad:linear-gradient(135deg,#07152b 0%,#0c2a5a 55%,#1d4ed8 100%);
-  }
-}
-
-[data-theme="dark"]{
-  --bg:#06101f; --bg-alt:#091a31; --surface:#0e2142; --surface-2:#142b55;
-  --surface-glass:rgba(14,33,66,.72);
-  --border:rgba(96,165,250,.16); --border-strong:rgba(96,165,250,.28);
-  --text:#e6eefc; --text-muted:#a9bdd9; --text-subtle:#7d94b8;
-  --accent:var(--brand-400); --accent-hover:var(--brand-300); --accent-contrast:#051226;
-  --ring:rgba(96,165,250,.45);
-  --hero-bg:radial-gradient(120% 100% at 50% 0%,#1e3a8a 0%,#0a1a36 55%,#030916 100%);
-  --hero-text:#eaf2ff; --hero-muted:#9ab7de;
-  --card-grad:linear-gradient(180deg,#0e2142 0%,#0a1a34 100%);
-  --premium-grad:linear-gradient(135deg,#07152b 0%,#0c2a5a 55%,#1d4ed8 100%);
-}
-
 /* BASE */
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;color-scheme:light dark}
+html{scroll-behavior:smooth;color-scheme:dark light}
 body{
   font-family:'Inter',system-ui,-apple-system,sans-serif;
   color:var(--text);background:var(--bg);
@@ -147,14 +132,8 @@ nav{display:flex;align-items:center;justify-content:space-between;max-width:1120
 }
 .theme-toggle:hover{color:var(--text);border-color:var(--border-strong);transform:translateY(-1px)}
 .theme-toggle svg{width:18px;height:18px}
-.theme-toggle .sun{display:none}
-.theme-toggle .moon{display:block}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]) .theme-toggle .sun{display:block}
-  :root:not([data-theme="light"]) .theme-toggle .moon{display:none}
-}
-[data-theme="dark"] .theme-toggle .sun{display:block}
-[data-theme="dark"] .theme-toggle .moon{display:none}
+.theme-toggle .sun{display:block}
+.theme-toggle .moon{display:none}
 [data-theme="light"] .theme-toggle .sun{display:none}
 [data-theme="light"] .theme-toggle .moon{display:block}
 
@@ -430,13 +409,37 @@ section.alt{background:var(--bg-alt)}
 .modal-header h3{font-family:'Fraunces',serif;font-weight:800;font-size:28px;color:var(--text);margin-bottom:6px;letter-spacing:-.02em}
 .modal-header .sel-price{font-family:'Fraunces',serif;font-weight:900;font-size:44px;color:var(--accent);letter-spacing:-.03em}
 .modal-header .sel-price .d{font-size:20px;font-style:italic;font-weight:400;vertical-align:top;opacity:.6;margin-right:2px}
-.steps{display:flex;justify-content:center;gap:8px;padding:20px 32px 4px}
-.step-dot{width:8px;height:8px;border-radius:50%;background:var(--border-strong);transition:all .3s}
-.step-dot.active{background:var(--accent);box-shadow:0 0 0 4px var(--ring);width:24px;border-radius:4px}
-.step-dot.done{background:var(--accent);opacity:.5}
-.modal-body{padding:20px 32px 32px}
-.form-step{display:none;animation:fadeUp .3s ease}
+
+/* Step indicator with labels */
+.steps{display:flex;justify-content:center;align-items:center;gap:0;padding:22px 32px 6px}
+.step-item{display:flex;flex-direction:column;align-items:center;gap:7px;position:relative;flex:0 0 auto;min-width:70px}
+.step-item .step-dot{
+  width:26px;height:26px;border-radius:50%;
+  background:var(--bg);border:1.5px solid var(--border-strong);
+  display:grid;place-items:center;
+  font-size:11px;font-weight:700;color:var(--text-subtle);
+  transition:all .3s cubic-bezier(.4,0,.2,1);
+}
+.step-item .step-label{
+  font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--text-subtle);transition:color .3s;
+}
+.step-item.active .step-dot{
+  background:var(--accent);border-color:var(--accent);color:var(--accent-contrast);
+  box-shadow:0 0 0 4px var(--ring);
+}
+.step-item.active .step-label{color:var(--accent)}
+.step-item.done .step-dot{background:var(--accent);border-color:var(--accent);color:var(--accent-contrast)}
+.step-item.done .step-label{color:var(--text-muted)}
+.step-connector{flex:0 1 36px;height:1.5px;background:var(--border-strong);margin:0 -2px;margin-bottom:17px;transition:background .3s}
+.step-connector.done{background:var(--accent)}
+
+.modal-body{padding:16px 32px 32px}
+.form-step{display:none;animation:fadeUp .35s ease}
 .form-step.active{display:block}
+.step-intro{margin-bottom:18px;text-align:center}
+.step-intro p{color:var(--text-muted);font-size:14px;line-height:1.55}
+.step-intro p strong{color:var(--text);font-weight:600}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .field{margin-bottom:14px}
 .field label{display:block;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:7px}
@@ -730,44 +733,54 @@ footer a{color:var(--accent);font-weight:500}
       <div class="sel-price"><span class="d">$</span><span id="selPrice">25</span></div>
     </div>
     <div class="steps">
-      <div class="step-dot active" data-step="1"></div>
-      <div class="step-dot" data-step="2"></div>
-      <div class="step-dot" data-step="3"></div>
+      <div class="step-item active" data-step="1"><div class="step-dot">1</div><div class="step-label">Info</div></div>
+      <div class="step-connector" data-between="1"></div>
+      <div class="step-item" data-step="2"><div class="step-dot">2</div><div class="step-label">Time</div></div>
+      <div class="step-connector" data-between="2"></div>
+      <div class="step-item" data-step="3"><div class="step-dot">3</div><div class="step-label">Confirm</div></div>
     </div>
     <div class="modal-body">
+      <!-- Step 1: Contact info -->
       <div class="form-step active" data-step="1">
-        <div id="slotsContainer"></div>
-        <div class="modal-actions"><button class="btn" onclick="nextStep(2)">Next →</button></div>
-      </div>
-      <div class="form-step" data-step="2">
+        <div class="step-intro"><p>Let's get you scheduled. Just a few quick details so we can reach you.</p></div>
         <div class="field"><label>Your Name</label><input type="text" id="bName" placeholder="First &amp; last name" autocomplete="name"></div>
         <div class="field"><label>Phone Number</label><input type="tel" id="bPhone" placeholder="(555) 123-4567" autocomplete="tel"></div>
-        <div class="field"><label>Address</label><input type="text" id="bAddress" placeholder="123 Main Street" autocomplete="street-address"></div>
-        <div class="field"><label>Notes (optional)</label><textarea id="bNotes" placeholder="Gate code, preferred area, etc."></textarea></div>
+        <div class="field"><label>Email</label><input type="email" id="bEmail" placeholder="you@example.com" autocomplete="email"></div>
         <div class="modal-actions">
-          <button class="btn ghost" onclick="prevStep(1)">← Back</button>
-          <button class="btn" onclick="nextStep(3)">Review →</button>
+          <button class="btn" onclick="nextStep(2)">Continue →</button>
         </div>
       </div>
+      <!-- Step 2: Pick a time -->
+      <div class="form-step" data-step="2">
+        <div class="step-intro"><p id="greetLine">Pick a time that works for you.</p></div>
+        <div id="slotsContainer"></div>
+        <div class="modal-actions">
+          <button class="btn ghost" onclick="prevStep(1)">← Back</button>
+          <button class="btn" onclick="nextStep(3)">Next →</button>
+        </div>
+      </div>
+      <!-- Step 3: Address + Confirm -->
       <div class="form-step" data-step="3">
+        <div class="step-intro"><p>Last step — where are we heading?</p></div>
+        <div class="field"><label>Service Address</label><input type="text" id="bAddress" placeholder="123 Main Street" autocomplete="street-address"></div>
+        <div class="field"><label>Notes (optional)</label><textarea id="bNotes" placeholder="Gate code, specific area to focus on, etc."></textarea></div>
         <div class="confirm-grid">
           <div><strong>Service</strong><span id="cService">—</span></div>
           <div><strong>Price</strong><span id="cPrice">—</span></div>
-          <div class="full"><strong>Time Slot</strong><span id="cSlot">—</span></div>
-          <div><strong>Name</strong><span id="cName">—</span></div>
-          <div><strong>Phone</strong><span id="cPhone">—</span></div>
-          <div class="full"><strong>Address</strong><span id="cAddress">—</span></div>
+          <div class="full"><strong>Time</strong><span id="cSlot">—</span></div>
+          <div class="full"><strong>Contact</strong><span id="cContact">—</span></div>
         </div>
         <div class="modal-actions">
           <button class="btn ghost" onclick="prevStep(2)">← Back</button>
           <button class="btn" id="submitBtn" onclick="submitBooking()">Confirm &amp; Book ✓</button>
         </div>
       </div>
+      <!-- Success -->
       <div class="form-step" data-step="success">
         <div class="success-view">
           <div class="success-check"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></div>
           <h3>You're booked!</h3>
-          <p>I'll text you within a few hours to confirm your time slot.</p>
+          <p id="successMsg">I'll text you within a few hours to confirm your time slot.</p>
           <button class="btn" onclick="closeModal()">Done</button>
         </div>
       </div>
@@ -776,29 +789,21 @@ footer a{color:var(--accent);font-weight:500}
 </div>
 
 <script>
-// ===== THEME MANAGEMENT =====
+// ===== THEME MANAGEMENT — defaults to dark =====
 (function(){
   const root = document.documentElement;
   const stored = localStorage.getItem('pw-theme');
-  if(stored === 'light' || stored === 'dark'){
-    root.setAttribute('data-theme', stored);
-  }
-  function current(){
-    const attr = root.getAttribute('data-theme');
-    if(attr === 'light' || attr === 'dark') return attr;
-    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  }
+  if(stored === 'light') root.setAttribute('data-theme', 'light');
+  function current(){ return root.getAttribute('data-theme') === 'light' ? 'light' : 'dark'; }
   document.addEventListener('DOMContentLoaded', () => {
     const toggle = document.getElementById('themeToggle');
     if(!toggle) return;
     toggle.addEventListener('click', () => {
       const next = current() === 'dark' ? 'light' : 'dark';
-      root.setAttribute('data-theme', next);
+      if(next === 'light') root.setAttribute('data-theme', 'light');
+      else root.removeAttribute('data-theme');
       localStorage.setItem('pw-theme', next);
     });
-  });
-  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-    if(!localStorage.getItem('pw-theme')) root.removeAttribute('data-theme');
   });
 })();
 
@@ -834,36 +839,51 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.15 });
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-// ===== BOOKING MODAL =====
+// ===== BOOKING MODAL — 3-step onboarding =====
 let currentStep = 1;
 let selectedService = {};
 let selectedSlot = null;
+let slotsLoaded = false;
 
 document.querySelectorAll('.svc').forEach(card => {
   card.addEventListener('click', () => {
     selectedService = { name: card.dataset.service, price: card.dataset.price, tag: card.dataset.tag };
     selectedSlot = null;
+    slotsLoaded = false;
     document.getElementById('selTag').textContent = selectedService.tag;
     document.getElementById('selName').textContent = selectedService.name;
     document.getElementById('selPrice').textContent = selectedService.price;
+    document.getElementById('greetLine').textContent = 'Pick a time that works for you.';
     currentStep = 1;
     showStep(1);
-    loadSlots();
     document.getElementById('modal').classList.add('open');
     document.body.style.overflow = 'hidden';
+    setTimeout(() => { const n = document.getElementById('bName'); if(n) n.focus(); }, 320);
   });
 });
 
 function showStep(n) {
   document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
   document.querySelector('.form-step[data-step="' + (n === 'success' ? 'success' : n) + '"]').classList.add('active');
-  document.querySelectorAll('.step-dot').forEach(d => {
-    const ds = +d.dataset.step;
-    d.classList.remove('active','done');
-    if (n === 'success' || ds < n) d.classList.add('done');
-    else if (ds === n) d.classList.add('active');
+  // Update step indicator
+  document.querySelectorAll('.step-item').forEach(item => {
+    const ds = +item.dataset.step;
+    item.classList.remove('active','done');
+    if (n === 'success' || ds < n) item.classList.add('done');
+    else if (ds === n) item.classList.add('active');
   });
+  document.querySelectorAll('.step-connector').forEach(c => {
+    const between = +c.dataset.between;
+    c.classList.toggle('done', n === 'success' || between < n);
+  });
+  // Auto-focus first input in new step
+  setTimeout(() => {
+    const active = document.querySelector('.form-step.active input, .form-step.active textarea');
+    if (active && typeof n === 'number' && n !== 2) active.focus();
+  }, 320);
 }
+
+function validEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
 
 async function loadSlots() {
   const container = document.getElementById('slotsContainer');
@@ -912,30 +932,60 @@ function pickSlot(el) {
 }
 
 function nextStep(n) {
-  if (currentStep === 1 && !selectedSlot) { alert('Please pick a time slot.'); return; }
+  // Step 1 → Step 2: validate contact info, then load slots
+  if (currentStep === 1) {
+    const name = document.getElementById('bName').value.trim();
+    const phone = document.getElementById('bPhone').value.trim();
+    const email = document.getElementById('bEmail').value.trim();
+    if (!name) { alert('Please enter your name.'); document.getElementById('bName').focus(); return; }
+    if (!phone || phone.replace(/\D/g,'').length < 7) { alert('Please enter a valid phone number.'); document.getElementById('bPhone').focus(); return; }
+    if (!email || !validEmail(email)) { alert('Please enter a valid email address.'); document.getElementById('bEmail').focus(); return; }
+    // Personalize next step
+    const firstName = name.split(/\s+/)[0];
+    document.getElementById('greetLine').innerHTML = 'Thanks, <strong>' + escapeHtml(firstName) + '</strong>! Pick a time that works for you.';
+    if (!slotsLoaded) { loadSlots(); slotsLoaded = true; }
+  }
+  // Step 2 → Step 3: ensure a slot is picked
   if (currentStep === 2) {
-    if (!document.getElementById('bName').value.trim() || !document.getElementById('bPhone').value.trim() || !document.getElementById('bAddress').value.trim()) {
-      alert('Please fill in all fields.'); return;
-    }
+    if (!selectedSlot) { alert('Please pick a time slot.'); return; }
+    // Pre-fill confirm summary
     document.getElementById('cService').textContent = selectedService.name;
     document.getElementById('cPrice').textContent = '$' + selectedService.price;
-    document.getElementById('cSlot').textContent = selectedSlot.date + ' at ' + selectedSlot.time;
-    document.getElementById('cName').textContent = document.getElementById('bName').value;
-    document.getElementById('cPhone').textContent = document.getElementById('bPhone').value;
-    document.getElementById('cAddress').textContent = document.getElementById('bAddress').value;
+    document.getElementById('cSlot').textContent = formatSlotLabel(selectedSlot);
+    const n2 = document.getElementById('bName').value.trim();
+    const p2 = document.getElementById('bPhone').value.trim();
+    document.getElementById('cContact').textContent = n2 + ' · ' + p2;
   }
   currentStep = n; showStep(n);
 }
 function prevStep(n) { currentStep = n; showStep(n); }
 
+function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+function formatSlotLabel(slot){
+  try {
+    const [y,m,d] = slot.date.split('-').map(Number);
+    const dateObj = new Date(y, m-1, d);
+    const today = new Date(); today.setHours(0,0,0,0);
+    const diff = Math.round((dateObj - today) / 86400000);
+    const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const label = diff === 0 ? 'Today' : diff === 1 ? 'Tomorrow' : dayNames[dateObj.getDay()];
+    return label + ', ' + monthNames[dateObj.getMonth()] + ' ' + dateObj.getDate() + ' · ' + slot.time;
+  } catch(e){ return slot.date + ' at ' + slot.time; }
+}
+
 async function submitBooking() {
+  const address = document.getElementById('bAddress').value.trim();
+  if (!address) { alert('Please enter your service address.'); document.getElementById('bAddress').focus(); return; }
+
   const btn = document.getElementById('submitBtn');
   btn.textContent = 'Booking…'; btn.disabled = true;
   const booking = {
     service: selectedService.name, price: +selectedService.price,
     name: document.getElementById('bName').value.trim(),
     phone: document.getElementById('bPhone').value.trim(),
-    address: document.getElementById('bAddress').value.trim(),
+    email: document.getElementById('bEmail').value.trim(),
+    address: address,
     notes: document.getElementById('bNotes').value.trim(),
     timeSlot: selectedSlot.date + ' ' + selectedSlot.time,
     slotId: selectedSlot.id,
@@ -948,23 +998,25 @@ async function submitBooking() {
   try {
     await fetch('https://ntfy.sh/pristine-pwash-reid-bookings', {
       method:'POST', headers:{'Title':'New Booking: '+booking.service+' ($'+booking.price+')','Priority':'high','Tags':'droplet,moneybag'},
-      body: booking.name+' — '+booking.phone+'\n'+booking.address+'\nTime: '+booking.timeSlot
+      body: booking.name+' — '+booking.phone+(booking.email?' · '+booking.email:'')+'\n'+booking.address+'\nTime: '+booking.timeSlot+(booking.notes?'\nNotes: '+booking.notes:'')
     });
   } catch(e){}
   try {
     await fetch('https://ntfy.sh/pristine-pwash-reid-bookings', {
       method:'POST', headers:{'Email':'reidwcoleman@gmail.com','Title':'Pristine Booking: '+booking.service,'Tags':'droplet'},
-      body:'From: '+booking.name+'\nPhone: '+booking.phone+'\nAddress: '+booking.address+'\nService: '+booking.service+' ($'+booking.price+')\nTime: '+booking.timeSlot+(booking.notes?'\nNotes: '+booking.notes:'')+'\n\nText them back to confirm!'
+      body:'From: '+booking.name+'\nPhone: '+booking.phone+'\nEmail: '+booking.email+'\nAddress: '+booking.address+'\nService: '+booking.service+' ($'+booking.price+')\nTime: '+booking.timeSlot+(booking.notes?'\nNotes: '+booking.notes:'')+'\n\nText them back to confirm!'
     });
   } catch(e){}
   btn.textContent='Confirm & Book ✓'; btn.disabled=false;
+  const msgEl = document.getElementById('successMsg');
+  if (msgEl) msgEl.innerHTML = "I'll text <strong>" + escapeHtml(booking.phone) + "</strong> within a few hours to confirm.";
   showStep('success');
 }
 
 function closeModal() {
   document.getElementById('modal').classList.remove('open'); document.body.style.overflow='';
-  ['bName','bPhone','bAddress','bNotes'].forEach(id=>document.getElementById(id).value='');
-  currentStep=1; selectedSlot=null;
+  ['bName','bPhone','bEmail','bAddress','bNotes'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  currentStep=1; selectedSlot=null; slotsLoaded=false;
 }
 document.getElementById('modalClose').addEventListener('click', closeModal);
 document.getElementById('modal').addEventListener('click', e => { if(e.target===e.currentTarget) closeModal(); });

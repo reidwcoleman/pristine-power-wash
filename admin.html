@@ -471,12 +471,9 @@ const db = firebase.firestore();
 const auth = firebase.auth();
 
 const TIME_SLOTS = [
-  { time: '8:00 AM', period: 'Morning', sort: 0 },
-  { time: '9:30 AM', period: 'Morning', sort: 1 },
-  { time: '11:00 AM', period: 'Late Morning', sort: 2 },
-  { time: '1:00 PM', period: 'Afternoon', sort: 3 },
-  { time: '2:30 PM', period: 'Afternoon', sort: 4 },
-  { time: '4:00 PM', period: 'Late Afternoon', sort: 5 }
+  { time: '10:00 AM', period: 'Morning',   sort: 0 },
+  { time: '12:00 PM', period: 'Midday',    sort: 1 },
+  { time: '2:00 PM',  period: 'Afternoon', sort: 2 }
 ];
 
 auth.onAuthStateChanged(user => {

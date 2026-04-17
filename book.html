@@ -142,11 +142,22 @@ a{color:var(--accent);text-decoration:none}
   max-width:1100px;margin:0 auto;
   padding:32px 24px 80px;
 }
-.step{display:none;animation:fadeUp .4s ease}
+.step{display:none;animation:fadeUp .45s cubic-bezier(.2,.7,.2,1)}
 .step.active{display:block}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* Skeleton loader for slots while Firestore merges */
+.skeleton{background:linear-gradient(90deg,var(--bg-alt) 0%,var(--surface-2) 50%,var(--bg-alt) 100%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:12px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
 /* STEP HEADING */
+.step-eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:11px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--accent);background:var(--bg-alt);border:1px solid var(--border);
+  padding:7px 14px;border-radius:999px;margin-bottom:18px;
+}
+.step-eyebrow .pip{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--ring)}
 .step-title{
   font-family:'Fraunces',serif;font-weight:900;
   font-size:clamp(30px,4.4vw,46px);
@@ -155,6 +166,7 @@ a{color:var(--accent);text-decoration:none}
 }
 .step-title em{font-style:italic;font-weight:400;color:var(--accent)}
 .step-sub{font-size:17px;color:var(--text-muted);margin-bottom:36px;line-height:1.55;max-width:620px}
+.step-sub strong{color:var(--text);font-weight:600}
 
 /* BUTTONS */
 .btn{
@@ -295,77 +307,130 @@ a{color:var(--accent);text-decoration:none}
 .field .hint{font-size:12px;color:var(--text-subtle);margin-top:6px}
 
 /* =============================================================
-   STEP 2 — TIME SLOT PICKER
+   STEP 2 — WEEK-PAGER CALENDAR + BIG SLOT CARDS
    ============================================================= */
 .time-picker{max-width:860px}
-.day-strip{
-  display:flex;gap:10px;overflow-x:auto;padding:4px 0 16px;
-  scrollbar-width:thin;scrollbar-color:var(--border-strong) transparent;
-  -webkit-overflow-scrolling:touch;margin-bottom:20px;
-}
-.day-strip::-webkit-scrollbar{height:6px}
-.day-strip::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:3px}
-.day-pill{
-  flex-shrink:0;min-width:92px;text-align:center;
-  padding:14px 18px;border-radius:14px;
-  background:var(--surface);border:1.5px solid var(--border);
-  cursor:pointer;transition:all .2s;
-  display:flex;flex-direction:column;align-items:center;gap:4px;
-  position:relative;
-}
-.day-pill:hover{border-color:var(--border-strong);transform:translateY(-2px)}
-.day-pill.selected{
-  border-color:var(--accent);background:var(--bg-alt);
-  box-shadow:0 0 0 3px var(--ring);
-}
-.day-pill.today::before{
-  content:'TODAY';position:absolute;top:-8px;left:50%;transform:translateX(-50%);
-  background:linear-gradient(135deg,var(--amber-400),var(--amber-500));color:#3a2a0a;
-  font-size:9px;font-weight:800;letter-spacing:.15em;
-  padding:3px 9px;border-radius:4px;
-}
-.day-pill .day-name{font-size:11px;font-weight:700;color:var(--text-subtle);letter-spacing:.08em;text-transform:uppercase}
-.day-pill.selected .day-name,.day-pill.today .day-name{color:var(--accent)}
-.day-pill .day-num{font-family:'Fraunces',serif;font-weight:800;font-size:28px;color:var(--text);letter-spacing:-.02em;line-height:1.1}
-.day-pill .day-mon{font-size:10px;font-weight:700;color:var(--text-subtle);letter-spacing:.12em;text-transform:uppercase}
-.day-pill .day-availability{
-  margin-top:6px;font-size:10px;font-weight:700;color:var(--accent);
-  letter-spacing:.06em;text-transform:uppercase;
-}
-.day-pill.unavailable{opacity:.5;cursor:not-allowed}
-.day-pill.unavailable:hover{transform:none;border-color:var(--border)}
-.day-pill.unavailable .day-availability{color:var(--text-subtle)}
 
+/* Calendar */
+.calendar{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:22px;margin-bottom:18px;
+  box-shadow:var(--shadow-sm);
+}
+.cal-header{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin-bottom:18px;
+}
+.cal-header .cal-title{text-align:center;flex:1 1 auto}
+.cal-month{font-family:'Fraunces',serif;font-weight:800;font-size:22px;color:var(--text);letter-spacing:-.02em;line-height:1.1}
+.cal-range{font-size:12px;font-weight:600;color:var(--text-subtle);letter-spacing:.08em;text-transform:uppercase;margin-top:3px}
+.cal-nav{
+  width:40px;height:40px;border-radius:12px;flex-shrink:0;
+  border:1px solid var(--border-strong);background:var(--bg-alt);
+  color:var(--text-muted);display:grid;place-items:center;
+  cursor:pointer;transition:all .18s;
+}
+.cal-nav:hover:not(:disabled){color:var(--accent);border-color:var(--accent);transform:translateY(-1px)}
+.cal-nav:disabled{opacity:.35;cursor:not-allowed}
+.cal-nav svg{width:16px;height:16px}
+
+.week-row{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.day-pill{
+  padding:14px 8px 12px;border-radius:14px;
+  background:var(--bg-alt);border:1.5px solid var(--border);
+  cursor:pointer;transition:all .2s cubic-bezier(.2,.7,.2,1);
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  position:relative;text-align:center;
+  font-family:'Inter',sans-serif;color:var(--text);
+}
+.day-pill:hover:not(.unavailable):not(.selected){border-color:var(--border-strong);transform:translateY(-2px);background:var(--surface)}
+.day-pill.selected{
+  border-color:var(--accent);background:var(--surface-2);color:var(--text);
+  box-shadow:0 8px 20px -8px rgba(96,165,250,.35),0 0 0 2px var(--ring);
+  transform:translateY(-2px);
+}
+.day-pill.today{border-color:var(--amber-400)}
+.day-pill.today.selected{border-color:var(--accent)}
+.day-pill.today::after{
+  content:'•';position:absolute;top:4px;right:8px;
+  color:var(--amber-400);font-size:20px;line-height:1;
+}
+.day-pill .day-name{font-size:10.5px;font-weight:700;color:var(--text-subtle);letter-spacing:.14em;text-transform:uppercase}
+.day-pill.selected .day-name{color:var(--accent)}
+.day-pill .day-num{font-family:'Fraunces',serif;font-weight:800;font-size:24px;letter-spacing:-.02em;line-height:1.15;margin:1px 0}
+.day-pill .day-avail{
+  margin-top:4px;font-size:9.5px;font-weight:700;color:var(--accent);
+  letter-spacing:.05em;text-transform:uppercase;
+}
+.day-pill.unavailable{opacity:.35;cursor:not-allowed;background:transparent}
+.day-pill.unavailable .day-avail{color:var(--text-subtle)}
+
+/* Slot panel */
 .slot-panel{
   background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius-lg);padding:28px;margin-bottom:20px;
+  border-radius:var(--radius-lg);padding:28px;margin-bottom:18px;
+  box-shadow:var(--shadow-sm);
 }
+.slot-panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap}
 .slot-panel h3{
-  font-family:'Fraunces',serif;font-weight:700;font-size:19px;letter-spacing:-.01em;
-  color:var(--text);margin-bottom:6px;
+  font-family:'Fraunces',serif;font-weight:800;font-size:22px;letter-spacing:-.02em;
+  color:var(--text);line-height:1.15;
 }
-.slot-panel .slot-sub{color:var(--text-muted);font-size:14px;margin-bottom:20px}
-.slot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:10px}
+.slot-panel .slot-sub{color:var(--text-muted);font-size:13.5px;margin-top:3px}
+.slot-panel-pill{
+  font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  background:var(--bg-alt);color:var(--accent);
+  padding:6px 12px;border-radius:999px;border:1px solid var(--border);
+  white-space:nowrap;
+}
+
+.slot-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .slot{
-  padding:14px;border:1.5px solid var(--border);border-radius:10px;
-  text-align:center;cursor:pointer;transition:all .2s;
-  background:var(--bg-alt);
+  padding:24px 18px;border:1.5px solid var(--border);border-radius:16px;
+  cursor:pointer;transition:all .22s cubic-bezier(.2,.7,.2,1);
+  background:var(--bg-alt);position:relative;overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  text-align:center;
 }
-.slot:hover{border-color:var(--accent);transform:translateY(-1px)}
+.slot:not(.taken):hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:var(--shadow)}
 .slot.selected{
-  border-color:var(--accent);background:rgba(96,165,250,.1);
-  box-shadow:0 0 0 3px var(--ring);
+  border-color:var(--accent);background:var(--surface-2);
+  box-shadow:0 12px 32px -10px rgba(96,165,250,.45),0 0 0 3px var(--ring);
 }
-.slot .slot-time{font-weight:700;font-size:15px;color:var(--text)}
-.slot .slot-period{font-size:10.5px;font-weight:600;color:var(--text-subtle);text-transform:uppercase;letter-spacing:.1em;margin-top:3px}
+.slot.selected::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;
+  background:radial-gradient(60% 60% at 50% 0%,rgba(96,165,250,.18),transparent 60%);
+  pointer-events:none;
+}
+.slot .period-ic{
+  width:44px;height:44px;border-radius:12px;
+  display:grid;place-items:center;color:#fff;
+  background:linear-gradient(135deg,var(--brand-500),var(--ice-500));
+  box-shadow:0 6px 16px -6px var(--brand-500);
+  transition:transform .25s;
+}
+.slot.selected .period-ic{transform:scale(1.06) rotate(-6deg)}
+.slot .period-ic.morning{background:linear-gradient(135deg,#fbbf24,#f59e0b);box-shadow:0 6px 16px -6px #f59e0b}
+.slot .period-ic.noon{background:linear-gradient(135deg,#fcd34d,#fbbf24);box-shadow:0 6px 16px -6px #fbbf24}
+.slot .period-ic.afternoon{background:linear-gradient(135deg,#60a5fa,#3b82f6);box-shadow:0 6px 16px -6px #3b82f6}
+.slot .slot-time{font-family:'Fraunces',serif;font-weight:900;font-size:26px;color:var(--text);letter-spacing:-.02em;line-height:1}
+.slot .slot-period{font-size:10.5px;font-weight:700;color:var(--text-subtle);text-transform:uppercase;letter-spacing:.16em}
+.slot.selected .slot-period{color:var(--accent)}
 .slot.taken{
   opacity:.45;cursor:not-allowed;
-  background:repeating-linear-gradient(135deg,transparent,transparent 4px,rgba(0,0,0,.06) 4px,rgba(0,0,0,.06) 8px),var(--bg-alt);
+  background:repeating-linear-gradient(135deg,transparent,transparent 6px,rgba(0,0,0,.07) 6px,rgba(0,0,0,.07) 10px),var(--bg-alt);
 }
-.slot.taken:hover{border-color:var(--border);transform:none}
 .slot.taken .slot-time{text-decoration:line-through;color:var(--text-subtle)}
-.slot .slot-taken-label{font-size:9px;font-weight:800;color:var(--red-400);letter-spacing:.1em;text-transform:uppercase;margin-top:4px;display:none}
+.slot .slot-taken-label{font-size:10px;font-weight:800;color:var(--red-400);letter-spacing:.16em;text-transform:uppercase;margin-top:2px;display:none}
 .slot.taken .slot-taken-label{display:block}
+.slot.taken .period-ic{background:var(--bg-alt);color:var(--text-subtle);box-shadow:none}
+
+.slot-empty{
+  grid-column:1/-1;text-align:center;padding:32px 20px;
+  border:1.5px dashed var(--border-strong);border-radius:14px;
+  background:var(--bg-alt);color:var(--text-muted);font-size:14px;
+}
+.slot-empty strong{color:var(--text);display:block;margin-bottom:4px}
 
 /* =============================================================
    STEP 3 — CONFIRM
@@ -437,13 +502,24 @@ a{color:var(--accent);text-decoration:none}
   .svc-hero .price-block{text-align:center}
   .progress-label{font-size:9px;letter-spacing:.1em}
   .progress-step{min-width:52px}
+  .slot-grid{grid-template-columns:1fr;gap:12px}
+  .slot{flex-direction:row;gap:16px;padding:18px;text-align:left;justify-content:flex-start}
+  .slot .slot-time{font-size:22px}
+  .week-row{gap:6px}
+  .day-pill{padding:10px 4px 10px}
+  .day-pill .day-num{font-size:20px}
+  .cal-month{font-size:18px}
+  .cal-range{font-size:11px}
 }
 @media (max-width:480px){
   .shell{padding:20px 16px 60px}
   .svc-hero{padding:28px 22px}
   .intro-card{padding:22px}
-  .slot-panel{padding:20px}
+  .slot-panel{padding:22px 20px}
+  .calendar{padding:18px}
   .success-wrap{padding:36px 24px}
+  .day-pill .day-name{font-size:9px;letter-spacing:.08em}
+  .day-pill .day-avail{font-size:8.5px}
 }
 @media (prefers-reduced-motion: reduce){
   *{animation-duration:.01ms!important;transition-duration:.01ms!important}
@@ -501,6 +577,7 @@ a{color:var(--accent);text-decoration:none}
 
   <!-- ============ STEP 0: SERVICE INTRO ============ -->
   <section class="step active" data-step="0">
+    <div class="step-eyebrow"><span class="pip"></span>Step 1 of 4 · Your Service</div>
     <div class="svc-hero" id="svcHero">
       <div class="svc-hero-inner">
         <div>
@@ -574,6 +651,7 @@ a{color:var(--accent);text-decoration:none}
 
   <!-- ============ STEP 1: YOUR INFO ============ -->
   <section class="step" data-step="1">
+    <div class="step-eyebrow"><span class="pip"></span>Step 2 of 4 · Your Info</div>
     <h2 class="step-title">Let's get you <em>scheduled.</em></h2>
     <p class="step-sub">Just a few quick details so I can reach you to confirm the appointment and answer any questions.</p>
     <div class="form-wrap">
@@ -589,15 +667,39 @@ a{color:var(--accent);text-decoration:none}
 
   <!-- ============ STEP 2: PICK A TIME ============ -->
   <section class="step" data-step="2">
+    <div class="step-eyebrow"><span class="pip"></span>Step 3 of 4 · Pick a Time</div>
     <h2 class="step-title" id="timeHeading">Pick a time that <em>works for you.</em></h2>
-    <p class="step-sub">Most jobs are done in under an hour. If nothing fits, text <a href="sms:+19843446217">(984) 344‑6217</a> to find a custom time.</p>
+    <p class="step-sub">Three time slots every day — <strong>10 AM, 12 PM, or 2 PM.</strong> If nothing fits, text <a href="sms:+19843446217">(984) 344‑6217</a> to find a custom time.</p>
     <div class="time-picker">
-      <div class="day-strip" id="dayStrip"></div>
+      <!-- Week-pager calendar -->
+      <div class="calendar">
+        <div class="cal-header">
+          <button type="button" class="cal-nav" id="calPrev" aria-label="Previous week">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <div class="cal-title">
+            <div class="cal-month" id="calMonth">April 2026</div>
+            <div class="cal-range" id="calRange">Apr 16 – Apr 22</div>
+          </div>
+          <button type="button" class="cal-nav" id="calNext" aria-label="Next week">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+        <div class="week-row" id="weekRow"></div>
+      </div>
+
+      <!-- Slot panel -->
       <div class="slot-panel">
-        <h3 id="slotPanelTitle">Available times</h3>
-        <p class="slot-sub" id="slotPanelSub">Select any open slot below.</p>
+        <div class="slot-panel-head">
+          <div>
+            <h3 id="slotPanelTitle">Pick a day to see times</h3>
+            <div class="slot-sub" id="slotPanelSub">Three slots daily · 10 AM, 12 PM, 2 PM</div>
+          </div>
+          <span class="slot-panel-pill" id="slotPanelPill" style="display:none">All times available</span>
+        </div>
         <div class="slot-grid" id="slotGrid"></div>
       </div>
+
       <div class="btn-row">
         <button class="btn ghost lg" onclick="goStep(1)">← Back</button>
         <button class="btn xl" onclick="validateAndGo(3)">Review &amp; Book <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
@@ -607,6 +709,7 @@ a{color:var(--accent);text-decoration:none}
 
   <!-- ============ STEP 3: CONFIRM ============ -->
   <section class="step" data-step="3">
+    <div class="step-eyebrow"><span class="pip"></span>Step 4 of 4 · Confirm</div>
     <h2 class="step-title">Last step — <em>where are we heading?</em></h2>
     <p class="step-sub">Enter the service address and anything we should know. Then confirm to lock in your time slot.</p>
     <div class="confirm-layout">
@@ -829,21 +932,30 @@ function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s; 
 
 // ===== TIME SLOTS =====
 const DEFAULT_SLOTS = [
-  { time: '8:00 AM', period: 'Morning', sort: 0 },
-  { time: '9:30 AM', period: 'Morning', sort: 1 },
-  { time: '11:00 AM', period: 'Late Morning', sort: 2 },
-  { time: '1:00 PM', period: 'Afternoon', sort: 3 },
-  { time: '2:30 PM', period: 'Afternoon', sort: 4 },
-  { time: '4:00 PM', period: 'Late Afternoon', sort: 5 }
+  { time: '10:00 AM', period: 'Morning',   sort: 0, iconClass: 'morning'   },
+  { time: '12:00 PM', period: 'Midday',    sort: 1, iconClass: 'noon'      },
+  { time: '2:00 PM',  period: 'Afternoon', sort: 2, iconClass: 'afternoon' }
 ];
+// Availability extends from today through June 11, 2026 (inclusive).
+const END_DATE = new Date(2026, 5, 11); // month is 0-indexed → June
+END_DATE.setHours(23,59,59,999);
+
 const DAY_NAMES_SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-const DAY_NAMES_LONG = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-const MON_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const MON_NAMES_LONG = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAY_NAMES_LONG  = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MON_NAMES       = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MON_NAMES_LONG  = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+const PERIOD_ICONS = {
+  morning:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="2" x2="12" y2="9"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/><line x1="23" y1="22" x2="1" y2="22"/><polyline points="8 6 12 2 16 6"/></svg>',
+  noon:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>',
+  afternoon:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="9" x2="12" y2="2"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/><line x1="23" y1="22" x2="1" y2="22"/><polyline points="16 5 12 9 8 5"/></svg>'
+};
 
 function fmtDate(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
 function parseTimeToHour(timeStr){
-  // "8:00 AM" -> 8, "1:00 PM" -> 13
   const m = timeStr.match(/^(\d+):(\d+)\s*(AM|PM)$/i);
   if (!m) return 0;
   let h = +m[1]; const min = +m[2]; const p = m[3].toUpperCase();
@@ -853,22 +965,24 @@ function parseTimeToHour(timeStr){
 }
 
 let slotsInitialized = false;
-let daysData = []; // [{dateStr, dateObj, slots:[{time,period,sort,booked,id?}]}]
+let daysData = []; // [{dateStr, dateObj, slots:[{time,period,sort,iconClass,booked,id?}]}]
 let selectedDateStr = null;
-let selectedSlot = null; // {date, time, period, sort, id?, booked}
+let selectedSlot = null; // {date, time, period, sort, iconClass, id?}
+let weekStartIdx = 0;
 
 async function initSlots(){
   slotsInitialized = true;
   const now = new Date();
   const today0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-  // Build 7 days starting today
+  // Build days from today through END_DATE (inclusive).
   daysData = [];
-  for (let i = 0; i < 7; i++){
-    const d = new Date(today0); d.setDate(today0.getDate() + i);
-    const dateStr = fmtDate(d);
+  const cursor = new Date(today0);
+  while (cursor.getTime() <= END_DATE.getTime()){
+    const dateStr = fmtDate(cursor);
     const slots = DEFAULT_SLOTS.map(s => ({ ...s, booked:false, id:null }));
-    daysData.push({ dateStr, dateObj:d, slots });
+    daysData.push({ dateStr, dateObj: new Date(cursor), slots });
+    cursor.setDate(cursor.getDate() + 1);
   }
 
   // Pull Firestore bookings & admin-marked slots, merge in
@@ -879,7 +993,6 @@ async function initSlots(){
       db.collection('availableSlots').where('date', '>=', todayStr).get().catch(() => null)
     ]);
 
-    // Mark slots matching existing bookings as booked
     if (bookingsSnap) {
       bookingsSnap.forEach(doc => {
         const b = doc.data();
@@ -892,7 +1005,6 @@ async function initSlots(){
         if (slot) slot.booked = true;
       });
     }
-    // Mark admin-marked slots (carry slot ID so transaction can lock it)
     if (slotsSnap) {
       slotsSnap.forEach(doc => {
         const d = doc.data();
@@ -909,54 +1021,111 @@ async function initSlots(){
 
   // Filter out past slots for today
   const nowHour = now.getHours() + now.getMinutes()/60;
-  daysData[0].slots = daysData[0].slots.filter(s => parseTimeToHour(s.time) > nowHour + 0.25);
+  if (daysData[0]) {
+    daysData[0].slots = daysData[0].slots.filter(s => parseTimeToHour(s.time) > nowHour + 0.25);
+  }
 
-  renderDayStrip();
-  // Auto-select first day with open slots
-  const firstOpen = daysData.find(d => d.slots.some(s => !s.booked));
-  if (firstOpen) selectDay(firstOpen.dateStr);
+  // Pick first day that has open slots → show that week, auto-select it
+  const firstOpenIdx = daysData.findIndex(d => d.slots.some(s => !s.booked));
+  const startIdx = firstOpenIdx >= 0 ? firstOpenIdx : 0;
+  // Snap week start so the selected day is always visible
+  weekStartIdx = Math.floor(startIdx / 7) * 7;
+
+  renderWeek();
+  if (firstOpenIdx >= 0) selectDay(daysData[firstOpenIdx].dateStr);
   else renderSlotGrid();
+
+  // Wire up prev/next buttons (idempotent — safe to call once)
+  const prev = document.getElementById('calPrev');
+  const next = document.getElementById('calNext');
+  if (prev && !prev.__wired){ prev.__wired = true; prev.addEventListener('click', () => shiftWeek(-1)); }
+  if (next && !next.__wired){ next.__wired = true; next.addEventListener('click', () => shiftWeek(1)); }
 }
 
-function renderDayStrip(){
-  const strip = document.getElementById('dayStrip');
-  strip.innerHTML = '';
-  const today0 = new Date(); today0.setHours(0,0,0,0);
-  daysData.forEach((day, idx) => {
+function shiftWeek(direction){
+  const newStart = weekStartIdx + direction * 7;
+  if (newStart < 0) return;
+  if (newStart >= daysData.length) return;
+  weekStartIdx = newStart;
+  renderWeek();
+}
+
+function renderWeek(){
+  const row = document.getElementById('weekRow');
+  row.innerHTML = '';
+  const start = weekStartIdx;
+  const end = Math.min(start + 7, daysData.length);
+
+  for (let i = start; i < end; i++){
+    const day = daysData[i];
     const open = day.slots.filter(s => !s.booked).length;
+    const isToday = i === 0;
+    const isSelected = selectedDateStr === day.dateStr;
     const pill = document.createElement('button');
     pill.type = 'button';
-    pill.className = 'day-pill' + (idx === 0 ? ' today' : '') + (selectedDateStr === day.dateStr ? ' selected' : '') + (open === 0 ? ' unavailable' : '');
-    const dayName = idx === 0 ? 'Today' : idx === 1 ? 'Tomorrow' : DAY_NAMES_SHORT[day.dateObj.getDay()];
+    pill.className = 'day-pill' + (isToday ? ' today' : '') + (isSelected ? ' selected' : '') + (open === 0 ? ' unavailable' : '');
+    const dayName = isToday ? 'Today' : (i === 1 ? 'Tomorrow' : DAY_NAMES_SHORT[day.dateObj.getDay()]);
     pill.innerHTML = `
       <div class="day-name">${dayName}</div>
       <div class="day-num">${day.dateObj.getDate()}</div>
-      <div class="day-mon">${MON_NAMES[day.dateObj.getMonth()]}</div>
-      <div class="day-availability">${open === 0 ? 'Full' : open + ' open'}</div>
+      <div class="day-avail">${open === 0 ? '—' : open + ' open'}</div>
     `;
     if (open > 0) pill.addEventListener('click', () => selectDay(day.dateStr));
-    strip.appendChild(pill);
-  });
+    row.appendChild(pill);
+  }
+  // If the week has < 7 days (tail of range), pad remaining with ghost pills for grid alignment
+  const padCount = 7 - (end - start);
+  for (let i = 0; i < padCount; i++){
+    const ghost = document.createElement('div');
+    ghost.className = 'day-pill unavailable';
+    ghost.style.visibility = 'hidden';
+    row.appendChild(ghost);
+  }
+
+  // Header labels
+  const first = daysData[start].dateObj;
+  const last  = daysData[end-1].dateObj;
+  const monthLbl = document.getElementById('calMonth');
+  const rangeLbl = document.getElementById('calRange');
+  if (first.getMonth() === last.getMonth()){
+    monthLbl.textContent = MON_NAMES_LONG[first.getMonth()] + ' ' + first.getFullYear();
+  } else {
+    monthLbl.textContent = MON_NAMES[first.getMonth()] + ' → ' + MON_NAMES[last.getMonth()] + ' ' + last.getFullYear();
+  }
+  rangeLbl.textContent = MON_NAMES[first.getMonth()] + ' ' + first.getDate() + ' – ' + MON_NAMES[last.getMonth()] + ' ' + last.getDate();
+
+  // Nav button state
+  document.getElementById('calPrev').disabled = start === 0;
+  document.getElementById('calNext').disabled = end >= daysData.length;
 }
 
 function selectDay(dateStr){
   selectedDateStr = dateStr;
-  // Don't reset selectedSlot unless it's on a different day
   if (selectedSlot && selectedSlot.date !== dateStr) selectedSlot = null;
-  renderDayStrip();
+  // Make sure the selected day is within the currently visible week
+  const idx = daysData.findIndex(d => d.dateStr === dateStr);
+  if (idx >= 0 && (idx < weekStartIdx || idx >= weekStartIdx + 7)){
+    weekStartIdx = Math.floor(idx / 7) * 7;
+  }
+  renderWeek();
   renderSlotGrid();
 }
 
 function renderSlotGrid(){
-  const grid = document.getElementById('slotGrid');
+  const grid  = document.getElementById('slotGrid');
   const title = document.getElementById('slotPanelTitle');
-  const sub = document.getElementById('slotPanelSub');
+  const sub   = document.getElementById('slotPanelSub');
+  const pill  = document.getElementById('slotPanelPill');
   grid.innerHTML = '';
-  if (!selectedDateStr) {
-    title.textContent = 'No open days this week';
-    sub.innerHTML = 'Text <a href="sms:+19843446217">(984) 344‑6217</a> to schedule a custom time.';
+
+  if (!selectedDateStr){
+    title.textContent = 'Pick a day above';
+    sub.innerHTML = 'Three slots daily · 10 AM, 12 PM, 2 PM';
+    pill.style.display = 'none';
+    grid.innerHTML = '<div class="slot-empty"><strong>Select a date to see available times.</strong>Use the calendar above to pick a day.</div>';
     return;
   }
+
   const day = daysData.find(x => x.dateStr === selectedDateStr);
   if (!day) return;
   const dateObj = day.dateObj;
@@ -964,20 +1133,42 @@ function renderSlotGrid(){
   const diff = Math.round((dateObj - today0) / 86400000);
   const dayLabel = diff === 0 ? 'Today' : diff === 1 ? 'Tomorrow' : DAY_NAMES_LONG[dateObj.getDay()];
   title.textContent = dayLabel + ', ' + MON_NAMES_LONG[dateObj.getMonth()] + ' ' + dateObj.getDate();
-  sub.textContent = day.slots.filter(s => !s.booked).length + ' of ' + day.slots.length + ' time slots available.';
+  const openCount = day.slots.filter(s => !s.booked).length;
+  sub.textContent = openCount + ' of ' + day.slots.length + ' time slots open';
+
+  if (openCount === day.slots.length && day.slots.length > 0){
+    pill.textContent = 'All times open';
+    pill.style.display = 'inline-block';
+  } else if (openCount === 0){
+    pill.textContent = 'Fully booked';
+    pill.style.display = 'inline-block';
+  } else {
+    pill.style.display = 'none';
+  }
+
+  if (day.slots.length === 0){
+    grid.innerHTML = '<div class="slot-empty"><strong>No more slots today.</strong>Pick a future date above — each day has 10 AM, 12 PM, and 2 PM.</div>';
+    return;
+  }
 
   day.slots.forEach(slot => {
+    const isSelected = selectedSlot && selectedSlot.date === selectedDateStr && selectedSlot.time === slot.time;
     const el = document.createElement('button');
     el.type = 'button';
-    el.className = 'slot' + (slot.booked ? ' taken' : '') + (selectedSlot && selectedSlot.date === selectedDateStr && selectedSlot.time === slot.time ? ' selected' : '');
-    el.innerHTML = `<div class="slot-time">${slot.time}</div><div class="slot-period">${slot.period}</div><div class="slot-taken-label">Taken</div>`;
+    el.className = 'slot' + (slot.booked ? ' taken' : '') + (isSelected ? ' selected' : '');
+    el.innerHTML = `
+      <span class="period-ic ${slot.iconClass}" aria-hidden="true">${PERIOD_ICONS[slot.iconClass] || ''}</span>
+      <div class="slot-time">${slot.time}</div>
+      <div class="slot-period">${slot.period}</div>
+      <div class="slot-taken-label">Taken</div>
+    `;
     if (!slot.booked) el.addEventListener('click', () => pickSlot(slot));
     grid.appendChild(el);
   });
 }
 
 function pickSlot(slot){
-  selectedSlot = { date: selectedDateStr, time: slot.time, period: slot.period, sort: slot.sort, id: slot.id || null };
+  selectedSlot = { date: selectedDateStr, time: slot.time, period: slot.period, sort: slot.sort, iconClass: slot.iconClass, id: slot.id || null };
   renderSlotGrid();
 }
 

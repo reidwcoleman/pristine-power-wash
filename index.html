@@ -215,10 +215,18 @@ nav{display:flex;align-items:center;justify-content:space-between;max-width:1120
   position:absolute;border-radius:50%;
   background:radial-gradient(circle at 30% 30%,rgba(186,230,253,.85),rgba(59,130,246,.25));
   animation:float 7s ease-in-out infinite;
+  filter:blur(.3px);
 }
 @keyframes float{
   0%,100%{transform:translateY(0) scale(1);opacity:.5}
   50%{transform:translateY(-40px) scale(1.2);opacity:.85}
+}
+/* Soft bottom fade so hero blends into services */
+.hero::before{background:
+    radial-gradient(40% 30% at 20% 20%,rgba(96,165,250,.25),transparent 60%),
+    radial-gradient(35% 40% at 85% 15%,rgba(125,211,252,.18),transparent 60%),
+    radial-gradient(60% 40% at 50% 90%,rgba(37,99,235,.25),transparent 60%),
+    linear-gradient(to bottom,transparent 75%,var(--bg) 100%);
 }
 
 /* SECTIONS */

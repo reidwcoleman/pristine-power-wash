@@ -10,10 +10,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-
 <style>
 /* =============================================================
    DESIGN TOKENS — auto dark mode via prefers-color-scheme
@@ -258,7 +254,8 @@ section.alt{background:var(--bg-alt)}
 .svc-grid-lg{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 
 .svc{
-  position:relative;overflow:hidden;
+  position:relative;overflow:hidden;display:block;
+  color:var(--text);text-decoration:none!important;
   background:var(--card-grad);
   border:1px solid var(--border);
   border-radius:var(--radius-md);
@@ -266,6 +263,7 @@ section.alt{background:var(--bg-alt)}
   cursor:pointer;
   transition:transform .25s cubic-bezier(.2,.7,.2,1),border-color .2s,box-shadow .25s;
 }
+.svc.feat{color:#fff}
 .svc:hover{transform:translateY(-4px);border-color:var(--border-strong);box-shadow:var(--shadow-lg)}
 .svc:hover .book-hint{color:var(--accent)}
 
@@ -380,123 +378,6 @@ section.alt{background:var(--bg-alt)}
 .cta-aside p{color:rgba(255,255,255,.75);font-size:14px;margin-bottom:16px}
 .cta-aside .btn.lg{width:100%}
 
-/* MODAL */
-.modal-overlay{
-  position:fixed;inset:0;z-index:999;
-  background:rgba(3,9,22,.78);backdrop-filter:blur(10px);
-  display:flex;align-items:center;justify-content:center;padding:16px;
-  opacity:0;pointer-events:none;transition:opacity .3s;
-}
-.modal-overlay.open{opacity:1;pointer-events:all}
-.modal{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius-lg);
-  width:100%;max-width:520px;max-height:92vh;overflow-y:auto;
-  transform:translateY(20px) scale(.96);transition:transform .32s cubic-bezier(.2,.7,.2,1);
-  position:relative;box-shadow:0 40px 80px rgba(0,0,0,.4);
-}
-.modal-overlay.open .modal{transform:translateY(0) scale(1)}
-.modal-close{
-  position:absolute;top:14px;right:14px;width:34px;height:34px;
-  border-radius:10px;border:1px solid var(--border);
-  background:var(--surface);color:var(--text-muted);
-  font-size:18px;cursor:pointer;display:grid;place-items:center;
-  transition:all .2s;z-index:2;
-}
-.modal-close:hover{background:var(--bg-alt);color:var(--text)}
-.modal-header{padding:32px 32px 0;text-align:center}
-.modal-header .sel-svc{font-size:10px;font-weight:700;letter-spacing:.32em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
-.modal-header h3{font-family:'Fraunces',serif;font-weight:800;font-size:28px;color:var(--text);margin-bottom:6px;letter-spacing:-.02em}
-.modal-header .sel-price{font-family:'Fraunces',serif;font-weight:900;font-size:44px;color:var(--accent);letter-spacing:-.03em}
-.modal-header .sel-price .d{font-size:20px;font-style:italic;font-weight:400;vertical-align:top;opacity:.6;margin-right:2px}
-
-/* Step indicator with labels */
-.steps{display:flex;justify-content:center;align-items:center;gap:0;padding:22px 32px 6px}
-.step-item{display:flex;flex-direction:column;align-items:center;gap:7px;position:relative;flex:0 0 auto;min-width:70px}
-.step-item .step-dot{
-  width:26px;height:26px;border-radius:50%;
-  background:var(--bg);border:1.5px solid var(--border-strong);
-  display:grid;place-items:center;
-  font-size:11px;font-weight:700;color:var(--text-subtle);
-  transition:all .3s cubic-bezier(.4,0,.2,1);
-}
-.step-item .step-label{
-  font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--text-subtle);transition:color .3s;
-}
-.step-item.active .step-dot{
-  background:var(--accent);border-color:var(--accent);color:var(--accent-contrast);
-  box-shadow:0 0 0 4px var(--ring);
-}
-.step-item.active .step-label{color:var(--accent)}
-.step-item.done .step-dot{background:var(--accent);border-color:var(--accent);color:var(--accent-contrast)}
-.step-item.done .step-label{color:var(--text-muted)}
-.step-connector{flex:0 1 36px;height:1.5px;background:var(--border-strong);margin:0 -2px;margin-bottom:17px;transition:background .3s}
-.step-connector.done{background:var(--accent)}
-
-.modal-body{padding:16px 32px 32px}
-.form-step{display:none;animation:fadeUp .35s ease}
-.form-step.active{display:block}
-.step-intro{margin-bottom:18px;text-align:center}
-.step-intro p{color:var(--text-muted);font-size:14px;line-height:1.55}
-.step-intro p strong{color:var(--text);font-weight:600}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.field{margin-bottom:14px}
-.field label{display:block;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:7px}
-.field input,.field textarea{
-  width:100%;font-family:'Inter',sans-serif;font-size:15px;font-weight:500;
-  padding:12px 14px;border-radius:10px;
-  border:1px solid var(--border);
-  background:var(--bg);color:var(--text);
-  outline:none;transition:border-color .2s,box-shadow .2s;
-}
-.field input::placeholder,.field textarea::placeholder{color:var(--text-subtle)}
-.field input:focus,.field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ring)}
-.field textarea{resize:vertical;min-height:70px}
-.modal-actions{display:flex;gap:10px;margin-top:20px}
-.modal-actions .btn{flex:1;padding:13px;font-size:15px;justify-content:center}
-
-.slot-day{margin-bottom:16px}
-.slot-day-label{
-  font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
-  color:var(--text-muted);margin-bottom:10px;display:flex;align-items:center;gap:8px;
-}
-.slot-day-label .today-pill{background:var(--accent);color:var(--accent-contrast);padding:3px 8px;border-radius:4px;font-size:9px;font-weight:800;letter-spacing:.15em}
-.slot-day-grid{display:flex;flex-wrap:wrap;gap:8px}
-.slot-chip{
-  padding:9px 14px;border:1px solid var(--border);border-radius:8px;
-  font-size:13px;font-weight:600;color:var(--text);cursor:pointer;
-  transition:all .2s;background:var(--surface-2);
-}
-.slot-chip:hover{border-color:var(--accent);transform:translateY(-1px)}
-.slot-chip.picked{
-  border-color:var(--accent);color:var(--accent);
-  background:var(--bg-alt);
-  box-shadow:0 0 0 3px var(--ring);
-}
-.confirm-grid{
-  background:var(--bg);border:1px solid var(--border);
-  border-radius:12px;padding:18px;margin-bottom:18px;
-  display:grid;grid-template-columns:1fr 1fr;gap:14px;font-size:14px;color:var(--text-muted);
-}
-.confirm-grid strong{
-  display:block;font-size:10px;font-weight:700;letter-spacing:.15em;
-  text-transform:uppercase;color:var(--text-subtle);margin-bottom:4px;
-}
-.confirm-grid span{color:var(--text);font-weight:500}
-.confirm-grid .full{grid-column:1/3}
-.success-view{text-align:center;padding:24px 0 8px}
-.success-check{
-  width:72px;height:72px;border-radius:20px;margin:0 auto 20px;
-  background:linear-gradient(135deg,var(--brand-500),var(--ice-500));
-  color:#fff;display:grid;place-items:center;
-  box-shadow:0 16px 40px -12px var(--brand-500);
-  animation:pop .55s cubic-bezier(.17,.67,.32,1.4);
-}
-@keyframes pop{0%{transform:scale(0) rotate(-180deg)}100%{transform:scale(1) rotate(0)}}
-.success-view h3{font-family:'Fraunces',serif;font-weight:800;font-size:26px;color:var(--text);margin-bottom:8px;letter-spacing:-.02em}
-.success-view p{color:var(--text-muted);font-size:15px;margin-bottom:24px;line-height:1.55}
-
 /* FOOTER */
 footer{
   background:var(--bg-alt);color:var(--text-muted);
@@ -602,50 +483,50 @@ footer a{color:var(--accent);font-weight:500}
     </div>
 
     <div class="svc-grid reveal">
-      <div class="svc" data-service="Sidewalks" data-price="25" data-tag="Soap Wash">
+      <a class="svc" href="book.html?service=Sidewalks">
         <span class="tag">Soap Wash</span>
         <h3>Sidewalks</h3>
         <div class="amt"><span class="d">$</span>25</div>
         <div class="flat">Flat Rate</div>
         <p class="desc">Front walks, stepping stones &amp; entry paths blasted back to fresh concrete.</p>
-        <span class="book-hint">Click to book <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
-      </div>
-      <div class="svc" data-service="Trash Cans" data-price="30" data-tag="Soap Wash">
+        <span class="book-hint">Book this service <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+      </a>
+      <a class="svc" href="book.html?service=Trash%20Cans">
         <span class="tag">Soap Wash</span>
         <h3>Trash Cans</h3>
         <div class="amt"><span class="d">$</span>30</div>
         <div class="flat">Flat Rate</div>
         <p class="desc">Inside &amp; out — soap wash that eliminates odors &amp; bacteria buildup.</p>
-        <span class="book-hint">Click to book <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
-      </div>
-      <div class="svc" data-service="Patios" data-price="50" data-tag="Soap Wash">
+        <span class="book-hint">Book this service <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+      </a>
+      <a class="svc" href="book.html?service=Patios">
         <span class="tag">Soap Wash</span>
         <h3>Patios</h3>
         <div class="amt"><span class="d">$</span>50</div>
         <div class="flat">Flat Rate</div>
         <p class="desc">Pavers, slabs &amp; back porches — lifted, rinsed &amp; ready for the cookout.</p>
-        <span class="book-hint">Click to book <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
-      </div>
+        <span class="book-hint">Book this service <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+      </a>
     </div>
 
     <div class="svc-grid-lg reveal">
-      <div class="svc" data-service="Driveway (Standard)" data-price="75" data-tag="Water Only · No Soap">
+      <a class="svc" href="book.html?service=Driveway%20(Standard)">
         <span class="tag">Water Only · No Soap</span>
         <h3>Driveway</h3>
         <div class="amt"><span class="d">$</span>75</div>
         <div class="flat">Flat Rate</div>
         <p class="desc">Standard high-pressure water blast — oil drips, tire marks &amp; seasonal grime rinsed away.</p>
-        <span class="book-hint">Click to book <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
-      </div>
-      <div class="svc feat" data-service="Pristine+ (Soap &amp; Bleach)" data-price="115" data-tag="Soap + Bleach · Grass-Safe">
+        <span class="book-hint">Book this service <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+      </a>
+      <a class="svc feat" href="book.html?service=Pristine%2B%20(Soap%20%26%20Bleach)">
         <span class="badge">★ Premium</span>
         <span class="tag">Soap + Bleach · Grass-Safe</span>
         <h3>Pristine+</h3>
         <div class="amt"><span class="d">$</span>115</div>
         <div class="flat">Flat Rate</div>
         <p class="desc">Driveway + soap &amp; bleach treatment that lifts stains, oil &amp; ground-in grime — keeps the grass safe.</p>
-        <span class="book-hint">Click to book <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
-      </div>
+        <span class="book-hint">Book this service <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+      </a>
     </div>
   </div>
 </section>
@@ -723,71 +604,6 @@ footer a{color:var(--accent);font-weight:500}
   <a href="admin.html" class="f-admin">Admin</a>
 </footer>
 
-<!-- BOOKING MODAL -->
-<div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-labelledby="selName">
-  <div class="modal">
-    <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
-    <div class="modal-header">
-      <div class="sel-svc" id="selTag">Soap Wash</div>
-      <h3 id="selName">Sidewalks</h3>
-      <div class="sel-price"><span class="d">$</span><span id="selPrice">25</span></div>
-    </div>
-    <div class="steps">
-      <div class="step-item active" data-step="1"><div class="step-dot">1</div><div class="step-label">Info</div></div>
-      <div class="step-connector" data-between="1"></div>
-      <div class="step-item" data-step="2"><div class="step-dot">2</div><div class="step-label">Time</div></div>
-      <div class="step-connector" data-between="2"></div>
-      <div class="step-item" data-step="3"><div class="step-dot">3</div><div class="step-label">Confirm</div></div>
-    </div>
-    <div class="modal-body">
-      <!-- Step 1: Contact info -->
-      <div class="form-step active" data-step="1">
-        <div class="step-intro"><p>Let's get you scheduled. Just a few quick details so we can reach you.</p></div>
-        <div class="field"><label>Your Name</label><input type="text" id="bName" placeholder="First &amp; last name" autocomplete="name"></div>
-        <div class="field"><label>Phone Number</label><input type="tel" id="bPhone" placeholder="(555) 123-4567" autocomplete="tel"></div>
-        <div class="field"><label>Email</label><input type="email" id="bEmail" placeholder="you@example.com" autocomplete="email"></div>
-        <div class="modal-actions">
-          <button class="btn" onclick="nextStep(2)">Continue →</button>
-        </div>
-      </div>
-      <!-- Step 2: Pick a time -->
-      <div class="form-step" data-step="2">
-        <div class="step-intro"><p id="greetLine">Pick a time that works for you.</p></div>
-        <div id="slotsContainer"></div>
-        <div class="modal-actions">
-          <button class="btn ghost" onclick="prevStep(1)">← Back</button>
-          <button class="btn" onclick="nextStep(3)">Next →</button>
-        </div>
-      </div>
-      <!-- Step 3: Address + Confirm -->
-      <div class="form-step" data-step="3">
-        <div class="step-intro"><p>Last step — where are we heading?</p></div>
-        <div class="field"><label>Service Address</label><input type="text" id="bAddress" placeholder="123 Main Street" autocomplete="street-address"></div>
-        <div class="field"><label>Notes (optional)</label><textarea id="bNotes" placeholder="Gate code, specific area to focus on, etc."></textarea></div>
-        <div class="confirm-grid">
-          <div><strong>Service</strong><span id="cService">—</span></div>
-          <div><strong>Price</strong><span id="cPrice">—</span></div>
-          <div class="full"><strong>Time</strong><span id="cSlot">—</span></div>
-          <div class="full"><strong>Contact</strong><span id="cContact">—</span></div>
-        </div>
-        <div class="modal-actions">
-          <button class="btn ghost" onclick="prevStep(2)">← Back</button>
-          <button class="btn" id="submitBtn" onclick="submitBooking()">Confirm &amp; Book ✓</button>
-        </div>
-      </div>
-      <!-- Success -->
-      <div class="form-step" data-step="success">
-        <div class="success-view">
-          <div class="success-check"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></div>
-          <h3>You're booked!</h3>
-          <p id="successMsg">I'll text you within a few hours to confirm your time slot.</p>
-          <button class="btn" onclick="closeModal()">Done</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <script>
 // ===== THEME MANAGEMENT — defaults to dark =====
 (function(){
@@ -806,17 +622,6 @@ footer a{color:var(--accent);font-weight:500}
     });
   });
 })();
-
-// ===== FIREBASE =====
-firebase.initializeApp({
-  projectId: "pristine-powerwash-app",
-  appId: "1:1025511095450:web:0b6d6ff05f18bb0653f323",
-  storageBucket: "pristine-powerwash-app.firebasestorage.app",
-  apiKey: "AIzaSyBsuZ_aG7_tFf8rKCrRvLaPjSmc-2XZ27E",
-  authDomain: "pristine-powerwash-app.firebaseapp.com",
-  messagingSenderId: "1025511095450"
-});
-const db = firebase.firestore();
 
 // ===== FLOATING DROPLETS =====
 const dropsEl = document.getElementById('drops');
@@ -839,188 +644,6 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.15 });
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-// ===== BOOKING MODAL — 3-step onboarding =====
-let currentStep = 1;
-let selectedService = {};
-let selectedSlot = null;
-let slotsLoaded = false;
-
-document.querySelectorAll('.svc').forEach(card => {
-  card.addEventListener('click', () => {
-    selectedService = { name: card.dataset.service, price: card.dataset.price, tag: card.dataset.tag };
-    selectedSlot = null;
-    slotsLoaded = false;
-    document.getElementById('selTag').textContent = selectedService.tag;
-    document.getElementById('selName').textContent = selectedService.name;
-    document.getElementById('selPrice').textContent = selectedService.price;
-    document.getElementById('greetLine').textContent = 'Pick a time that works for you.';
-    currentStep = 1;
-    showStep(1);
-    document.getElementById('modal').classList.add('open');
-    document.body.style.overflow = 'hidden';
-    setTimeout(() => { const n = document.getElementById('bName'); if(n) n.focus(); }, 320);
-  });
-});
-
-function showStep(n) {
-  document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
-  document.querySelector('.form-step[data-step="' + (n === 'success' ? 'success' : n) + '"]').classList.add('active');
-  // Update step indicator
-  document.querySelectorAll('.step-item').forEach(item => {
-    const ds = +item.dataset.step;
-    item.classList.remove('active','done');
-    if (n === 'success' || ds < n) item.classList.add('done');
-    else if (ds === n) item.classList.add('active');
-  });
-  document.querySelectorAll('.step-connector').forEach(c => {
-    const between = +c.dataset.between;
-    c.classList.toggle('done', n === 'success' || between < n);
-  });
-  // Auto-focus first input in new step
-  setTimeout(() => {
-    const active = document.querySelector('.form-step.active input, .form-step.active textarea');
-    if (active && typeof n === 'number' && n !== 2) active.focus();
-  }, 320);
-}
-
-function validEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
-
-async function loadSlots() {
-  const container = document.getElementById('slotsContainer');
-  container.innerHTML = '<p style="color:var(--text-subtle);text-align:center;padding:20px;font-size:14px">Loading available times…</p>';
-  const today = new Date();
-  const todayStr = today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
-  try {
-    const snap = await db.collection('availableSlots').where('date','>=',todayStr).where('booked','==',false).orderBy('date').orderBy('sort').get();
-    const byDay = {};
-    snap.forEach(doc => {
-      const d = doc.data();
-      if (!byDay[d.date]) byDay[d.date] = [];
-      byDay[d.date].push({ id: doc.id, ...d });
-    });
-    const days = Object.keys(byDay).sort().slice(0, 7);
-    if (days.length === 0) {
-      container.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:20px;font-size:14px;line-height:1.5">No slots available right now. Text <a href="sms:+19843446217" style="color:var(--accent);font-weight:600">(984) 344-6217</a> to schedule.</p>';
-      return;
-    }
-    const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-    const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    let html = '';
-    days.forEach(dateStr => {
-      const [y,m,d] = dateStr.split('-').map(Number);
-      const dateObj = new Date(y, m-1, d);
-      const isToday = dateStr === todayStr;
-      const label = isToday
-        ? '<span>Today</span><span class="today-pill">Now</span>'
-        : '<span>' + dayNames[dateObj.getDay()] + ', ' + monthNames[dateObj.getMonth()] + ' ' + d + '</span>';
-      html += '<div class="slot-day"><div class="slot-day-label">' + label + '</div><div class="slot-day-grid">';
-      byDay[dateStr].forEach(s => {
-        html += '<div class="slot-chip" data-id="'+s.id+'" data-date="'+dateStr+'" data-time="'+s.time+'" onclick="pickSlot(this)">'+s.time+'</div>';
-      });
-      html += '</div></div>';
-    });
-    container.innerHTML = html;
-  } catch(e) {
-    container.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:20px;font-size:14px">Text <a href="sms:+19843446217" style="color:var(--accent);font-weight:600">(984) 344-6217</a> to schedule.</p>';
-  }
-}
-
-function pickSlot(el) {
-  document.querySelectorAll('.slot-chip').forEach(c => c.classList.remove('picked'));
-  el.classList.add('picked');
-  selectedSlot = { id: el.dataset.id, date: el.dataset.date, time: el.dataset.time };
-}
-
-function nextStep(n) {
-  // Step 1 → Step 2: validate contact info, then load slots
-  if (currentStep === 1) {
-    const name = document.getElementById('bName').value.trim();
-    const phone = document.getElementById('bPhone').value.trim();
-    const email = document.getElementById('bEmail').value.trim();
-    if (!name) { alert('Please enter your name.'); document.getElementById('bName').focus(); return; }
-    if (!phone || phone.replace(/\D/g,'').length < 7) { alert('Please enter a valid phone number.'); document.getElementById('bPhone').focus(); return; }
-    if (!email || !validEmail(email)) { alert('Please enter a valid email address.'); document.getElementById('bEmail').focus(); return; }
-    // Personalize next step
-    const firstName = name.split(/\s+/)[0];
-    document.getElementById('greetLine').innerHTML = 'Thanks, <strong>' + escapeHtml(firstName) + '</strong>! Pick a time that works for you.';
-    if (!slotsLoaded) { loadSlots(); slotsLoaded = true; }
-  }
-  // Step 2 → Step 3: ensure a slot is picked
-  if (currentStep === 2) {
-    if (!selectedSlot) { alert('Please pick a time slot.'); return; }
-    // Pre-fill confirm summary
-    document.getElementById('cService').textContent = selectedService.name;
-    document.getElementById('cPrice').textContent = '$' + selectedService.price;
-    document.getElementById('cSlot').textContent = formatSlotLabel(selectedSlot);
-    const n2 = document.getElementById('bName').value.trim();
-    const p2 = document.getElementById('bPhone').value.trim();
-    document.getElementById('cContact').textContent = n2 + ' · ' + p2;
-  }
-  currentStep = n; showStep(n);
-}
-function prevStep(n) { currentStep = n; showStep(n); }
-
-function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
-function formatSlotLabel(slot){
-  try {
-    const [y,m,d] = slot.date.split('-').map(Number);
-    const dateObj = new Date(y, m-1, d);
-    const today = new Date(); today.setHours(0,0,0,0);
-    const diff = Math.round((dateObj - today) / 86400000);
-    const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-    const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    const label = diff === 0 ? 'Today' : diff === 1 ? 'Tomorrow' : dayNames[dateObj.getDay()];
-    return label + ', ' + monthNames[dateObj.getMonth()] + ' ' + dateObj.getDate() + ' · ' + slot.time;
-  } catch(e){ return slot.date + ' at ' + slot.time; }
-}
-
-async function submitBooking() {
-  const address = document.getElementById('bAddress').value.trim();
-  if (!address) { alert('Please enter your service address.'); document.getElementById('bAddress').focus(); return; }
-
-  const btn = document.getElementById('submitBtn');
-  btn.textContent = 'Booking…'; btn.disabled = true;
-  const booking = {
-    service: selectedService.name, price: +selectedService.price,
-    name: document.getElementById('bName').value.trim(),
-    phone: document.getElementById('bPhone').value.trim(),
-    email: document.getElementById('bEmail').value.trim(),
-    address: address,
-    notes: document.getElementById('bNotes').value.trim(),
-    timeSlot: selectedSlot.date + ' ' + selectedSlot.time,
-    slotId: selectedSlot.id,
-    timestamp: new Date().toISOString(), status: 'pending'
-  };
-  try {
-    await db.collection('bookings').add(booking);
-    await db.collection('availableSlots').doc(selectedSlot.id).update({ booked: true });
-  } catch(e) { console.warn('Firebase error:', e); }
-  try {
-    await fetch('https://ntfy.sh/pristine-pwash-reid-bookings', {
-      method:'POST', headers:{'Title':'New Booking: '+booking.service+' ($'+booking.price+')','Priority':'high','Tags':'droplet,moneybag'},
-      body: booking.name+' — '+booking.phone+(booking.email?' · '+booking.email:'')+'\n'+booking.address+'\nTime: '+booking.timeSlot+(booking.notes?'\nNotes: '+booking.notes:'')
-    });
-  } catch(e){}
-  try {
-    await fetch('https://ntfy.sh/pristine-pwash-reid-bookings', {
-      method:'POST', headers:{'Email':'reidwcoleman@gmail.com','Title':'Pristine Booking: '+booking.service,'Tags':'droplet'},
-      body:'From: '+booking.name+'\nPhone: '+booking.phone+'\nEmail: '+booking.email+'\nAddress: '+booking.address+'\nService: '+booking.service+' ($'+booking.price+')\nTime: '+booking.timeSlot+(booking.notes?'\nNotes: '+booking.notes:'')+'\n\nText them back to confirm!'
-    });
-  } catch(e){}
-  btn.textContent='Confirm & Book ✓'; btn.disabled=false;
-  const msgEl = document.getElementById('successMsg');
-  if (msgEl) msgEl.innerHTML = "I'll text <strong>" + escapeHtml(booking.phone) + "</strong> within a few hours to confirm.";
-  showStep('success');
-}
-
-function closeModal() {
-  document.getElementById('modal').classList.remove('open'); document.body.style.overflow='';
-  ['bName','bPhone','bEmail','bAddress','bNotes'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
-  currentStep=1; selectedSlot=null; slotsLoaded=false;
-}
-document.getElementById('modalClose').addEventListener('click', closeModal);
-document.getElementById('modal').addEventListener('click', e => { if(e.target===e.currentTarget) closeModal(); });
-document.addEventListener('keydown', e => { if(e.key === 'Escape' && document.getElementById('modal').classList.contains('open')) closeModal(); });
 </script>
 
 </body>

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <meta name="theme-color" content="#0b1d3a"/>
 <title>Book Your Service — Pristine Powerwashing</title>
-<meta name="description" content="Schedule your Pristine Powerwashing appointment. Pick a time slot and book in under a minute."/>
+<meta name="description" content="Schedule your Pristine Powerwashing appointment in a few quick steps."/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -17,20 +17,19 @@
 <style>
 /* DESIGN TOKENS */
 :root{
-  --brand-50:#eff6ff;   --brand-100:#dbeafe;  --brand-200:#bfdbfe;
-  --brand-300:#93c5fd;  --brand-400:#60a5fa;  --brand-500:#3b82f6;
-  --brand-600:#2563eb;  --brand-700:#1d4ed8;  --brand-800:#1e40af;
-  --brand-900:#1e3a8a;  --brand-950:#172554;
-  --ice-300:#7dd3fc;    --ice-400:#38bdf8;    --ice-500:#0ea5e9;
-  --amber-300:#fcd34d;  --amber-400:#fbbf24;  --amber-500:#f59e0b;
+  --brand-300:#93c5fd; --brand-400:#60a5fa; --brand-500:#3b82f6;
+  --brand-600:#2563eb; --brand-700:#1d4ed8; --brand-800:#1e40af; --brand-900:#1e3a8a;
+  --ice-300:#7dd3fc; --ice-400:#38bdf8; --ice-500:#0ea5e9;
+  --amber-300:#fcd34d; --amber-400:#fbbf24; --amber-500:#f59e0b;
+  --green-400:#34d399; --red-400:#f87171;
 
-  --radius-sm:8px;  --radius:12px;  --radius-md:16px;  --radius-lg:20px;  --radius-xl:28px;
-  --shadow-sm:0 1px 2px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.04);
-  --shadow:0 4px 12px rgba(15,23,42,.08), 0 2px 4px rgba(15,23,42,.04);
-  --shadow-lg:0 24px 48px -12px rgba(15,23,42,.18), 0 10px 20px -8px rgba(15,23,42,.1);
-  --shadow-blue:0 18px 44px -14px rgba(37,99,235,.35);
+  --radius-sm:8px; --radius:12px; --radius-md:16px; --radius-lg:20px; --radius-xl:28px;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.08);
+  --shadow:0 6px 20px -6px rgba(0,0,0,.22);
+  --shadow-lg:0 28px 60px -16px rgba(0,0,0,.35);
+  --shadow-blue:0 18px 44px -14px rgba(37,99,235,.5);
 
-  /* Dark theme (default — automatic dark, softer blues) */
+  /* Dark theme (default) */
   --bg:#0b1d3a;
   --bg-alt:#102849;
   --surface:#163261;
@@ -46,10 +45,7 @@
   --accent-contrast:#061432;
   --ring:rgba(96,165,250,.45);
   --hero-grad:linear-gradient(135deg,#0d2150 0%,#1a3a80 55%,#2563eb 100%);
-  --premium-grad:linear-gradient(135deg,#0d2150 0%,#1a3a80 55%,#2563eb 100%);
 }
-
-/* Light theme override — only when user explicitly toggles */
 [data-theme="light"]{
   --bg:#eef4fb; --bg-alt:#dde9f6; --surface:#ffffff; --surface-2:#f5f9ff;
   --surface-glass:rgba(255,255,255,.72);
@@ -58,56 +54,41 @@
   --accent:var(--brand-600); --accent-hover:var(--brand-700); --accent-contrast:#ffffff;
   --ring:rgba(59,130,246,.35);
   --hero-grad:linear-gradient(135deg,#0b1c36 0%,#1e3a8a 55%,#1d4ed8 100%);
-  --premium-grad:linear-gradient(135deg,#0b1c36 0%,#1e3a8a 55%,#1d4ed8 100%);
 }
 
+/* BASE */
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;color-scheme:dark light}
+html{color-scheme:dark light}
 body{
   font-family:'Inter',system-ui,-apple-system,sans-serif;
-  color:var(--text);background:var(--bg);line-height:1.6;
-  overflow-x:hidden;min-height:100vh;
+  color:var(--text);background:var(--bg);
+  min-height:100vh;line-height:1.55;
   -webkit-font-smoothing:antialiased;
   transition:background .4s ease,color .4s ease;
 }
 a{color:var(--accent);text-decoration:none}
 ::selection{background:var(--brand-500);color:#fff}
 
-/* BUTTONS */
-.btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  background:var(--accent);color:var(--accent-contrast)!important;
-  padding:11px 22px;border-radius:10px;font-weight:600;font-size:14px;
-  font-family:'Inter',sans-serif;border:none;cursor:pointer;
-  transition:transform .18s,box-shadow .2s,background .2s;
-  text-decoration:none!important;white-space:nowrap;box-shadow:var(--shadow-sm);
-}
-.btn:hover{background:var(--accent-hover);transform:translateY(-1px);box-shadow:var(--shadow-blue)}
-.btn:active{transform:translateY(0)}
-.btn.lg{padding:15px 30px;font-size:16px;border-radius:12px}
-.btn.ghost{background:transparent;color:var(--text)!important;border:1px solid var(--border-strong);box-shadow:none}
-.btn.ghost:hover{background:var(--bg-alt);border-color:var(--accent)}
-.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important;box-shadow:none!important}
-
-/* NAV */
-header{
-  position:sticky;top:0;z-index:100;
-  background:var(--surface-glass);
-  backdrop-filter:saturate(180%) blur(18px);
+/* TOP BAR */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:var(--surface-glass);backdrop-filter:saturate(180%) blur(18px);
   -webkit-backdrop-filter:saturate(180%) blur(18px);
   border-bottom:1px solid var(--border);
-  transition:background .4s ease,border-color .4s ease;
 }
-nav{display:flex;align-items:center;justify-content:space-between;max-width:1120px;margin:0 auto;padding:16px 24px;gap:16px}
-.brand{font-family:'Fraunces',serif;font-weight:900;font-size:22px;color:var(--text);letter-spacing:-.02em;display:flex;align-items:center;gap:12px}
+.topbar-inner{
+  max-width:1100px;margin:0 auto;padding:14px 24px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+}
+.brand{font-family:'Fraunces',serif;font-weight:900;font-size:20px;color:var(--text);letter-spacing:-.02em;display:flex;align-items:center;gap:12px}
 .brand-mark{
-  width:36px;height:36px;border-radius:10px;flex-shrink:0;
+  width:34px;height:34px;border-radius:10px;flex-shrink:0;
   background:linear-gradient(135deg,var(--brand-500),var(--ice-500));
   display:grid;place-items:center;
   box-shadow:0 6px 20px -6px var(--brand-500),inset 0 1px 0 rgba(255,255,255,.25);
 }
 .brand em{font-style:italic;font-weight:500;color:var(--accent)}
-.nav-right{display:flex;align-items:center;gap:12px}
+.topbar-right{display:flex;align-items:center;gap:10px}
 .back-link{
   display:inline-flex;align-items:center;gap:6px;
   color:var(--text-muted);font-weight:500;font-size:14px;
@@ -115,7 +96,7 @@ nav{display:flex;align-items:center;justify-content:space-between;max-width:1120
 }
 .back-link:hover{color:var(--text);background:var(--bg-alt)}
 .theme-toggle{
-  width:38px;height:38px;border-radius:10px;
+  width:36px;height:36px;border-radius:10px;
   border:1px solid var(--border);background:var(--surface);
   display:grid;place-items:center;cursor:pointer;
   color:var(--text-muted);transition:all .2s;
@@ -127,16 +108,83 @@ nav{display:flex;align-items:center;justify-content:space-between;max-width:1120
 [data-theme="light"] .theme-toggle .sun{display:none}
 [data-theme="light"] .theme-toggle .moon{display:block}
 
-/* PAGE LAYOUT */
-.page-wrap{max-width:960px;margin:0 auto;padding:40px 24px 80px}
+/* PROGRESS INDICATOR */
+.progress{
+  max-width:1100px;margin:0 auto;padding:20px 24px 0;
+}
+.progress-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:0;position:relative;max-width:560px;margin:0 auto;
+}
+.progress-step{display:flex;flex-direction:column;align-items:center;gap:7px;flex:0 0 auto;min-width:64px;z-index:1}
+.progress-dot{
+  width:28px;height:28px;border-radius:50%;
+  background:var(--surface);border:1.5px solid var(--border-strong);
+  display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--text-subtle);
+  transition:all .3s cubic-bezier(.4,0,.2,1);
+}
+.progress-label{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text-subtle);transition:color .3s;white-space:nowrap}
+.progress-step.active .progress-dot{
+  background:var(--accent);border-color:var(--accent);color:var(--accent-contrast);
+  box-shadow:0 0 0 4px var(--ring);
+}
+.progress-step.active .progress-label{color:var(--accent)}
+.progress-step.done .progress-dot{background:var(--accent);border-color:var(--accent);color:var(--accent-contrast)}
+.progress-step.done .progress-label{color:var(--text-muted)}
+.progress-step.done .progress-dot svg{display:block}
+.progress-step .progress-dot svg{display:none;width:12px;height:12px}
+.progress-step.done .progress-dot .num{display:none}
+.progress-connector{flex:1 1 auto;height:2px;background:var(--border-strong);margin:0 -4px;margin-bottom:17px;transition:background .3s}
+.progress-connector.done{background:var(--accent)}
 
-/* SERVICE HERO */
+/* MAIN SHELL */
+.shell{
+  max-width:1100px;margin:0 auto;
+  padding:32px 24px 80px;
+}
+.step{display:none;animation:fadeUp .4s ease}
+.step.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* STEP HEADING */
+.step-title{
+  font-family:'Fraunces',serif;font-weight:900;
+  font-size:clamp(30px,4.4vw,46px);
+  letter-spacing:-.03em;line-height:1.05;color:var(--text);
+  margin-bottom:12px;
+}
+.step-title em{font-style:italic;font-weight:400;color:var(--accent)}
+.step-sub{font-size:17px;color:var(--text-muted);margin-bottom:36px;line-height:1.55;max-width:620px}
+
+/* BUTTONS */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  background:var(--accent);color:var(--accent-contrast)!important;
+  padding:14px 28px;border-radius:12px;
+  font-weight:700;font-size:15px;font-family:'Inter',sans-serif;
+  border:none;cursor:pointer;
+  transition:transform .18s,box-shadow .2s,background .2s;
+  text-decoration:none!important;white-space:nowrap;
+  box-shadow:var(--shadow-sm);
+}
+.btn:hover{background:var(--accent-hover);transform:translateY(-1px);box-shadow:var(--shadow-blue)}
+.btn:active{transform:translateY(0)}
+.btn.lg{padding:17px 34px;font-size:16px}
+.btn.xl{padding:20px 40px;font-size:17px;border-radius:14px}
+.btn.ghost{background:transparent;color:var(--text)!important;border:1px solid var(--border-strong);box-shadow:none}
+.btn.ghost:hover{background:var(--bg-alt);border-color:var(--accent)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+.btn-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+
+/* =============================================================
+   STEP 0 — SERVICE INTRO
+   ============================================================= */
 .svc-hero{
   background:var(--hero-grad);
   border-radius:var(--radius-xl);
-  padding:48px 40px;margin-bottom:36px;
-  position:relative;overflow:hidden;
-  box-shadow:var(--shadow-lg);color:#fff;
+  padding:clamp(32px,4vw,48px);margin-bottom:28px;
+  position:relative;overflow:hidden;color:#fff;
+  box-shadow:var(--shadow-lg);
 }
 .svc-hero::before{
   content:'';position:absolute;inset:0;z-index:0;
@@ -156,199 +204,246 @@ nav{display:flex;align-items:center;justify-content:space-between;max-width:1120
 .svc-hero .tag{
   display:inline-block;font-size:10px;font-weight:700;letter-spacing:.3em;
   text-transform:uppercase;color:var(--ice-300);
-  background:rgba(125,211,252,.1);border:1px solid rgba(125,211,252,.2);
-  padding:6px 14px;border-radius:999px;margin-bottom:14px;
+  background:rgba(125,211,252,.12);border:1px solid rgba(125,211,252,.25);
+  padding:6px 14px;border-radius:999px;margin-bottom:16px;
 }
 .svc-hero h1{
   font-family:'Fraunces',serif;font-weight:900;
-  font-size:clamp(32px,5vw,52px);color:#fff;
+  font-size:clamp(34px,5vw,54px);color:#fff;
   letter-spacing:-.03em;line-height:1.02;margin-bottom:14px;
 }
 .svc-hero .price-block{text-align:right}
 .svc-hero .price{
   font-family:'Fraunces',serif;font-weight:900;
-  font-size:clamp(48px,6vw,72px);letter-spacing:-.04em;line-height:1;
+  font-size:clamp(52px,6vw,80px);letter-spacing:-.04em;line-height:1;
   background:linear-gradient(135deg,#93c5fd,#7dd3fc);
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
 .svc-hero.premium .price{background:linear-gradient(135deg,#fcd34d,#fbbf24);-webkit-background-clip:text;background-clip:text;color:transparent}
-.svc-hero .price .d{font-size:30px;font-style:italic;font-weight:400;vertical-align:top;opacity:.75}
+.svc-hero .price .d{font-size:32px;font-style:italic;font-weight:400;vertical-align:top;opacity:.75}
 .svc-hero .flat{
   font-size:10px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;
   color:rgba(255,255,255,.5);margin-top:6px;
 }
-.svc-hero .desc{color:rgba(255,255,255,.78);font-size:16px;line-height:1.55;max-width:500px}
+.svc-hero .desc{color:rgba(255,255,255,.82);font-size:17px;line-height:1.55;max-width:560px}
 
-/* WHAT YOU GET */
-.what-you-get{margin-bottom:40px}
-.section-heading{
-  font-family:'Fraunces',serif;font-weight:800;font-size:24px;
-  letter-spacing:-.02em;margin-bottom:20px;
-  display:flex;align-items:center;gap:12px;color:var(--text);
+/* Section heading inside intro */
+.intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:32px}
+.intro-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:28px;
 }
-.section-heading .icon{
+.intro-card h3{
+  font-family:'Fraunces',serif;font-weight:800;font-size:22px;letter-spacing:-.02em;
+  color:var(--text);margin-bottom:18px;
+  display:flex;align-items:center;gap:12px;
+}
+.intro-card .icon{
   width:36px;height:36px;border-radius:10px;flex-shrink:0;
   display:grid;place-items:center;color:#fff;
   background:linear-gradient(135deg,var(--brand-500),var(--ice-500));
   box-shadow:0 6px 16px -6px var(--brand-500);
 }
-.section-heading .icon.amber{background:linear-gradient(135deg,var(--amber-400),var(--amber-500));color:#3a2a0a}
-.section-heading .icon.amber{box-shadow:0 6px 16px -6px var(--amber-400)}
-.includes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-.include-item{
-  display:flex;align-items:flex-start;gap:14px;padding:20px;
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius);transition:all .2s;
+.intro-card .icon.amber{background:linear-gradient(135deg,var(--amber-400),var(--amber-500));color:#3a2a0a;box-shadow:0 6px 16px -6px var(--amber-400)}
+.intro-list{display:flex;flex-direction:column;gap:14px}
+.intro-item{display:flex;align-items:flex-start;gap:12px}
+.intro-item .check{
+  flex-shrink:0;width:22px;height:22px;border-radius:6px;
+  background:rgba(96,165,250,.15);color:var(--accent);
+  display:grid;place-items:center;margin-top:1px;
 }
-.include-item:hover{transform:translateY(-2px);border-color:var(--border-strong);box-shadow:var(--shadow)}
-.include-item .check{
-  flex-shrink:0;width:28px;height:28px;border-radius:8px;
+.intro-item strong{display:block;font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px}
+.intro-item span{font-size:13.5px;color:var(--text-muted);line-height:1.5}
+.intro-item .num{
+  flex-shrink:0;width:26px;height:26px;border-radius:50%;
+  background:var(--bg-alt);color:var(--accent);
+  display:grid;place-items:center;
+  font-family:'Fraunces',serif;font-weight:800;font-size:14px;
+  border:1px solid var(--border-strong);
+}
+
+.biz-strip{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;
+  padding:24px;margin-bottom:28px;
+  background:var(--bg-alt);border:1px solid var(--border);border-radius:var(--radius-md);
+}
+.biz-fact{display:flex;align-items:center;gap:12px}
+.biz-fact .ic{
+  width:36px;height:36px;border-radius:10px;flex-shrink:0;
   background:linear-gradient(135deg,var(--brand-500),var(--ice-500));
   color:#fff;display:grid;place-items:center;
+  box-shadow:0 4px 12px -4px var(--brand-500);
 }
-.include-item strong{display:block;font-size:14px;font-weight:700;margin-bottom:4px;color:var(--text)}
-.include-item span{font-size:13px;color:var(--text-muted);line-height:1.5}
+.biz-fact strong{display:block;font-size:13px;font-weight:700;color:var(--text);letter-spacing:-.01em}
+.biz-fact span{font-size:12px;color:var(--text-muted);line-height:1.4}
 
-/* TWO-COL LAYOUT */
-.booking-layout{display:grid;grid-template-columns:1fr 380px;gap:32px;align-items:start}
-
-/* TIME SLOTS */
-.slots-section{margin-bottom:32px}
-.slots-section>p{color:var(--text-muted);font-size:14px;margin-bottom:22px}
-.day-group{margin-bottom:24px}
-.day-label{
-  font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--text-muted);margin-bottom:12px;
-  display:flex;align-items:center;gap:10px;
+/* =============================================================
+   STEP 1 — INFO FORM
+   ============================================================= */
+.form-wrap{max-width:560px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px}
+.field input,.field textarea{
+  width:100%;font-family:'Inter',sans-serif;font-size:15.5px;font-weight:500;
+  padding:14px 16px;border-radius:12px;
+  border:1px solid var(--border);background:var(--surface);color:var(--text);
+  outline:none;transition:border-color .2s,box-shadow .2s,background .2s;
 }
-.day-label .today{
-  background:var(--accent);color:var(--accent-contrast);
-  font-size:10px;font-weight:800;letter-spacing:.18em;
+.field input::placeholder,.field textarea::placeholder{color:var(--text-subtle)}
+.field input:focus,.field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ring);background:var(--surface-2)}
+.field textarea{resize:vertical;min-height:80px;font-family:'Inter',sans-serif}
+.field .hint{font-size:12px;color:var(--text-subtle);margin-top:6px}
+
+/* =============================================================
+   STEP 2 — TIME SLOT PICKER
+   ============================================================= */
+.time-picker{max-width:860px}
+.day-strip{
+  display:flex;gap:10px;overflow-x:auto;padding:4px 0 16px;
+  scrollbar-width:thin;scrollbar-color:var(--border-strong) transparent;
+  -webkit-overflow-scrolling:touch;margin-bottom:20px;
+}
+.day-strip::-webkit-scrollbar{height:6px}
+.day-strip::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:3px}
+.day-pill{
+  flex-shrink:0;min-width:92px;text-align:center;
+  padding:14px 18px;border-radius:14px;
+  background:var(--surface);border:1.5px solid var(--border);
+  cursor:pointer;transition:all .2s;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  position:relative;
+}
+.day-pill:hover{border-color:var(--border-strong);transform:translateY(-2px)}
+.day-pill.selected{
+  border-color:var(--accent);background:var(--bg-alt);
+  box-shadow:0 0 0 3px var(--ring);
+}
+.day-pill.today::before{
+  content:'TODAY';position:absolute;top:-8px;left:50%;transform:translateX(-50%);
+  background:linear-gradient(135deg,var(--amber-400),var(--amber-500));color:#3a2a0a;
+  font-size:9px;font-weight:800;letter-spacing:.15em;
   padding:3px 9px;border-radius:4px;
 }
-.slot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
-.slot{
-  padding:14px;border:1px solid var(--border);border-radius:10px;
-  text-align:center;cursor:pointer;transition:all .2s;
-  background:var(--surface);
+.day-pill .day-name{font-size:11px;font-weight:700;color:var(--text-subtle);letter-spacing:.08em;text-transform:uppercase}
+.day-pill.selected .day-name,.day-pill.today .day-name{color:var(--accent)}
+.day-pill .day-num{font-family:'Fraunces',serif;font-weight:800;font-size:28px;color:var(--text);letter-spacing:-.02em;line-height:1.1}
+.day-pill .day-mon{font-size:10px;font-weight:700;color:var(--text-subtle);letter-spacing:.12em;text-transform:uppercase}
+.day-pill .day-availability{
+  margin-top:6px;font-size:10px;font-weight:700;color:var(--accent);
+  letter-spacing:.06em;text-transform:uppercase;
 }
-.slot:hover{border-color:var(--accent);transform:translateY(-1px);box-shadow:var(--shadow-sm)}
+.day-pill.unavailable{opacity:.5;cursor:not-allowed}
+.day-pill.unavailable:hover{transform:none;border-color:var(--border)}
+.day-pill.unavailable .day-availability{color:var(--text-subtle)}
+
+.slot-panel{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:28px;margin-bottom:20px;
+}
+.slot-panel h3{
+  font-family:'Fraunces',serif;font-weight:700;font-size:19px;letter-spacing:-.01em;
+  color:var(--text);margin-bottom:6px;
+}
+.slot-panel .slot-sub{color:var(--text-muted);font-size:14px;margin-bottom:20px}
+.slot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:10px}
+.slot{
+  padding:14px;border:1.5px solid var(--border);border-radius:10px;
+  text-align:center;cursor:pointer;transition:all .2s;
+  background:var(--bg-alt);
+}
+.slot:hover{border-color:var(--accent);transform:translateY(-1px)}
 .slot.selected{
-  border-color:var(--accent);background:var(--surface-2);
+  border-color:var(--accent);background:rgba(96,165,250,.1);
   box-shadow:0 0 0 3px var(--ring);
 }
 .slot .slot-time{font-weight:700;font-size:15px;color:var(--text)}
-.slot .slot-period{font-size:10px;font-weight:600;color:var(--text-subtle);text-transform:uppercase;letter-spacing:.1em;margin-top:2px}
-.slot.taken{opacity:.45;cursor:not-allowed;background:repeating-linear-gradient(135deg,transparent,transparent 4px,rgba(0,0,0,.03) 4px,rgba(0,0,0,.03) 8px)}
-.slot.taken:hover{border-color:var(--border);transform:none;box-shadow:none}
-.slot.taken .slot-time{text-decoration:line-through}
+.slot .slot-period{font-size:10.5px;font-weight:600;color:var(--text-subtle);text-transform:uppercase;letter-spacing:.1em;margin-top:3px}
+.slot.taken{
+  opacity:.45;cursor:not-allowed;
+  background:repeating-linear-gradient(135deg,transparent,transparent 4px,rgba(0,0,0,.06) 4px,rgba(0,0,0,.06) 8px),var(--bg-alt);
+}
+.slot.taken:hover{border-color:var(--border);transform:none}
+.slot.taken .slot-time{text-decoration:line-through;color:var(--text-subtle)}
+.slot .slot-taken-label{font-size:9px;font-weight:800;color:var(--red-400);letter-spacing:.1em;text-transform:uppercase;margin-top:4px;display:none}
+.slot.taken .slot-taken-label{display:block}
 
-/* CONTACT CALLOUT */
-.contact-callout{
-  background:var(--premium-grad);
-  border-radius:var(--radius-lg);padding:30px;margin-bottom:36px;color:#fff;
-  position:relative;overflow:hidden;
-}
-.contact-callout::before{
-  content:'';position:absolute;inset:0;z-index:0;
-  background:radial-gradient(60% 60% at 100% 0%,rgba(125,211,252,.18),transparent 60%);
-}
-.contact-callout>*{position:relative;z-index:1}
-.contact-callout h3{font-family:'Fraunces',serif;font-weight:800;font-size:20px;margin-bottom:8px;color:#fff;letter-spacing:-.02em}
-.contact-callout p{font-size:14px;color:rgba(255,255,255,.75);line-height:1.55;margin-bottom:18px}
-.contact-callout .phone-row{display:flex;gap:10px;flex-wrap:wrap}
-.contact-callout .phone-btn{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:12px 20px;border-radius:10px;font-weight:600;font-size:14px;
-  transition:all .2s;text-decoration:none!important;
-}
-.contact-callout .phone-btn.call{background:linear-gradient(135deg,var(--brand-400),var(--ice-400));color:#051226!important;box-shadow:0 6px 16px -6px var(--brand-400)}
-.contact-callout .phone-btn.call:hover{transform:translateY(-1px);box-shadow:0 10px 24px -8px var(--brand-400)}
-.contact-callout .phone-btn.text{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff!important}
-.contact-callout .phone-btn.text:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.3)}
-
-/* BOOKING FORM */
-.form-card{
+/* =============================================================
+   STEP 3 — CONFIRM
+   ============================================================= */
+.confirm-layout{display:grid;grid-template-columns:1.4fr 1fr;gap:32px;align-items:start}
+.summary-card{
   background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius-lg);padding:32px;position:sticky;top:100px;
+  border-radius:var(--radius-lg);padding:28px;position:sticky;top:120px;
+  box-shadow:var(--shadow-sm);
+}
+.summary-card h3{
+  font-family:'Fraunces',serif;font-weight:800;font-size:18px;color:var(--text);
+  margin-bottom:18px;letter-spacing:-.02em;
+}
+.summary-row{
+  display:flex;justify-content:space-between;align-items:flex-start;gap:16px;
+  padding:12px 0;border-bottom:1px solid var(--border);font-size:14px;
+}
+.summary-row:last-of-type{border-bottom:none}
+.summary-row .lbl{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-subtle);flex-shrink:0}
+.summary-row .val{color:var(--text);font-weight:500;text-align:right}
+.summary-total{
+  margin-top:16px;padding-top:16px;border-top:2px solid var(--border-strong);
+  display:flex;justify-content:space-between;align-items:baseline;
+}
+.summary-total .lbl{font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
+.summary-total .val{font-family:'Fraunces',serif;font-weight:900;font-size:32px;color:var(--accent);letter-spacing:-.03em}
+
+/* =============================================================
+   STEP 4 — SUCCESS
+   ============================================================= */
+.success-wrap{
+  text-align:center;max-width:560px;margin:40px auto;
+  padding:48px 32px;background:var(--surface);
+  border:1px solid var(--border);border-radius:var(--radius-xl);
   box-shadow:var(--shadow);
 }
-.form-card h2{font-family:'Fraunces',serif;font-weight:800;font-size:22px;color:var(--text);margin-bottom:4px;letter-spacing:-.02em}
-.form-card .form-sub{font-size:13px;color:var(--text-muted);margin-bottom:24px}
-.form-card .selected-slot-display{
-  background:var(--surface-2);
-  border:1px solid var(--border);
-  border-radius:12px;padding:16px;margin-bottom:22px;text-align:center;display:none;
-}
-.form-card .selected-slot-display.show{display:block}
-.form-card .selected-slot-display .slot-label{
-  font-size:10px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;
-  color:var(--accent);margin-bottom:6px;
-}
-.form-card .selected-slot-display .slot-value{font-family:'Fraunces',serif;font-weight:700;font-size:17px;color:var(--text);letter-spacing:-.01em}
-
-.field{margin-bottom:14px}
-.field label{display:block;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:7px}
-.field input,.field textarea{
-  width:100%;font-family:'Inter',sans-serif;font-size:15px;font-weight:500;
-  padding:13px 14px;border-radius:10px;
-  border:1px solid var(--border);background:var(--bg);color:var(--text);
-  outline:none;transition:border-color .2s,box-shadow .2s;
-}
-.field input::placeholder,.field textarea::placeholder{color:var(--text-subtle)}
-.field input:focus,.field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ring)}
-.field textarea{resize:vertical;min-height:70px}
-.form-card .submit-btn{width:100%;padding:15px;font-size:16px;margin-top:6px}
-
-/* Success view */
-.success-view{text-align:center;padding:20px 0 10px;display:none}
-.success-view.show{display:block}
 .success-check{
-  width:72px;height:72px;border-radius:20px;margin:0 auto 20px;
+  width:84px;height:84px;border-radius:24px;margin:0 auto 24px;
   background:linear-gradient(135deg,var(--brand-500),var(--ice-500));color:#fff;
   display:grid;place-items:center;
-  box-shadow:0 16px 40px -12px var(--brand-500);
+  box-shadow:0 20px 50px -12px var(--brand-500);
   animation:pop .55s cubic-bezier(.17,.67,.32,1.4);
 }
 @keyframes pop{0%{transform:scale(0) rotate(-180deg)}100%{transform:scale(1) rotate(0)}}
-.success-view h3{font-family:'Fraunces',serif;font-weight:800;font-size:24px;color:var(--text);margin-bottom:8px;letter-spacing:-.02em}
-.success-view p{color:var(--text-muted);font-size:14px;margin-bottom:22px;line-height:1.55}
-
-/* FOOTER */
-footer{
-  background:var(--bg-alt);color:var(--text-muted);
-  padding:44px 24px 30px;font-size:14px;
-  border-top:1px solid var(--border);text-align:center;
+.success-wrap h2{
+  font-family:'Fraunces',serif;font-weight:900;font-size:36px;
+  color:var(--text);margin-bottom:12px;letter-spacing:-.03em;
 }
-footer a{color:var(--accent);font-weight:500}
-.f-brand{
-  font-family:'Fraunces',serif;font-weight:800;font-size:18px;
-  color:var(--text);margin-bottom:8px;
-  display:inline-flex;align-items:center;gap:10px;
+.success-wrap h2 em{font-style:italic;font-weight:400;color:var(--accent)}
+.success-wrap p{color:var(--text-muted);font-size:16px;margin-bottom:28px;line-height:1.6}
+.success-wrap p strong{color:var(--text);font-weight:600}
+.success-details{
+  background:var(--bg-alt);border:1px solid var(--border);
+  border-radius:var(--radius);padding:16px 20px;margin-bottom:28px;text-align:left;
+  font-size:14px;
 }
-.f-brand em{font-style:italic;font-weight:400;color:var(--accent)}
-.f-meta{font-size:13px;margin-top:6px;color:var(--text-subtle)}
+.success-details .row{display:flex;justify-content:space-between;padding:6px 0}
+.success-details .row:not(:last-child){border-bottom:1px solid var(--border)}
+.success-details .lbl{color:var(--text-subtle);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.1em}
+.success-details .val{color:var(--text);font-weight:500}
 
-/* ANIMATIONS */
-.fade-in{opacity:0;transform:translateY(16px);animation:fadeUp .5s ease forwards}
-@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
-.fade-in:nth-child(2){animation-delay:.08s}
-.fade-in:nth-child(3){animation-delay:.14s}
-.fade-in:nth-child(4){animation-delay:.2s}
-
-/* RESPONSIVE */
-@media(max-width:860px){
-  .booking-layout{grid-template-columns:1fr}
-  .form-card{position:static}
+/* Mobile responsive */
+@media (max-width:760px){
+  .intro-grid{grid-template-columns:1fr}
+  .confirm-layout{grid-template-columns:1fr}
+  .summary-card{position:static}
   .svc-hero-inner{grid-template-columns:1fr;text-align:center}
   .svc-hero .price-block{text-align:center}
+  .progress-label{font-size:9px;letter-spacing:.1em}
+  .progress-step{min-width:52px}
 }
-@media(max-width:600px){
-  .svc-hero{padding:36px 24px}
-  .slot-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
-  .page-wrap{padding:28px 16px 60px}
-  .form-card{padding:24px}
-  .includes-grid{grid-template-columns:1fr}
+@media (max-width:480px){
+  .shell{padding:20px 16px 60px}
+  .svc-hero{padding:28px 22px}
+  .intro-card{padding:22px}
+  .slot-panel{padding:20px}
+  .success-wrap{padding:36px 24px}
 }
 @media (prefers-reduced-motion: reduce){
   *{animation-duration:.01ms!important;transition-duration:.01ms!important}
@@ -357,118 +452,196 @@ footer a{color:var(--accent);font-weight:500}
 </head>
 <body>
 
-<!-- NAV -->
-<header>
-  <nav>
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-inner">
     <a href="index.html" class="brand">
       <span class="brand-mark" aria-hidden="true">
         <svg width="18" height="22" viewBox="0 0 20 24" fill="none"><path d="M10 1C14 7 19 13 19 17a9 9 0 0 1-18 0c0-4 5-10 9-16z" fill="#fff"/><ellipse cx="7" cy="13" rx="3" ry="1.5" fill="#bfdbfe" transform="rotate(-30 7 13)"/></svg>
       </span>
       Pristine <em>Powerwashing</em>
     </a>
-    <div class="nav-right">
-      <a href="index.html" class="back-link">← Services</a>
+    <div class="topbar-right">
+      <a href="index.html" class="back-link">← Cancel</a>
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
         <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
         <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       </button>
     </div>
-  </nav>
-</header>
-
-<div class="page-wrap">
-
-  <!-- SERVICE HERO -->
-  <div class="svc-hero fade-in" id="svcHero">
-    <div class="svc-hero-inner">
-      <div>
-        <div class="premium-badge" id="premiumBadge">&#9733; Premium Service</div>
-        <div class="tag" id="heroTag">Soap Wash</div>
-        <h1 id="heroName">Sidewalks</h1>
-        <p class="desc" id="heroDesc">Front walks, stepping stones &amp; entry paths blasted back to fresh concrete.</p>
-      </div>
-      <div class="price-block">
-        <div class="price"><span class="d">$</span><span id="heroPrice">25</span></div>
-        <div class="flat">Flat Rate</div>
-      </div>
-    </div>
   </div>
+</div>
 
-  <!-- WHAT YOU GET -->
-  <div class="what-you-get fade-in" id="whatYouGet">
-    <h2 class="section-heading">
-      <span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></span>
-      What's Included
-    </h2>
-    <div class="includes-grid" id="includesGrid"></div>
-  </div>
-
-  <div class="booking-layout">
-    <div>
-      <div class="slots-section fade-in">
-        <h2 class="section-heading">
-          <span class="icon amber"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 16 14"/></svg></span>
-          Pick a Time Slot
-        </h2>
-        <p>Select a day and time that works for you. Most jobs are done in under an hour.</p>
-        <div id="slotsContainer"></div>
-      </div>
-
-      <div class="contact-callout fade-in">
-        <h3>Need a different time?</h3>
-        <p>Don't see a slot that works? Text or call and we'll find a time that fits your schedule.</p>
-        <div class="phone-row">
-          <a href="tel:+19843446217" class="phone-btn call">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.86 19.86 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.86 19.86 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
-            Call (984) 344-6217
-          </a>
-          <a href="sms:+19843446217" class="phone-btn text">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            Text (984) 344-6217
-          </a>
-        </div>
-      </div>
+<!-- PROGRESS -->
+<div class="progress">
+  <div class="progress-bar" id="progressBar">
+    <div class="progress-step active" data-step="0">
+      <div class="progress-dot"><span class="num">1</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></div>
+      <div class="progress-label">Service</div>
     </div>
-
-    <div class="form-card fade-in" id="formCard">
-      <h2>Book This Service</h2>
-      <p class="form-sub">Fill in your info and confirm your booking.</p>
-
-      <div class="selected-slot-display" id="selectedSlotDisplay">
-        <div class="slot-label">Selected Time</div>
-        <div class="slot-value" id="selectedSlotText">—</div>
-      </div>
-
-      <div id="formFields">
-        <div class="field"><label>Your Name</label><input type="text" id="bName" placeholder="First &amp; last name" autocomplete="name"></div>
-        <div class="field"><label>Phone Number</label><input type="tel" id="bPhone" placeholder="(555) 123-4567" autocomplete="tel"></div>
-        <div class="field"><label>Email</label><input type="email" id="bEmail" placeholder="you@example.com" autocomplete="email"></div>
-        <div class="field"><label>Address</label><input type="text" id="bAddress" placeholder="123 Main Street" autocomplete="street-address"></div>
-        <div class="field"><label>Notes (optional)</label><textarea id="bNotes" placeholder="Gate code, specific areas, etc."></textarea></div>
-        <button class="btn lg submit-btn" id="submitBtn" onclick="submitBooking()">Confirm &amp; Book</button>
-      </div>
-
-      <div class="success-view" id="successView">
-        <div class="success-check"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></div>
-        <h3>You're booked!</h3>
-        <p>I'll text you within a few hours to confirm the details. See you soon!</p>
-        <a href="index.html" class="btn" style="width:100%">Back to Home</a>
-      </div>
+    <div class="progress-connector" data-between="0"></div>
+    <div class="progress-step" data-step="1">
+      <div class="progress-dot"><span class="num">2</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></div>
+      <div class="progress-label">Your Info</div>
+    </div>
+    <div class="progress-connector" data-between="1"></div>
+    <div class="progress-step" data-step="2">
+      <div class="progress-dot"><span class="num">3</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></div>
+      <div class="progress-label">Pick Time</div>
+    </div>
+    <div class="progress-connector" data-between="2"></div>
+    <div class="progress-step" data-step="3">
+      <div class="progress-dot"><span class="num">4</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></div>
+      <div class="progress-label">Confirm</div>
     </div>
   </div>
 </div>
 
-<!-- FOOTER -->
-<footer>
-  <div class="f-brand">
-    <span class="brand-mark" aria-hidden="true" style="width:28px;height:28px">
-      <svg width="14" height="17" viewBox="0 0 20 24" fill="none"><path d="M10 1C14 7 19 13 19 17a9 9 0 0 1-18 0c0-4 5-10 9-16z" fill="#fff"/></svg>
-    </span>
-    Pristine <em>Powerwashing</em>
-  </div>
-  <div class="f-meta">pristine-powerwash.org · <a href="tel:+19843446217">(984) 344-6217</a> · <a href="mailto:reidwcoleman@gmail.com">reidwcoleman@gmail.com</a></div>
-  <div class="f-meta">&copy; 2026 Pristine Powerwashing. All rights reserved.</div>
-</footer>
+<!-- MAIN SHELL -->
+<main class="shell">
+
+  <!-- ============ STEP 0: SERVICE INTRO ============ -->
+  <section class="step active" data-step="0">
+    <div class="svc-hero" id="svcHero">
+      <div class="svc-hero-inner">
+        <div>
+          <div class="premium-badge" id="premiumBadge">&#9733; Premium Service</div>
+          <div class="tag" id="heroTag">Soap Wash</div>
+          <h1 id="heroName">Sidewalks</h1>
+          <p class="desc" id="heroDesc">Front walks, stepping stones &amp; entry paths blasted back to fresh concrete.</p>
+        </div>
+        <div class="price-block">
+          <div class="price"><span class="d">$</span><span id="heroPrice">25</span></div>
+          <div class="flat">Flat Rate</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Business facts strip -->
+    <div class="biz-strip">
+      <div class="biz-fact">
+        <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M12 3l9 9-9 9-9-9 9-9z"/></svg></span>
+        <div><strong>Flat-rate pricing</strong><span>No hidden fees, ever</span></div>
+      </div>
+      <div class="biz-fact">
+        <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 16 14"/></svg></span>
+        <div><strong>Same-week service</strong><span>Text today, done this week</span></div>
+      </div>
+      <div class="biz-fact">
+        <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="14" r="3"/><circle cx="16" cy="10" r="2"/><circle cx="13" cy="17" r="1.5"/></svg></span>
+        <div><strong>Pet-safe soap</strong><span>Eco-friendly &amp; grass-safe</span></div>
+      </div>
+      <div class="biz-fact">
+        <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></span>
+        <div><strong>Satisfaction guaranteed</strong><span>I come back free if unhappy</span></div>
+      </div>
+    </div>
+
+    <div class="intro-grid">
+      <!-- What's included -->
+      <div class="intro-card">
+        <h3><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></span>What's Included</h3>
+        <div class="intro-list" id="includesList"></div>
+      </div>
+      <!-- How it works -->
+      <div class="intro-card">
+        <h3><span class="icon amber"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></span>How It Works</h3>
+        <div class="intro-list">
+          <div class="intro-item">
+            <span class="num">1</span>
+            <div><strong>Book online in under a minute</strong><span>Pick a time slot that fits your schedule. You'll get a text confirmation within a few hours.</span></div>
+          </div>
+          <div class="intro-item">
+            <span class="num">2</span>
+            <div><strong>We show up at the scheduled time</strong><span>No waiting all day. Most jobs take <strong id="howDuration">30-60 minutes</strong> — quick, clean, and thorough.</span></div>
+          </div>
+          <div class="intro-item">
+            <span class="num">3</span>
+            <div><strong>You don't have to do a thing</strong><span id="howPrep">Just leave the outside water on if possible. We bring everything — hoses, pressure washer, soap, the works.</span></div>
+          </div>
+          <div class="intro-item">
+            <span class="num">4</span>
+            <div><strong>Pay on the spot</strong><span>Cash or CashApp. Flat rate — the price you see is exactly what you pay.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <a href="index.html" class="btn ghost lg">← Pick different service</a>
+      <button class="btn xl" onclick="goStep(1)">Let's book this <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+    </div>
+  </section>
+
+  <!-- ============ STEP 1: YOUR INFO ============ -->
+  <section class="step" data-step="1">
+    <h2 class="step-title">Let's get you <em>scheduled.</em></h2>
+    <p class="step-sub">Just a few quick details so I can reach you to confirm the appointment and answer any questions.</p>
+    <div class="form-wrap">
+      <div class="field"><label>Your Name</label><input type="text" id="bName" placeholder="First &amp; last name" autocomplete="name"></div>
+      <div class="field"><label>Phone Number</label><input type="tel" id="bPhone" placeholder="(555) 123-4567" autocomplete="tel"><div class="hint">I'll text this number within a few hours to confirm.</div></div>
+      <div class="field"><label>Email</label><input type="email" id="bEmail" placeholder="you@example.com" autocomplete="email"><div class="hint">Used for booking confirmation — no marketing, ever.</div></div>
+      <div class="btn-row">
+        <button class="btn ghost lg" onclick="goStep(0)">← Back</button>
+        <button class="btn xl" onclick="validateAndGo(2)">Continue <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STEP 2: PICK A TIME ============ -->
+  <section class="step" data-step="2">
+    <h2 class="step-title" id="timeHeading">Pick a time that <em>works for you.</em></h2>
+    <p class="step-sub">Most jobs are done in under an hour. If nothing fits, text <a href="sms:+19843446217">(984) 344‑6217</a> to find a custom time.</p>
+    <div class="time-picker">
+      <div class="day-strip" id="dayStrip"></div>
+      <div class="slot-panel">
+        <h3 id="slotPanelTitle">Available times</h3>
+        <p class="slot-sub" id="slotPanelSub">Select any open slot below.</p>
+        <div class="slot-grid" id="slotGrid"></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn ghost lg" onclick="goStep(1)">← Back</button>
+        <button class="btn xl" onclick="validateAndGo(3)">Review &amp; Book <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STEP 3: CONFIRM ============ -->
+  <section class="step" data-step="3">
+    <h2 class="step-title">Last step — <em>where are we heading?</em></h2>
+    <p class="step-sub">Enter the service address and anything we should know. Then confirm to lock in your time slot.</p>
+    <div class="confirm-layout">
+      <div>
+        <div class="field"><label>Service Address</label><input type="text" id="bAddress" placeholder="123 Main Street" autocomplete="street-address"></div>
+        <div class="field"><label>Notes (optional)</label><textarea id="bNotes" placeholder="Gate code, area to focus on, or anything else I should know..."></textarea></div>
+        <div class="btn-row">
+          <button class="btn ghost lg" onclick="goStep(2)">← Back</button>
+          <button class="btn xl" id="submitBtn" onclick="submitBooking()">Confirm &amp; Book ✓</button>
+        </div>
+      </div>
+      <aside class="summary-card" aria-label="Booking summary">
+        <h3>Booking Summary</h3>
+        <div class="summary-row"><span class="lbl">Service</span><span class="val" id="sService">—</span></div>
+        <div class="summary-row"><span class="lbl">Time</span><span class="val" id="sTime">—</span></div>
+        <div class="summary-row"><span class="lbl">Name</span><span class="val" id="sName">—</span></div>
+        <div class="summary-row"><span class="lbl">Phone</span><span class="val" id="sPhone">—</span></div>
+        <div class="summary-row"><span class="lbl">Email</span><span class="val" id="sEmail">—</span></div>
+        <div class="summary-total"><span class="lbl">Total</span><span class="val"><span style="font-size:20px;vertical-align:top;font-weight:500;opacity:.7">$</span><span id="sPrice">—</span></span></div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ============ STEP 4: SUCCESS ============ -->
+  <section class="step" data-step="4">
+    <div class="success-wrap">
+      <div class="success-check"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></div>
+      <h2>You're <em>booked!</em></h2>
+      <p id="successMsg">I'll text you within a few hours to confirm all the details. See you soon!</p>
+      <div class="success-details" id="successDetails"></div>
+      <a href="index.html" class="btn xl">Back to Home</a>
+    </div>
+  </section>
+
+</main>
 
 <script>
 // ===== THEME — defaults to dark =====
@@ -500,66 +673,76 @@ firebase.initializeApp({
 });
 const db = firebase.firestore();
 
-// ===== SERVICE DATA =====
+// ===== SERVICES =====
 const services = {
   'Sidewalks': {
     tag: 'Soap Wash', price: 25, premium: false,
     desc: 'Front walks, stepping stones & entry paths blasted back to fresh concrete.',
+    duration: '30-45 minutes',
+    prep: 'Move any planters or decorative items off the walkway. We bring everything else.',
     includes: [
-      { title: 'High-Pressure Wash', detail: 'Industrial-grade pressure washing that strips away dirt, mold, and buildup' },
-      { title: 'Pet-Safe Soap Treatment', detail: 'Eco-friendly soap that cleans deep without harming your pets, plants, or lawn' },
-      { title: 'Full Walkway Coverage', detail: 'Front walks, stepping stones, entry paths, and any connected walkways' },
-      { title: 'Edge Detailing', detail: 'We clean right up to the edges where grime loves to hide along the grass line' },
-      { title: 'Rinse & Inspection', detail: 'Final rinse and walkthrough to make sure every inch looks brand new' },
-      { title: 'Under 1 Hour', detail: 'Most sidewalk jobs are done in 30-45 minutes so you\'re not waiting around' }
+      { title: 'High-Pressure Wash', detail: 'Industrial-grade pressure that strips away dirt, mold, and buildup — the kind you can\'t get with a garden hose.' },
+      { title: 'Pet-Safe Soap Treatment', detail: 'Eco-friendly soap that cleans deep without harming pets, plants, or your lawn.' },
+      { title: 'Full Walkway Coverage', detail: 'Front walks, stepping stones, entry paths, and any connected walkways.' },
+      { title: 'Edge Detailing', detail: 'We clean right up to the edges where grime hides along the grass line.' },
+      { title: 'Rinse & Inspection', detail: 'Final rinse and walkthrough so every inch looks brand new before we leave.' },
+      { title: 'Done in Under an Hour', detail: 'Most sidewalk jobs wrap in 30-45 minutes so you\'re not waiting around.' }
     ]
   },
   'Trash Cans': {
     tag: 'Soap Wash', price: 30, premium: false,
     desc: 'Inside & out — soap wash that eliminates odors & bacteria buildup.',
+    duration: 'About 20 minutes',
+    prep: 'Empty the cans before we arrive — easiest to schedule on trash day right after pickup.',
     includes: [
-      { title: 'Interior Deep Clean', detail: 'High-pressure blast inside the can to remove stuck-on grime, sludge, and residue' },
-      { title: 'Exterior Wash', detail: 'Full exterior cleaning — lids, handles, sides, and wheels get the same treatment' },
-      { title: 'Antibacterial Soap Treatment', detail: 'Kills bacteria and eliminates the source of those trash can odors' },
-      { title: 'Odor Elimination', detail: 'Not just a cover-up — the soap treatment neutralizes smells at the source' },
-      { title: 'All Bins Included', detail: 'Trash and recycling bins both get cleaned — no extra charge' },
-      { title: 'Quick Turnaround', detail: 'Done in about 20 minutes — schedule it on trash day for easiest access' }
+      { title: 'Interior Deep Clean', detail: 'High-pressure blast inside the can to remove stuck-on grime, sludge, and residue.' },
+      { title: 'Exterior Wash', detail: 'Full exterior cleaning — lids, handles, sides, and wheels get the same treatment.' },
+      { title: 'Antibacterial Soap Treatment', detail: 'Kills bacteria and eliminates the source of those trash can odors.' },
+      { title: 'Odor Elimination', detail: 'Not just a cover-up — the soap neutralizes smells at their source.' },
+      { title: 'All Bins Included', detail: 'Trash and recycling bins both get cleaned at no extra charge.' },
+      { title: 'Quick Turnaround', detail: 'Done in about 20 minutes — easiest scheduled on trash day.' }
     ]
   },
   'Patios': {
     tag: 'Soap Wash', price: 50, premium: false,
     desc: 'Pavers, slabs & back porches — lifted, rinsed & ready for the cookout.',
+    duration: '45-60 minutes',
+    prep: 'Move lightweight furniture and grill if you can — no worries if not, we\'ll work around it.',
     includes: [
-      { title: 'Full Patio Surface Wash', detail: 'Concrete, pavers, flagstone, brick — whatever your patio is made of, we clean it' },
-      { title: 'Pet-Safe Soap Treatment', detail: 'Eco-friendly soap that breaks down green algae, mold, and ground-in dirt' },
-      { title: 'Furniture Area Cleaning', detail: 'We move lightweight furniture to clean underneath — no dirty patches left behind' },
-      { title: 'Grout & Joint Cleaning', detail: 'For pavers and brick patios, we blast the joints where moss and weeds build up' },
-      { title: 'Back Porch Included', detail: 'Covered porches and steps connected to the patio are included at no extra cost' },
-      { title: 'Done in Under an Hour', detail: 'Most patios take 45-60 minutes depending on size and buildup' }
+      { title: 'Full Patio Surface Wash', detail: 'Concrete, pavers, flagstone, brick — whatever your patio is made of, we clean it.' },
+      { title: 'Pet-Safe Soap Treatment', detail: 'Eco-friendly soap that breaks down green algae, mold, and ground-in dirt.' },
+      { title: 'Furniture Area Cleaning', detail: 'We move lightweight furniture to clean underneath — no dirty patches left behind.' },
+      { title: 'Grout & Joint Cleaning', detail: 'For pavers and brick patios, we blast the joints where moss and weeds build up.' },
+      { title: 'Back Porch Included', detail: 'Covered porches and steps connected to the patio are included at no extra cost.' },
+      { title: 'Done in Under an Hour', detail: 'Most patios take 45-60 minutes depending on size and buildup.' }
     ]
   },
   'Driveway (Standard)': {
     tag: 'Water Only · No Soap', price: 75, premium: false,
     desc: 'Standard high-pressure water blast — oil drips, tire marks & seasonal grime rinsed away.',
+    duration: '45-60 minutes',
+    prep: 'Move cars off the driveway and clear any loose debris. We handle the rest.',
     includes: [
-      { title: 'High-Pressure Water Blast', detail: 'Industrial-strength water pressure that strips away tire marks, oil drips, and grime' },
-      { title: 'Full Driveway Coverage', detail: 'Edge to edge cleaning from the street to the garage — the entire driveway surface' },
-      { title: 'Oil & Stain Lifting', detail: 'Water pressure alone lifts most oil spots, tire marks, and seasonal buildup' },
-      { title: 'Edge & Curb Cleaning', detail: 'We hit the edges where dirt and debris collect along the driveway borders' },
-      { title: 'Debris Removal', detail: 'Leaves, dirt, and loose debris are cleared before we start for the best result' },
-      { title: 'No Chemicals', detail: 'Pure water pressure — great for driveways that just need a solid rinse' }
+      { title: 'High-Pressure Water Blast', detail: 'Industrial-strength water pressure that strips away tire marks, oil drips, and grime.' },
+      { title: 'Full Driveway Coverage', detail: 'Edge to edge cleaning from the street to the garage — the entire surface.' },
+      { title: 'Oil & Stain Lifting', detail: 'Water pressure alone lifts most oil spots, tire marks, and seasonal buildup.' },
+      { title: 'Edge & Curb Cleaning', detail: 'We hit the edges where dirt and debris collect along the driveway borders.' },
+      { title: 'Debris Removal', detail: 'Leaves, dirt, and loose debris are cleared before we start for the best result.' },
+      { title: 'No Chemicals', detail: 'Pure water pressure — great for driveways that just need a solid rinse.' }
     ]
   },
   'Pristine+ (Soap & Bleach)': {
     tag: 'Soap + Bleach · Grass-Safe', price: 115, premium: true,
     desc: 'Driveway + soap & bleach treatment that lifts stains, oil & ground-in grime — keeps the grass safe.',
+    duration: '60-90 minutes',
+    prep: 'Move cars off the driveway. Water nearby plants beforehand — the pre-rinse protects them further.',
     includes: [
-      { title: 'Everything in Standard Driveway', detail: 'Full high-pressure wash, edge-to-edge coverage, debris removal — all included' },
-      { title: 'Soap & Bleach Treatment', detail: 'Professional-grade soap and bleach solution that dissolves stains water alone can\'t touch' },
-      { title: 'Deep Stain Removal', detail: 'Oil stains, rust, algae, mold, and years of ground-in grime — this is the heavy hitter' },
-      { title: 'Grass-Safe Formula', detail: 'Our bleach solution is diluted and applied carefully to protect your lawn and landscaping' },
-      { title: 'Pre-Treatment Soak', detail: 'We apply the solution and let it soak before blasting — this is what makes the difference' },
-      { title: 'The "Like New" Result', detail: 'This is our signature service — most customers say their driveway looks better than when they moved in' }
+      { title: 'Everything in Standard Driveway', detail: 'Full high-pressure wash, edge-to-edge coverage, debris removal — all included.' },
+      { title: 'Soap & Bleach Treatment', detail: 'Professional-grade soap and bleach solution that dissolves stains water alone can\'t touch.' },
+      { title: 'Deep Stain Removal', detail: 'Oil stains, rust, algae, mold, and years of ground-in grime — this is the heavy hitter.' },
+      { title: 'Grass-Safe Formula', detail: 'Our bleach solution is diluted and applied carefully to protect your lawn and landscaping.' },
+      { title: 'Pre-Treatment Soak', detail: 'We apply the solution and let it soak before blasting — this is what makes the difference.' },
+      { title: 'The "Like New" Result', detail: 'Most customers say their driveway looks better than when they moved in.' }
     ]
   }
 };
@@ -569,187 +752,324 @@ const params = new URLSearchParams(window.location.search);
 const serviceName = params.get('service') || 'Sidewalks';
 const svc = services[serviceName] || services['Sidewalks'];
 
-// ===== POPULATE SERVICE HEADER =====
+// ===== POPULATE STEP 0 =====
 document.getElementById('heroTag').textContent = svc.tag;
 document.getElementById('heroName').textContent = serviceName;
 document.getElementById('heroPrice').textContent = svc.price;
 document.getElementById('heroDesc').textContent = svc.desc;
+document.getElementById('howDuration').textContent = svc.duration;
+document.getElementById('howPrep').textContent = svc.prep;
 if (svc.premium) document.getElementById('svcHero').classList.add('premium');
 
-// ===== WHAT YOU GET =====
-const grid = document.getElementById('includesGrid');
+const includesList = document.getElementById('includesList');
 svc.includes.forEach(item => {
   const el = document.createElement('div');
-  el.className = 'include-item';
+  el.className = 'intro-item';
   el.innerHTML = `
-    <span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></span>
-    <div><strong>${item.title}</strong><span>${item.detail}</span></div>
-  `;
-  grid.appendChild(el);
+    <span class="check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></span>
+    <div><strong>${item.title}</strong><span>${item.detail}</span></div>`;
+  includesList.appendChild(el);
 });
 
-// ===== TIME SLOTS =====
-let selectedSlot = null;
-let selectedSlotId = null;
+// ===== STEP NAVIGATION =====
+let currentStep = 0;
+function goStep(n){
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.querySelector('.step[data-step="' + n + '"]').classList.add('active');
+  document.querySelectorAll('.progress-step').forEach(item => {
+    const ds = +item.dataset.step;
+    item.classList.remove('active','done');
+    if (ds < n) item.classList.add('done');
+    else if (ds === n) item.classList.add('active');
+  });
+  document.querySelectorAll('.progress-connector').forEach(c => {
+    c.classList.toggle('done', +c.dataset.between < n);
+  });
+  currentStep = n;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Auto-focus first input
+  setTimeout(() => {
+    const inp = document.querySelector('.step.active input, .step.active textarea');
+    if (inp && n !== 2 && n !== 4) inp.focus();
+  }, 420);
+}
 
-async function loadSlots() {
-  const container = document.getElementById('slotsContainer');
-  container.innerHTML = '<p style="color:var(--text-subtle);text-align:center;padding:24px">Loading available times…</p>';
+function validEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
 
-  const now = new Date();
-  const today = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
-
-  const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-
-  try {
-    const snap = await db.collection('availableSlots')
-      .where('date', '>=', today)
-      .where('booked', '==', false)
-      .get();
-
-    const byDate = {};
-    snap.forEach(doc => {
-      const d = doc.data();
-      if (!byDate[d.date]) byDate[d.date] = [];
-      byDate[d.date].push({ id: doc.id, ...d });
-    });
-
-    const sortedDates = Object.keys(byDate).sort();
-    container.innerHTML = '';
-
-    if (sortedDates.length === 0) {
-      container.innerHTML = `
-        <div style="text-align:center;padding:32px 16px;background:var(--surface-2);border-radius:14px;border:1px solid var(--border)">
-          <p style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px">No time slots available right now</p>
-          <p style="font-size:14px;color:var(--text-muted)">Text or call <strong style="color:var(--accent)">(984) 344-6217</strong> to schedule.</p>
-        </div>`;
-      return;
-    }
-
-    sortedDates.forEach(dateStr => {
-      const [y, m, d] = dateStr.split('-').map(Number);
-      const dateObj = new Date(y, m - 1, d);
-      const diffDays = Math.round((dateObj - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / 86400000);
-      const isToday = diffDays === 0;
-      const dayLabel = isToday ? 'Today' : (diffDays === 1 ? 'Tomorrow' : dayNames[dateObj.getDay()]);
-      const displayDate = monthNames[dateObj.getMonth()] + ' ' + dateObj.getDate();
-
-      const slots = byDate[dateStr].sort((a, b) => (a.sort || 0) - (b.sort || 0));
-
-      const filteredSlots = isToday ? slots.filter(s => {
-        const [hourStr] = s.time.split(':');
-        let hour = parseInt(hourStr);
-        if (s.time.includes('PM') && hour !== 12) hour += 12;
-        if (s.time.includes('AM') && hour === 12) hour = 0;
-        return hour > now.getHours();
-      }) : slots;
-
-      if (filteredSlots.length === 0) return;
-
-      const group = document.createElement('div');
-      group.className = 'day-group';
-
-      let labelHTML = `<span>${dayLabel}, ${displayDate}</span>`;
-      if (isToday) labelHTML += '<span class="today">Today</span>';
-
-      group.innerHTML = `<div class="day-label">${labelHTML}</div><div class="slot-grid"></div>`;
-      container.appendChild(group);
-
-      const slotGrid = group.querySelector('.slot-grid');
-
-      filteredSlots.forEach(slot => {
-        const slotEl = document.createElement('div');
-        slotEl.className = 'slot';
-        slotEl.innerHTML = `<div class="slot-time">${slot.time}</div><div class="slot-period">${slot.period}</div>`;
-        const slotDisplayValue = `${dayLabel}, ${displayDate} at ${slot.time}`;
-        slotEl.addEventListener('click', () => selectSlot(slotEl, slotDisplayValue, slot.id));
-        slotGrid.appendChild(slotEl);
-      });
-    });
-  } catch (e) {
-    console.error('Failed to load slots:', e);
-    container.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:24px">Unable to load time slots. Please try refreshing the page.</p>';
+function validateAndGo(target){
+  if (target === 2) {
+    const name = document.getElementById('bName').value.trim();
+    const phone = document.getElementById('bPhone').value.trim();
+    const email = document.getElementById('bEmail').value.trim();
+    if (!name) return bad('bName', 'Please enter your name.');
+    if (!phone || phone.replace(/\D/g,'').length < 7) return bad('bPhone', 'Please enter a valid phone number.');
+    if (!email || !validEmail(email)) return bad('bEmail', 'Please enter a valid email address.');
+    // Personalize time heading
+    const firstName = name.split(/\s+/)[0];
+    document.getElementById('timeHeading').innerHTML = 'Thanks, <em>' + escapeHtml(firstName) + '</em>! When works?';
+    // Prime summary values now that we have contact info
+    document.getElementById('sName').textContent = name;
+    document.getElementById('sPhone').textContent = phone;
+    document.getElementById('sEmail').textContent = email;
+    if (!slotsInitialized) initSlots();
+    goStep(2);
+    return;
+  }
+  if (target === 3) {
+    if (!selectedSlot) { alert('Please select a time slot.'); return; }
+    document.getElementById('sService').textContent = serviceName;
+    document.getElementById('sTime').textContent = slotLabel(selectedSlot);
+    document.getElementById('sPrice').textContent = svc.price;
+    goStep(3);
+    return;
   }
 }
+function bad(id, msg){ alert(msg); const el = document.getElementById(id); if (el){ el.focus(); el.style.borderColor = 'var(--red-400)'; setTimeout(()=>el.style.borderColor = '', 2000);} }
+function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
 
-function selectSlot(el, displayValue, slotId) {
-  document.querySelectorAll('.slot.selected').forEach(s => s.classList.remove('selected'));
-  el.classList.add('selected');
-  selectedSlot = displayValue;
-  selectedSlotId = slotId;
-  document.getElementById('selectedSlotDisplay').classList.add('show');
-  document.getElementById('selectedSlotText').textContent = displayValue;
+// ===== TIME SLOTS =====
+const DEFAULT_SLOTS = [
+  { time: '8:00 AM', period: 'Morning', sort: 0 },
+  { time: '9:30 AM', period: 'Morning', sort: 1 },
+  { time: '11:00 AM', period: 'Late Morning', sort: 2 },
+  { time: '1:00 PM', period: 'Afternoon', sort: 3 },
+  { time: '2:30 PM', period: 'Afternoon', sort: 4 },
+  { time: '4:00 PM', period: 'Late Afternoon', sort: 5 }
+];
+const DAY_NAMES_SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const DAY_NAMES_LONG = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MON_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MON_NAMES_LONG = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function fmtDate(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+function parseTimeToHour(timeStr){
+  // "8:00 AM" -> 8, "1:00 PM" -> 13
+  const m = timeStr.match(/^(\d+):(\d+)\s*(AM|PM)$/i);
+  if (!m) return 0;
+  let h = +m[1]; const min = +m[2]; const p = m[3].toUpperCase();
+  if (p === 'PM' && h !== 12) h += 12;
+  if (p === 'AM' && h === 12) h = 0;
+  return h + min/60;
 }
 
-loadSlots();
+let slotsInitialized = false;
+let daysData = []; // [{dateStr, dateObj, slots:[{time,period,sort,booked,id?}]}]
+let selectedDateStr = null;
+let selectedSlot = null; // {date, time, period, sort, id?, booked}
 
-// ===== FORM SUBMISSION =====
-async function submitBooking() {
+async function initSlots(){
+  slotsInitialized = true;
+  const now = new Date();
+  const today0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  // Build 7 days starting today
+  daysData = [];
+  for (let i = 0; i < 7; i++){
+    const d = new Date(today0); d.setDate(today0.getDate() + i);
+    const dateStr = fmtDate(d);
+    const slots = DEFAULT_SLOTS.map(s => ({ ...s, booked:false, id:null }));
+    daysData.push({ dateStr, dateObj:d, slots });
+  }
+
+  // Pull Firestore bookings & admin-marked slots, merge in
+  try {
+    const todayStr = fmtDate(today0);
+    const [bookingsSnap, slotsSnap] = await Promise.all([
+      db.collection('bookings').where('timestamp', '>=', new Date(today0.getTime() - 86400000).toISOString()).get().catch(() => null),
+      db.collection('availableSlots').where('date', '>=', todayStr).get().catch(() => null)
+    ]);
+
+    // Mark slots matching existing bookings as booked
+    if (bookingsSnap) {
+      bookingsSnap.forEach(doc => {
+        const b = doc.data();
+        const ts = b.timeSlot || '';
+        const match = ts.match(/^(\d{4}-\d{2}-\d{2})\s+(.+)$/);
+        if (!match) return;
+        const day = daysData.find(x => x.dateStr === match[1]);
+        if (!day) return;
+        const slot = day.slots.find(s => s.time === match[2]);
+        if (slot) slot.booked = true;
+      });
+    }
+    // Mark admin-marked slots (carry slot ID so transaction can lock it)
+    if (slotsSnap) {
+      slotsSnap.forEach(doc => {
+        const d = doc.data();
+        const day = daysData.find(x => x.dateStr === d.date);
+        if (!day) return;
+        const slot = day.slots.find(s => s.time === d.time);
+        if (slot) {
+          slot.id = doc.id;
+          if (d.booked) slot.booked = true;
+        }
+      });
+    }
+  } catch(e){ console.warn('Firestore merge failed, continuing with defaults', e); }
+
+  // Filter out past slots for today
+  const nowHour = now.getHours() + now.getMinutes()/60;
+  daysData[0].slots = daysData[0].slots.filter(s => parseTimeToHour(s.time) > nowHour + 0.25);
+
+  renderDayStrip();
+  // Auto-select first day with open slots
+  const firstOpen = daysData.find(d => d.slots.some(s => !s.booked));
+  if (firstOpen) selectDay(firstOpen.dateStr);
+  else renderSlotGrid();
+}
+
+function renderDayStrip(){
+  const strip = document.getElementById('dayStrip');
+  strip.innerHTML = '';
+  const today0 = new Date(); today0.setHours(0,0,0,0);
+  daysData.forEach((day, idx) => {
+    const open = day.slots.filter(s => !s.booked).length;
+    const pill = document.createElement('button');
+    pill.type = 'button';
+    pill.className = 'day-pill' + (idx === 0 ? ' today' : '') + (selectedDateStr === day.dateStr ? ' selected' : '') + (open === 0 ? ' unavailable' : '');
+    const dayName = idx === 0 ? 'Today' : idx === 1 ? 'Tomorrow' : DAY_NAMES_SHORT[day.dateObj.getDay()];
+    pill.innerHTML = `
+      <div class="day-name">${dayName}</div>
+      <div class="day-num">${day.dateObj.getDate()}</div>
+      <div class="day-mon">${MON_NAMES[day.dateObj.getMonth()]}</div>
+      <div class="day-availability">${open === 0 ? 'Full' : open + ' open'}</div>
+    `;
+    if (open > 0) pill.addEventListener('click', () => selectDay(day.dateStr));
+    strip.appendChild(pill);
+  });
+}
+
+function selectDay(dateStr){
+  selectedDateStr = dateStr;
+  // Don't reset selectedSlot unless it's on a different day
+  if (selectedSlot && selectedSlot.date !== dateStr) selectedSlot = null;
+  renderDayStrip();
+  renderSlotGrid();
+}
+
+function renderSlotGrid(){
+  const grid = document.getElementById('slotGrid');
+  const title = document.getElementById('slotPanelTitle');
+  const sub = document.getElementById('slotPanelSub');
+  grid.innerHTML = '';
+  if (!selectedDateStr) {
+    title.textContent = 'No open days this week';
+    sub.innerHTML = 'Text <a href="sms:+19843446217">(984) 344‑6217</a> to schedule a custom time.';
+    return;
+  }
+  const day = daysData.find(x => x.dateStr === selectedDateStr);
+  if (!day) return;
+  const dateObj = day.dateObj;
+  const today0 = new Date(); today0.setHours(0,0,0,0);
+  const diff = Math.round((dateObj - today0) / 86400000);
+  const dayLabel = diff === 0 ? 'Today' : diff === 1 ? 'Tomorrow' : DAY_NAMES_LONG[dateObj.getDay()];
+  title.textContent = dayLabel + ', ' + MON_NAMES_LONG[dateObj.getMonth()] + ' ' + dateObj.getDate();
+  sub.textContent = day.slots.filter(s => !s.booked).length + ' of ' + day.slots.length + ' time slots available.';
+
+  day.slots.forEach(slot => {
+    const el = document.createElement('button');
+    el.type = 'button';
+    el.className = 'slot' + (slot.booked ? ' taken' : '') + (selectedSlot && selectedSlot.date === selectedDateStr && selectedSlot.time === slot.time ? ' selected' : '');
+    el.innerHTML = `<div class="slot-time">${slot.time}</div><div class="slot-period">${slot.period}</div><div class="slot-taken-label">Taken</div>`;
+    if (!slot.booked) el.addEventListener('click', () => pickSlot(slot));
+    grid.appendChild(el);
+  });
+}
+
+function pickSlot(slot){
+  selectedSlot = { date: selectedDateStr, time: slot.time, period: slot.period, sort: slot.sort, id: slot.id || null };
+  renderSlotGrid();
+}
+
+function slotLabel(slot){
+  const [y,m,d] = slot.date.split('-').map(Number);
+  const dateObj = new Date(y, m-1, d);
+  const today0 = new Date(); today0.setHours(0,0,0,0);
+  const diff = Math.round((dateObj - today0) / 86400000);
+  const dayLabel = diff === 0 ? 'Today' : diff === 1 ? 'Tomorrow' : DAY_NAMES_LONG[dateObj.getDay()];
+  return dayLabel + ', ' + MON_NAMES[dateObj.getMonth()] + ' ' + dateObj.getDate() + ' · ' + slot.time;
+}
+
+// ===== SUBMIT =====
+async function submitBooking(){
+  const address = document.getElementById('bAddress').value.trim();
+  if (!address) return bad('bAddress', 'Please enter your service address.');
+  if (!selectedSlot) { alert('Please go back and pick a time slot.'); goStep(2); return; }
+
+  const btn = document.getElementById('submitBtn');
+  btn.textContent = 'Booking…'; btn.disabled = true;
+
   const name = document.getElementById('bName').value.trim();
   const phone = document.getElementById('bPhone').value.trim();
   const email = document.getElementById('bEmail').value.trim();
-  const address = document.getElementById('bAddress').value.trim();
   const notes = document.getElementById('bNotes').value.trim();
 
-  if (!name || !phone) { alert('Please fill in your name and phone number.'); return; }
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { alert('Please enter a valid email.'); return; }
-  if (!address) { alert('Please enter your address.'); return; }
-  if (!selectedSlot || !selectedSlotId) { alert('Please select a time slot.'); return; }
-
-  const btn = document.getElementById('submitBtn');
-  btn.textContent = 'Booking…';
-  btn.disabled = true;
-
   const bookingData = {
-    service: serviceName, price: svc.price,
+    service: serviceName,
+    price: svc.price,
     name, phone, email, address, notes,
-    timeSlot: selectedSlot, slotId: selectedSlotId,
-    timestamp: new Date().toISOString(), status: 'pending'
+    timeSlot: selectedSlot.date + ' ' + selectedSlot.time,
+    slotId: selectedSlot.id || null,
+    slotDate: selectedSlot.date,
+    slotTime: selectedSlot.time,
+    timestamp: new Date().toISOString(),
+    status: 'pending'
   };
 
   try {
-    const slotRef = db.collection('availableSlots').doc(selectedSlotId);
-    const bookingRef = db.collection('bookings').doc();
-    await db.runTransaction(async (transaction) => {
-      const slotDoc = await transaction.get(slotRef);
-      if (!slotDoc.exists || slotDoc.data().booked) throw new Error('SLOT_TAKEN');
-      transaction.set(bookingRef, bookingData);
-      transaction.update(slotRef, { booked: true, bookingId: bookingRef.id });
-    });
-  } catch (e) {
-    if (e.message === 'SLOT_TAKEN') {
-      alert('Sorry, that time slot was just taken. Please pick another.');
-      btn.textContent = 'Confirm & Book'; btn.disabled = false;
-      loadSlots(); return;
+    if (selectedSlot.id) {
+      const slotRef = db.collection('availableSlots').doc(selectedSlot.id);
+      const bookingRef = db.collection('bookings').doc();
+      await db.runTransaction(async tx => {
+        const slotDoc = await tx.get(slotRef);
+        if (slotDoc.exists && slotDoc.data().booked) throw new Error('SLOT_TAKEN');
+        tx.set(bookingRef, bookingData);
+        if (slotDoc.exists) tx.update(slotRef, { booked:true, bookingId:bookingRef.id });
+      });
+    } else {
+      await db.collection('bookings').add(bookingData);
     }
-    console.warn('Firebase transaction failed, saving locally:', e);
+  } catch(e){
+    if (e.message === 'SLOT_TAKEN') {
+      alert('Sorry, that slot was just taken. Please pick another.');
+      btn.textContent = 'Confirm & Book ✓'; btn.disabled = false;
+      selectedSlot = null;
+      await initSlots();
+      goStep(2);
+      return;
+    }
+    console.warn('Firebase save failed, storing locally:', e);
     const local = JSON.parse(localStorage.getItem('bookings') || '[]');
     local.push(bookingData);
     localStorage.setItem('bookings', JSON.stringify(local));
   }
 
+  // Notifications
   try {
     await fetch('https://ntfy.sh/pristine-pwash-reid-bookings', {
-      method: 'POST',
-      headers: {'Title':'New Booking: '+bookingData.service+' ($'+bookingData.price+')','Priority':'high','Tags':'droplet,moneybag'},
-      body: bookingData.name+' — '+bookingData.phone+(bookingData.email?' · '+bookingData.email:'')+'\n'+bookingData.address+'\nTime: '+bookingData.timeSlot+(bookingData.notes?'\nNotes: '+bookingData.notes:'')
+      method:'POST',
+      headers:{'Title':'New Booking: '+bookingData.service+' ($'+bookingData.price+')','Priority':'high','Tags':'droplet,moneybag'},
+      body: bookingData.name+' — '+bookingData.phone+' · '+bookingData.email+'\n'+bookingData.address+'\nTime: '+bookingData.timeSlot+(bookingData.notes?'\nNotes: '+bookingData.notes:'')
     });
-  } catch (e) {}
-
+  } catch(e){}
   try {
     await fetch('https://ntfy.sh/pristine-pwash-reid-bookings', {
-      method: 'POST',
-      headers: {'Email':'reidwcoleman@gmail.com','Title':'New Pristine Powerwash Booking: '+bookingData.service,'Tags':'droplet'},
-      body:'New booking from '+bookingData.name+'!\n\nService: '+bookingData.service+' ($'+bookingData.price+')\nPhone: '+bookingData.phone+'\nEmail: '+bookingData.email+'\nAddress: '+bookingData.address+'\nTime Slot: '+bookingData.timeSlot+(bookingData.notes?'\nNotes: '+bookingData.notes:'')+'\n\nText them back to confirm!'
+      method:'POST',
+      headers:{'Email':'reidwcoleman@gmail.com','Title':'New Pristine Powerwash Booking: '+bookingData.service,'Tags':'droplet'},
+      body:'New booking from '+bookingData.name+'!\n\nService: '+bookingData.service+' ($'+bookingData.price+')\nPhone: '+bookingData.phone+'\nEmail: '+bookingData.email+'\nAddress: '+bookingData.address+'\nTime: '+bookingData.timeSlot+(bookingData.notes?'\nNotes: '+bookingData.notes:'')+'\n\nText them back to confirm!'
     });
-  } catch (e) {}
+  } catch(e){}
 
-  document.getElementById('formFields').style.display = 'none';
-  document.getElementById('selectedSlotDisplay').style.display = 'none';
-  document.getElementById('formCard').querySelector('h2').style.display = 'none';
-  document.getElementById('formCard').querySelector('.form-sub').style.display = 'none';
-  document.getElementById('successView').classList.add('show');
+  // Success view
+  document.getElementById('successMsg').innerHTML = "I'll text <strong>" + escapeHtml(phone) + "</strong> within a few hours to confirm the details.";
+  document.getElementById('successDetails').innerHTML = `
+    <div class="row"><span class="lbl">Service</span><span class="val">${escapeHtml(serviceName)}</span></div>
+    <div class="row"><span class="lbl">Time</span><span class="val">${escapeHtml(slotLabel(selectedSlot))}</span></div>
+    <div class="row"><span class="lbl">Address</span><span class="val">${escapeHtml(address)}</span></div>
+    <div class="row"><span class="lbl">Total</span><span class="val">$${svc.price}</span></div>
+  `;
+  btn.textContent = 'Confirm & Book ✓'; btn.disabled = false;
+  goStep(4);
 }
 </script>
 

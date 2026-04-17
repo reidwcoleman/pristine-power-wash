@@ -669,7 +669,7 @@ a{color:var(--accent);text-decoration:none}
   <section class="step" data-step="2">
     <div class="step-eyebrow"><span class="pip"></span>Step 3 of 4 · Pick a Time</div>
     <h2 class="step-title" id="timeHeading">Pick a time that <em>works for you.</em></h2>
-    <p class="step-sub">Three time slots every day — <strong>10 AM, 12 PM, or 2 PM.</strong> If nothing fits, text <a href="sms:+19843446217">(984) 344‑6217</a> to find a custom time.</p>
+    <p class="step-sub">Three time slots every day — <strong>10 AM, 12 PM, or 2 PM.</strong> Booking opens <strong>Thursday, June 11, 2026</strong>. If nothing fits, text <a href="sms:+19843446217">(984) 344‑6217</a> for a custom time.</p>
     <div class="time-picker">
       <!-- Week-pager calendar -->
       <div class="calendar">
@@ -936,8 +936,10 @@ const DEFAULT_SLOTS = [
   { time: '12:00 PM', period: 'Midday',    sort: 1, iconClass: 'noon'      },
   { time: '2:00 PM',  period: 'Afternoon', sort: 2, iconClass: 'afternoon' }
 ];
-// Availability extends from today through June 11, 2026 (inclusive).
-const END_DATE = new Date(2026, 5, 11); // month is 0-indexed → June
+// Bookings open Thursday, June 11, 2026 and run forward for 2 months.
+const START_DATE = new Date(2026, 5, 11); // month is 0-indexed → June
+START_DATE.setHours(0,0,0,0);
+const END_DATE   = new Date(2026, 7, 11); // August 11, 2026
 END_DATE.setHours(23,59,59,999);
 
 const DAY_NAMES_SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -975,9 +977,9 @@ async function initSlots(){
   const now = new Date();
   const today0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-  // Build days from today through END_DATE (inclusive).
+  // Build days from START_DATE through END_DATE (inclusive).
   daysData = [];
-  const cursor = new Date(today0);
+  const cursor = new Date(START_DATE);
   while (cursor.getTime() <= END_DATE.getTime()){
     const dateStr = fmtDate(cursor);
     const slots = DEFAULT_SLOTS.map(s => ({ ...s, booked:false, id:null }));
@@ -987,10 +989,10 @@ async function initSlots(){
 
   // Pull Firestore bookings & admin-marked slots, merge in
   try {
-    const todayStr = fmtDate(today0);
+    const fromStr = fmtDate(START_DATE);
     const [bookingsSnap, slotsSnap] = await Promise.all([
-      db.collection('bookings').where('timestamp', '>=', new Date(today0.getTime() - 86400000).toISOString()).get().catch(() => null),
-      db.collection('availableSlots').where('date', '>=', todayStr).get().catch(() => null)
+      db.collection('bookings').where('slotDate', '>=', fromStr).get().catch(() => null),
+      db.collection('availableSlots').where('date', '>=', fromStr).get().catch(() => null)
     ]);
 
     if (bookingsSnap) {
@@ -1019,27 +1021,33 @@ async function initSlots(){
     }
   } catch(e){ console.warn('Firestore merge failed, continuing with defaults', e); }
 
-  // Filter out past slots for today
-  const nowHour = now.getHours() + now.getMinutes()/60;
-  if (daysData[0]) {
-    daysData[0].slots = daysData[0].slots.filter(s => parseTimeToHour(s.time) > nowHour + 0.25);
+  // If today happens to fall inside the booking range, filter past time slots
+  const todayStr = fmtDate(today0);
+  const todayInRange = daysData.find(d => d.dateStr === todayStr);
+  if (todayInRange){
+    const nowHour = now.getHours() + now.getMinutes()/60;
+    todayInRange.slots = todayInRange.slots.filter(s => parseTimeToHour(s.time) > nowHour + 0.25);
   }
 
-  // Pick first day that has open slots → show that week, auto-select it
+  // Pick first day with open slots → snap to that week and auto-select it
   const firstOpenIdx = daysData.findIndex(d => d.slots.some(s => !s.booked));
   const startIdx = firstOpenIdx >= 0 ? firstOpenIdx : 0;
-  // Snap week start so the selected day is always visible
   weekStartIdx = Math.floor(startIdx / 7) * 7;
 
   renderWeek();
   if (firstOpenIdx >= 0) selectDay(daysData[firstOpenIdx].dateStr);
   else renderSlotGrid();
 
-  // Wire up prev/next buttons (idempotent — safe to call once)
+  // Wire prev/next buttons once
   const prev = document.getElementById('calPrev');
   const next = document.getElementById('calNext');
   if (prev && !prev.__wired){ prev.__wired = true; prev.addEventListener('click', () => shiftWeek(-1)); }
   if (next && !next.__wired){ next.__wired = true; next.addEventListener('click', () => shiftWeek(1)); }
+}
+
+function dayDiff(date){
+  const today0 = new Date(); today0.setHours(0,0,0,0);
+  return Math.round((date.getTime() - today0.getTime()) / 86400000);
 }
 
 function shiftWeek(direction){
@@ -1059,12 +1067,14 @@ function renderWeek(){
   for (let i = start; i < end; i++){
     const day = daysData[i];
     const open = day.slots.filter(s => !s.booked).length;
-    const isToday = i === 0;
+    const diff = dayDiff(day.dateObj);
+    const isToday = diff === 0;
+    const isTomorrow = diff === 1;
     const isSelected = selectedDateStr === day.dateStr;
     const pill = document.createElement('button');
     pill.type = 'button';
     pill.className = 'day-pill' + (isToday ? ' today' : '') + (isSelected ? ' selected' : '') + (open === 0 ? ' unavailable' : '');
-    const dayName = isToday ? 'Today' : (i === 1 ? 'Tomorrow' : DAY_NAMES_SHORT[day.dateObj.getDay()]);
+    const dayName = isToday ? 'Today' : isTomorrow ? 'Tomorrow' : DAY_NAMES_SHORT[day.dateObj.getDay()];
     pill.innerHTML = `
       <div class="day-name">${dayName}</div>
       <div class="day-num">${day.dateObj.getDate()}</div>
@@ -1129,8 +1139,7 @@ function renderSlotGrid(){
   const day = daysData.find(x => x.dateStr === selectedDateStr);
   if (!day) return;
   const dateObj = day.dateObj;
-  const today0 = new Date(); today0.setHours(0,0,0,0);
-  const diff = Math.round((dateObj - today0) / 86400000);
+  const diff = dayDiff(dateObj);
   const dayLabel = diff === 0 ? 'Today' : diff === 1 ? 'Tomorrow' : DAY_NAMES_LONG[dateObj.getDay()];
   title.textContent = dayLabel + ', ' + MON_NAMES_LONG[dateObj.getMonth()] + ' ' + dateObj.getDate();
   const openCount = day.slots.filter(s => !s.booked).length;
@@ -1175,8 +1184,7 @@ function pickSlot(slot){
 function slotLabel(slot){
   const [y,m,d] = slot.date.split('-').map(Number);
   const dateObj = new Date(y, m-1, d);
-  const today0 = new Date(); today0.setHours(0,0,0,0);
-  const diff = Math.round((dateObj - today0) / 86400000);
+  const diff = dayDiff(dateObj);
   const dayLabel = diff === 0 ? 'Today' : diff === 1 ? 'Tomorrow' : DAY_NAMES_LONG[dateObj.getDay()];
   return dayLabel + ', ' + MON_NAMES[dateObj.getMonth()] + ' ' + dateObj.getDate() + ' · ' + slot.time;
 }

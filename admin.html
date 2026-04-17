@@ -545,18 +545,24 @@ async function loadAllSlots() {
   } catch (e) { console.warn('Failed to load slots:', e); }
 }
 
+// Booking opens June 11, 2026 — admin grid starts from max(today, START_DATE)
+const BOOKING_START = new Date(2026, 5, 11);
+BOOKING_START.setHours(0,0,0,0);
+
 function buildDayGrid() {
   const grid = document.getElementById('dayGrid');
   grid.innerHTML = '';
   const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const now = new Date();
+  const today0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const startDate = today0.getTime() >= BOOKING_START.getTime() ? today0 : BOOKING_START;
 
-  for (let i = 0; i < 14; i++) {
-    const date = new Date(now);
-    date.setDate(date.getDate() + i);
+  for (let i = 0; i < 21; i++) {
+    const date = new Date(startDate);
+    date.setDate(startDate.getDate() + i);
     const dateStr = formatDate(date);
-    const isToday = i === 0;
+    const isToday = date.getTime() === today0.getTime();
     const isSunday = date.getDay() === 0;
     const slotsForDay = allSlots[dateStr] || {};
     const slotCount = Object.keys(slotsForDay).length;

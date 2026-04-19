@@ -265,27 +265,17 @@ section.alt{background:var(--bg-alt)}
   position:relative;overflow:hidden;display:block;
   color:var(--text);text-decoration:none!important;
   background:var(--card-grad);
-  border:1.5px solid var(--border);
+  border:1px solid var(--border);
   border-radius:var(--radius-lg);
-  padding:30px 26px 24px;text-align:left;
+  padding:32px 28px;text-align:left;
   cursor:pointer;
   transition:transform .3s cubic-bezier(.2,.7,.2,1),border-color .25s,box-shadow .3s,background .25s;
 }
 .svc:hover{
-  transform:translateY(-6px) scale(1.015);
+  transform:translateY(-4px);
   border-color:var(--border-strong);
-  box-shadow:0 28px 56px -16px rgba(37,99,235,.22),0 8px 20px -8px rgba(0,0,0,.1);
+  box-shadow:0 20px 44px -12px rgba(15,23,42,.18),0 6px 16px -6px rgba(15,23,42,.08);
 }
-
-/* Service emoji icon */
-.svc-emoji{
-  width:52px;height:52px;border-radius:14px;
-  background:var(--bg-alt);border:1px solid var(--border);
-  display:grid;place-items:center;
-  margin-bottom:18px;font-size:26px;line-height:1;
-  transition:transform .3s cubic-bezier(.2,.7,.2,1),box-shadow .3s;
-}
-.svc:hover .svc-emoji{transform:scale(1.08) rotate(-4deg);box-shadow:0 8px 20px -8px rgba(37,99,235,.25)}
 
 .svc .tag{
   display:inline-flex;align-items:center;gap:6px;
@@ -295,36 +285,33 @@ section.alt{background:var(--bg-alt)}
   border:1px solid var(--border);
 }
 .svc h3{
-  font-family:'Fraunces',serif;font-weight:800;font-size:28px;
-  letter-spacing:-.025em;margin-bottom:4px;color:var(--text);
+  font-family:'Fraunces',serif;font-weight:800;font-size:32px;
+  letter-spacing:-.025em;margin-bottom:8px;color:var(--text);
 }
 .svc .amt{
   font-family:'Fraunces',serif;font-weight:900;font-size:52px;
-  color:var(--text);letter-spacing:-.04em;line-height:1;margin:10px 0 4px;
+  color:var(--text);letter-spacing:-.05em;line-height:1;margin:10px 0 4px;
 }
 .svc .amt .d{font-size:24px;font-weight:500;font-style:italic;vertical-align:top;opacity:.65;margin-right:2px}
-.svc .flat{font-size:10px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--text-subtle);margin-bottom:14px}
-.svc .desc{font-size:14px;color:var(--text-muted);line-height:1.55;margin-bottom:20px}
+.svc .flat{font-size:10px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--text-subtle);margin-bottom:20px}
+.svc .desc{font-size:14.5px;color:var(--text-muted);line-height:1.6;margin-bottom:22px}
 .svc .book-hint{
   display:inline-flex;align-items:center;gap:7px;
-  font-size:13px;font-weight:700;
-  color:var(--text-subtle);
-  padding:9px 16px;border-radius:10px;
-  background:var(--bg-alt);border:1.5px solid var(--border);
-  transition:all .25s cubic-bezier(.2,.7,.2,1);
+  font-size:13px;font-weight:600;
+  color:var(--text-muted);
+  transition:color .25s cubic-bezier(.2,.7,.2,1);
 }
 .svc:hover .book-hint{
-  color:var(--accent-contrast);
-  background:var(--accent);border-color:var(--accent);
-  box-shadow:0 8px 20px -8px rgba(37,99,235,.4);
+  color:var(--accent);
 }
-.svc .book-hint svg{transition:transform .25s}
+.svc .book-hint svg{transition:transform .25s cubic-bezier(.2,.7,.2,1)}
 .svc:hover .book-hint svg{transform:translateX(4px)}
 
 /* Featured premium card */
 .svc.feat{
   background:var(--premium-grad);color:#fff;
-  border:1.5px solid rgba(251,191,36,.4);
+  border:1px solid rgba(251,191,36,.4);
+  border-top:3px solid var(--amber-400);
 }
 .svc.feat::after{
   content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
@@ -332,14 +319,10 @@ section.alt{background:var(--bg-alt)}
 }
 .svc.feat>*{position:relative;z-index:1}
 .svc.feat:hover{
-  border-color:rgba(251,191,36,.75);
-  box-shadow:0 28px 56px -16px rgba(251,191,36,.35),0 0 0 1px rgba(251,191,36,.2),0 8px 20px -8px rgba(0,0,0,.25);
+  border-color:rgba(251,191,36,.6);
+  border-top-color:var(--amber-400);
+  box-shadow:0 20px 48px -12px rgba(251,191,36,.3);
 }
-.svc.feat .svc-emoji{
-  background:rgba(251,191,36,.12);border-color:rgba(251,191,36,.28);
-  font-size:28px;
-}
-.svc.feat:hover .svc-emoji{box-shadow:0 8px 20px -8px rgba(251,191,36,.45)}
 .svc.feat .tag{background:rgba(251,191,36,.12);color:var(--amber-300);border-color:rgba(251,191,36,.3)}
 .svc.feat h3{color:#fff}
 /* Dollar sign fix: explicit gold color so it's always visible */
@@ -348,13 +331,10 @@ section.alt{background:var(--bg-alt)}
 .svc.feat .flat{color:rgba(255,255,255,.5)}
 .svc.feat .desc{color:rgba(255,255,255,.75)}
 .svc.feat .book-hint{
-  color:#fbbf24;background:rgba(251,191,36,.12);border-color:rgba(251,191,36,.3);
+  color:var(--amber-300);
 }
 .svc.feat:hover .book-hint{
-  color:#3a2a0a;
-  background:linear-gradient(135deg,var(--amber-400),var(--amber-500));
-  border-color:transparent;
-  box-shadow:0 8px 20px -8px rgba(251,191,36,.5);
+  color:var(--amber-200);
 }
 .svc.feat .badge{
   position:absolute;top:16px;right:16px;z-index:2;
@@ -846,7 +826,6 @@ footer a{color:var(--accent);font-weight:500}
 
     <div class="svc-grid reveal">
       <a class="svc" href="book.html?service=Sidewalks">
-        <div class="svc-emoji">🚶</div>
         <span class="tag">Soap Wash</span>
         <h3>Sidewalks</h3>
         <div class="amt"><span class="d">$</span>25</div>
@@ -855,7 +834,6 @@ footer a{color:var(--accent);font-weight:500}
         <span class="book-hint">Book this service <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
       </a>
       <a class="svc" href="book.html?service=Trash%20Cans">
-        <div class="svc-emoji">🗑️</div>
         <span class="tag">Soap Wash</span>
         <h3>Trash Cans</h3>
         <div class="amt"><span class="d">$</span>30</div>
@@ -864,7 +842,6 @@ footer a{color:var(--accent);font-weight:500}
         <span class="book-hint">Book this service <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
       </a>
       <a class="svc" href="book.html?service=Patios">
-        <div class="svc-emoji">🏡</div>
         <span class="tag">Soap Wash</span>
         <h3>Patios</h3>
         <div class="amt"><span class="d">$</span>50</div>
@@ -876,7 +853,6 @@ footer a{color:var(--accent);font-weight:500}
 
     <div class="svc-grid-lg reveal">
       <a class="svc" href="book.html?service=Driveway%20(Standard)">
-        <div class="svc-emoji">🚗</div>
         <span class="tag">Water Only · No Soap</span>
         <h3>Driveway</h3>
         <div class="amt"><span class="d">$</span>75</div>
@@ -886,7 +862,6 @@ footer a{color:var(--accent);font-weight:500}
       </a>
       <a class="svc feat" href="book.html?service=Pristine%2B%20(Soap%20%26%20Bleach)">
         <span class="badge">★ Premium</span>
-        <div class="svc-emoji">⭐</div>
         <span class="tag">Soap + Bleach · Grass-Safe</span>
         <h3>Pristine+</h3>
         <div class="amt"><span class="d">$</span>115</div>

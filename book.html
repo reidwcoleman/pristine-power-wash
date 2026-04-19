@@ -727,6 +727,7 @@ a{color:var(--accent);text-decoration:none}
   .day-pill .day-num{font-size:20px}
   .cal-month{font-size:18px}
   .cal-range{font-size:11px}
+  .calendar{padding:16px 14px}.slot-panel{padding:20px 16px}
 }
 @media (max-width:480px){
   .shell{padding:20px 16px 60px}
@@ -738,6 +739,21 @@ a{color:var(--accent);text-decoration:none}
   .day-pill .day-name{font-size:9px;letter-spacing:.08em}
   .day-pill .day-avail{font-size:8.5px}
 }
+/* Step 0 — more info toggle */
+.more-info-toggle{display:none;width:100%;padding:12px 18px;border-radius:12px;border:1px solid var(--border);background:var(--bg-alt);color:var(--text-muted);font-size:14px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:all .2s;margin-bottom:16px;text-align:center}
+.more-info-toggle:hover{border-color:var(--border-strong);color:var(--text)}
+.more-info-toggle.open{color:var(--accent);border-color:var(--accent)}
+@media(max-width:640px){.more-info-toggle{display:block}.more-info-panel{display:none}.more-info-panel.open{display:block}}
+/* Step 1 — compact on mobile */
+@media(max-width:480px){.form-wrap{max-width:100%}.field input,.field textarea{padding:12px 14px;font-size:15px}.field{margin-bottom:12px}.step-title{font-size:clamp(26px,7vw,38px)}.step-sub{font-size:15px;margin-bottom:24px}.step-eyebrow{font-size:10px;padding:6px 12px;margin-bottom:14px}}
+/* Step 2 — calendar compact */
+@media(max-width:480px){.day-pill{padding:8px 3px;border-radius:10px}.day-pill .day-num{font-size:18px}.day-pill .day-name{font-size:9px;letter-spacing:.08em}.day-pill .day-avail{font-size:8px}.week-row{gap:4px}.cal-month{font-size:16px}.slot{padding:14px 16px;min-height:64px}.slot .slot-time{font-size:20px}.cal-nav{width:34px;height:34px;border-radius:10px}}
+/* Step 3 — summary toggle */
+.summary-toggle{display:none;width:100%;padding:12px 16px;border-radius:10px;border:1px solid var(--border);background:var(--bg-alt);color:var(--text-muted);font-size:14px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;text-align:center;margin-bottom:0;transition:all .2s}
+.summary-toggle.open{color:var(--accent);border-color:var(--accent)}
+@media(max-width:760px){.summary-toggle{display:block;margin-bottom:12px}.summary-body{display:none}.summary-body.open{display:block}.summary-card{padding:16px}.summary-card h3{display:none}}
+/* Confirmation + global mobile */
+@media(max-width:480px){.success-wrap{padding:28px 18px}.success-halo{width:90px;height:90px;margin-bottom:16px}.success-check{width:70px;height:70px;border-radius:20px}.success-check svg{width:32px;height:32px}.success-wrap h2{font-size:clamp(26px,7vw,36px)}.success-intro{font-size:14.5px;margin-bottom:20px}.success-details{padding:14px 16px}.success-timeline{padding:16px 18px}.success-actions{gap:8px}.success-actions .btn{padding:12px 16px;font-size:13.5px}.shell{padding:20px 14px 60px}.topbar-inner{padding:12px 16px}.progress{padding:16px 14px 0}.btn-row{gap:10px;margin-top:20px}.btn.xl{padding:16px 28px;font-size:15px}.btn.lg{padding:14px 22px;font-size:14px}}
 @media (prefers-reduced-motion: reduce){
   *{animation-duration:.01ms!important;transition-duration:.01ms!important}
 }
@@ -830,6 +846,9 @@ a{color:var(--accent);text-decoration:none}
       </div>
     </div>
 
+    <button id="moreInfoToggle" class="more-info-toggle">See what's included ↓</button>
+
+    <div id="moreInfoPanel" class="more-info-panel">
     <!-- Payment-after-service reassurance -->
     <div class="pay-banner">
       <span class="pay-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7h-3V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h3v3a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M7 11h8"/><path d="M11 15h4"/></svg></span>
@@ -874,6 +893,8 @@ a{color:var(--accent);text-decoration:none}
           </div>
         </div>
       </div>
+    </div>
+
     </div>
 
     <div class="btn-row">
@@ -955,7 +976,9 @@ a{color:var(--accent);text-decoration:none}
         </div>
       </div>
       <aside class="summary-card" aria-label="Booking summary">
+        <button class="summary-toggle" id="summaryToggle">View booking summary ↓</button>
         <h3>Booking Summary</h3>
+        <div class="summary-body">
         <div class="summary-row"><span class="lbl">Service</span><span class="val" id="sService">—</span></div>
         <div class="summary-row"><span class="lbl">Time</span><span class="val" id="sTime">—</span></div>
         <div class="summary-row"><span class="lbl">Name</span><span class="val" id="sName">—</span></div>
@@ -965,6 +988,7 @@ a{color:var(--accent);text-decoration:none}
         <div class="summary-note">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 7 12 12 14 14"/></svg>
           <span>Paid <strong>after</strong> the job — not today.</span>
+        </div>
         </div>
       </aside>
     </div>
@@ -1785,6 +1809,8 @@ async function submitBooking(){
   btn.innerHTML = 'Confirm &amp; Book ✓'; btn.disabled = false;
   goStep(4);
 }
+(function(){const t=document.getElementById('moreInfoToggle'),p=document.getElementById('moreInfoPanel');if(!t||!p)return;t.addEventListener('click',()=>{const o=p.classList.toggle('open');t.classList.toggle('open',o);t.textContent=o?'Hide details ↑':'See what\'s included ↓'})})();
+(function(){const t=document.getElementById('summaryToggle'),b=document.querySelector('.summary-body');if(!t||!b)return;t.addEventListener('click',()=>{const o=b.classList.toggle('open');t.classList.toggle('open',o);t.textContent=o?'Hide summary ↑':'View booking summary ↓'})})();
 </script>
 
 </body>

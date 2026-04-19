@@ -605,6 +605,100 @@ footer a{color:var(--accent);font-weight:500}
 .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
 .reveal.visible{opacity:1;transform:translateY(0)}
 
+/* ===== HAMBURGER & MOBILE NAV ===== */
+.hamburger{
+  display:none;width:38px;height:38px;border-radius:10px;
+  border:1px solid var(--border);background:var(--surface);
+  align-items:center;justify-content:center;
+  cursor:pointer;color:var(--text-muted);flex-shrink:0;
+  transition:all .2s ease;
+}
+.hamburger:hover{color:var(--text);border-color:var(--border-strong);transform:translateY(-1px)}
+.hamburger svg{width:18px;height:18px}
+.hamburger .icon-close{display:none}
+.hamburger.open .icon-menu{display:none}
+.hamburger.open .icon-close{display:block}
+.mobile-nav{
+  display:none;position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,.55);
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+}
+.mobile-nav.open{display:flex;justify-content:flex-end}
+.mobile-sheet{
+  width:min(300px,90vw);background:var(--surface);
+  padding:24px;overflow-y:auto;
+  display:flex;flex-direction:column;gap:4px;
+  transform:translateX(100%);
+  transition:transform .3s cubic-bezier(.2,.7,.2,1);
+  box-shadow:-4px 0 32px rgba(0,0,0,.18);
+}
+.mobile-nav.open .mobile-sheet{transform:translateX(0)}
+.mobile-sheet-top{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:16px;padding-bottom:16px;
+  border-bottom:1px solid var(--border);
+}
+.mobile-sheet-brand{
+  font-family:'Fraunces',serif;font-weight:900;font-size:15px;
+  color:var(--text);letter-spacing:-.02em;display:flex;align-items:center;gap:8px;
+}
+.mobile-sheet-brand em{font-style:italic;font-weight:400;color:var(--accent)}
+.mobile-close-btn{
+  width:30px;height:30px;border-radius:8px;
+  border:1px solid var(--border);background:var(--bg-alt);
+  display:grid;place-items:center;cursor:pointer;color:var(--text-muted);
+  transition:all .2s;
+}
+.mobile-close-btn:hover{color:var(--text);border-color:var(--border-strong)}
+.mobile-nav-link{
+  display:block;color:var(--text-muted);font-weight:500;font-size:15px;
+  padding:11px 14px;border-radius:10px;
+  transition:color .2s,background .2s;
+}
+.mobile-nav-link:hover{color:var(--text);background:var(--bg-alt)}
+.mobile-divider{height:1px;background:var(--border);margin:8px 0}
+.mobile-book{margin-top:8px;text-align:center;width:100%;padding:14px;border-radius:12px}
+
+/* ===== IMPROVED FOOTER ===== */
+footer{
+  background:var(--bg-alt);color:var(--text-muted);
+  font-size:14px;border-top:1px solid var(--border);
+}
+.footer-inner{max-width:1120px;margin:0 auto;padding:56px 24px 0}
+.footer-grid{
+  display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:40px;
+  padding-bottom:48px;border-bottom:1px solid var(--border);
+}
+.f-brand{
+  font-family:'Fraunces',serif;font-weight:800;font-size:18px;
+  color:var(--text);margin-bottom:10px;
+  display:inline-flex;align-items:center;gap:10px;
+}
+.f-brand em{font-style:italic;font-weight:400;color:var(--accent)}
+.f-desc{font-size:13.5px;color:var(--text-subtle);line-height:1.55;margin-bottom:14px;max-width:280px}
+.f-contact a{display:block;color:var(--accent);font-weight:500;font-size:13px;margin-bottom:4px}
+footer a{color:var(--accent);font-weight:500}
+.footer-link-col{}
+.footer-link-title{
+  display:block;font-size:10px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--text-subtle);margin-bottom:12px;
+}
+.footer-link-col a{
+  display:block;color:var(--text-muted);font-size:13.5px;font-weight:500;
+  padding:4px 0;transition:color .2s;
+}
+.footer-link-col a:hover{color:var(--accent)}
+.footer-bottom{
+  max-width:1120px;margin:0 auto;
+  padding:18px 24px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
+  font-size:12.5px;color:var(--text-subtle);
+}
+.f-admin{font-size:12px;color:var(--text-subtle);text-decoration:none}
+.f-admin:hover{color:var(--text-muted)}
+@media(max-width:860px){.footer-grid{grid-template-columns:1fr 1fr;gap:28px}}
+@media(max-width:480px){.footer-grid{grid-template-columns:1fr;gap:20px}}
+
 /* RESPONSIVE */
 @media(max-width:860px){
   .contact-grid{grid-template-columns:1fr;gap:36px;text-align:center}
@@ -612,7 +706,8 @@ footer a{color:var(--accent);font-weight:500}
   .phone{justify-content:center}
 }
 @media(max-width:768px){
-  .nav-links li:nth-child(-n+3){display:none}
+  .hamburger{display:flex}
+  .nav-links li:not(:nth-child(5)){display:none}
   .hero{padding:90px 20px 100px}
   section{padding:76px 0}
   .svc-grid-lg{grid-template-columns:1fr}
@@ -652,8 +747,30 @@ footer a{color:var(--accent);font-weight:500}
       </li>
       <li><a href="#services" class="btn">Book Now</a></li>
     </ul>
+    <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
+      <svg class="icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
   </nav>
 </header>
+
+<!-- MOBILE NAV OVERLAY -->
+<div class="mobile-nav" id="mobileNav" role="dialog" aria-modal="true" aria-label="Navigation">
+  <div class="mobile-sheet">
+    <div class="mobile-sheet-top">
+      <span class="mobile-sheet-brand">Pristine <em>Powerwashing</em></span>
+      <button class="mobile-close-btn" id="mobileClose" aria-label="Close menu">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <a href="#services" class="mobile-nav-link">Services &amp; Pricing</a>
+    <a href="#compare" class="mobile-nav-link">Compare Services</a>
+    <a href="#area" class="mobile-nav-link">Service Area</a>
+    <a href="#faq" class="mobile-nav-link">FAQ</a>
+    <div class="mobile-divider"></div>
+    <a href="book.html" class="btn mobile-book">Book Now</a>
+  </div>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -1005,16 +1122,43 @@ footer a{color:var(--accent);font-weight:500}
 
 <!-- FOOTER -->
 <footer>
-  <div class="f-brand">
-    <span class="brand-mark" aria-hidden="true" style="width:28px;height:28px">
-      <svg width="14" height="17" viewBox="0 0 20 24" fill="none"><path d="M10 1C14 7 19 13 19 17a9 9 0 0 1-18 0c0-4 5-10 9-16z" fill="#fff"/></svg>
-    </span>
-    Pristine <em>Powerwashing</em>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div>
+        <div class="f-brand">
+          <span class="brand-mark" aria-hidden="true" style="width:28px;height:28px">
+            <svg width="14" height="17" viewBox="0 0 20 24" fill="none"><path d="M10 1C14 7 19 13 19 17a9 9 0 0 1-18 0c0-4 5-10 9-16z" fill="#fff"/></svg>
+          </span>
+          Pristine <em>Powerwashing</em>
+        </div>
+        <p class="f-desc">Professional powerwashing for sidewalks, patios, driveways &amp; more. Flat-rate pricing. Pet-safe soap. Based in Highcroft, NC.</p>
+        <div class="f-contact">
+          <a href="tel:+19843446217">(984) 344-6217</a>
+          <a href="mailto:reidwcoleman@gmail.com">reidwcoleman@gmail.com</a>
+        </div>
+      </div>
+      <div class="footer-link-col">
+        <span class="footer-link-title">Services</span>
+        <a href="book.html?service=Sidewalks">Sidewalks — $25</a>
+        <a href="book.html?service=Trash%20Cans">Trash Cans — $30</a>
+        <a href="book.html?service=Patios">Patios — $50</a>
+        <a href="book.html?service=Driveway%20(Standard)">Driveway — $75</a>
+        <a href="book.html?service=Pristine%2B%20(Soap%20%26%20Bleach)">Pristine+ — $115</a>
+      </div>
+      <div class="footer-link-col">
+        <span class="footer-link-title">Quick Links</span>
+        <a href="#services">Services &amp; Pricing</a>
+        <a href="#compare">Compare Services</a>
+        <a href="#area">Service Area</a>
+        <a href="#faq">FAQ</a>
+        <a href="book.html" class="btn" style="display:inline-flex;margin-top:14px;padding:11px 22px;font-size:14px">Book Now</a>
+      </div>
+    </div>
   </div>
-  <div class="f-meta">Based in Highcroft — serving Cary, Morrisville, Preston, Amberly &amp; surrounding neighborhoods.</div>
-  <div class="f-meta">pristine-powerwash.org · <a href="tel:+19843446217">(984) 344-6217</a> · <a href="mailto:reidwcoleman@gmail.com">reidwcoleman@gmail.com</a></div>
-  <div class="f-meta">&copy; 2026 Pristine Powerwashing. All rights reserved.</div>
-  <a href="admin.html" class="f-admin">Admin</a>
+  <div class="footer-bottom">
+    <span>Serving Cary, Morrisville, Preston, Amberly &amp; surrounding neighborhoods &copy; 2026 Pristine Powerwashing.</span>
+    <a href="admin.html" class="f-admin">Admin</a>
+  </div>
 </footer>
 
 <script>
@@ -1022,18 +1166,42 @@ footer a{color:var(--accent);font-weight:500}
 (function(){
   const root = document.documentElement;
   const stored = localStorage.getItem('pw-theme');
-  if(stored === 'light') root.setAttribute('data-theme', 'light');
+  if(stored === 'light'){ root.setAttribute('data-theme','light'); root.style.colorScheme='light'; }
   function current(){ return root.getAttribute('data-theme') === 'light' ? 'light' : 'dark'; }
   document.addEventListener('DOMContentLoaded', () => {
     const toggle = document.getElementById('themeToggle');
     if(!toggle) return;
     toggle.addEventListener('click', () => {
       const next = current() === 'dark' ? 'light' : 'dark';
-      if(next === 'light') root.setAttribute('data-theme', 'light');
-      else root.removeAttribute('data-theme');
+      if(next === 'light'){ root.setAttribute('data-theme','light'); root.style.colorScheme='light'; }
+      else { root.removeAttribute('data-theme'); root.style.colorScheme='dark'; }
       localStorage.setItem('pw-theme', next);
     });
   });
+})();
+
+// ===== MOBILE NAV =====
+(function(){
+  const hamburger = document.getElementById('hamburger');
+  const mobileNav  = document.getElementById('mobileNav');
+  const mobileClose = document.getElementById('mobileClose');
+  if(!hamburger || !mobileNav) return;
+  function openNav(){
+    mobileNav.classList.add('open');
+    hamburger.classList.add('open');
+    hamburger.setAttribute('aria-expanded','true');
+    document.body.style.overflow='hidden';
+  }
+  function closeNav(){
+    mobileNav.classList.remove('open');
+    hamburger.classList.remove('open');
+    hamburger.setAttribute('aria-expanded','false');
+    document.body.style.overflow='';
+  }
+  hamburger.addEventListener('click', () => mobileNav.classList.contains('open') ? closeNav() : openNav());
+  if(mobileClose) mobileClose.addEventListener('click', closeNav);
+  mobileNav.addEventListener('click', e => { if(e.target === mobileNav) closeNav(); });
+  mobileNav.querySelectorAll('.mobile-nav-link,.mobile-book').forEach(el => el.addEventListener('click', closeNav));
 })();
 
 // ===== FLOATING DROPLETS =====

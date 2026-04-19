@@ -658,6 +658,58 @@ a{color:var(--accent);text-decoration:none}
 .success-actions .btn{flex:1 1 auto;min-width:130px}
 .success-actions .btn.xl{flex:1 1 100%;margin-top:4px}
 
+/* Enhanced slot selected state */
+.slot.selected{
+  border-color:var(--accent);
+  background:linear-gradient(135deg,rgba(96,165,250,.18),rgba(56,189,248,.08));
+  box-shadow:0 12px 32px -10px rgba(96,165,250,.45),0 0 0 3px var(--ring);
+  transform:translateY(-3px);
+}
+.slot.selected::after{
+  content:'✓';
+  position:absolute;top:8px;right:10px;
+  width:20px;height:20px;border-radius:50%;
+  background:var(--accent);color:var(--accent-contrast);
+  display:grid;place-items:center;
+  font-size:11px;font-weight:800;line-height:1;
+}
+.slot.selected .slot-period{color:var(--accent);font-weight:800}
+
+/* Spinner for submit button */
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.btn-spinner{
+  width:16px;height:16px;border-radius:50%;
+  border:2px solid rgba(255,255,255,.3);border-top-color:#fff;
+  animation:spin .7s linear infinite;flex-shrink:0;
+}
+
+/* Improved step transitions */
+.step{display:none;animation:stepIn .42s cubic-bezier(.2,.7,.2,1) both}
+.step.active{display:block}
+@keyframes stepIn{
+  from{opacity:0;transform:translateX(12px) translateY(6px)}
+  to{opacity:1;transform:translateX(0) translateY(0)}
+}
+.step-back{animation:stepBack .38s cubic-bezier(.2,.7,.2,1) both}
+@keyframes stepBack{
+  from{opacity:0;transform:translateX(-12px) translateY(6px)}
+  to{opacity:1;transform:translateX(0) translateY(0)}
+}
+
+/* Add to Calendar section */
+.cal-section{
+  margin-bottom:18px;
+  background:var(--bg-alt);border:1px solid var(--border);
+  border-radius:var(--radius-md);padding:18px 20px;
+  text-align:left;
+}
+.cal-section-label{
+  font-size:10.5px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--text-subtle);margin-bottom:12px;
+}
+.cal-btns{display:flex;gap:10px;flex-wrap:wrap}
+.cal-btns .btn{flex:1 1 auto;min-width:130px;font-size:13px;padding:10px 16px}
+
 /* Mobile responsive */
 @media (max-width:760px){
   .intro-grid{grid-template-columns:1fr}
@@ -962,6 +1014,21 @@ a{color:var(--accent);text-decoration:none}
         <span><strong>No payment today.</strong> Cash or CashApp — only after the job is complete and you've inspected the work.</span>
       </div>
 
+      <!-- Add to Calendar -->
+      <div class="cal-section" id="calSection" style="display:none">
+        <div class="cal-section-label">Add to Calendar</div>
+        <div class="cal-btns">
+          <a id="gcalLink" href="#" target="_blank" rel="noopener" class="btn ghost">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Google Calendar
+          </a>
+          <button id="icsBtn" class="btn ghost" type="button">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Apple Calendar
+          </button>
+        </div>
+      </div>
+
       <!-- Quick actions -->
       <div class="success-actions">
         <a href="sms:+19843446217" class="btn ghost lg">
@@ -984,15 +1051,15 @@ a{color:var(--accent);text-decoration:none}
 (function(){
   const root = document.documentElement;
   const stored = localStorage.getItem('pw-theme');
-  if(stored === 'light') root.setAttribute('data-theme', 'light');
+  if(stored === 'light'){ root.setAttribute('data-theme','light'); root.style.colorScheme='light'; }
   function current(){ return root.getAttribute('data-theme') === 'light' ? 'light' : 'dark'; }
   document.addEventListener('DOMContentLoaded', () => {
     const t = document.getElementById('themeToggle');
     if(!t) return;
     t.addEventListener('click', () => {
       const next = current() === 'dark' ? 'light' : 'dark';
-      if(next === 'light') root.setAttribute('data-theme', 'light');
-      else root.removeAttribute('data-theme');
+      if(next === 'light'){ root.setAttribute('data-theme','light'); root.style.colorScheme='light'; }
+      else { root.removeAttribute('data-theme'); root.style.colorScheme='dark'; }
       localStorage.setItem('pw-theme', next);
     });
   });
@@ -1110,8 +1177,11 @@ svc.includes.forEach(item => {
 // ===== STEP NAVIGATION =====
 let currentStep = 0;
 function goStep(n){
-  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-  document.querySelector('.step[data-step="' + n + '"]').classList.add('active');
+  const isBack = n < currentStep;
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active','step-back'));
+  const next = document.querySelector('.step[data-step="' + n + '"]');
+  if(isBack) next.classList.add('step-back');
+  next.classList.add('active');
   document.querySelectorAll('.progress-step').forEach(item => {
     const ds = +item.dataset.step;
     item.classList.remove('active','done');
@@ -1210,8 +1280,97 @@ function showToast(msg, tone){
   toast.__t = setTimeout(() => toast.classList.remove('show'), 4000);
 }
 
+// ===== PHONE FORMATTER =====
+function formatPhone(raw){
+  const d = String(raw).replace(/\D/g,'');
+  if(d.length < 10) return raw;
+  return '(' + d.slice(0,3) + ') ' + d.slice(3,6) + '-' + d.slice(6,10);
+}
+
+// ===== SESSION STORAGE =====
+function saveProgress(){
+  try {
+    sessionStorage.setItem('pw-booking', JSON.stringify({
+      service: serviceName,
+      name:    document.getElementById('bName')?.value    || '',
+      phone:   document.getElementById('bPhone')?.value   || '',
+      email:   document.getElementById('bEmail')?.value   || '',
+      address: document.getElementById('bAddress')?.value || '',
+      notes:   document.getElementById('bNotes')?.value   || ''
+    }));
+  } catch(e){}
+}
+function restoreProgress(){
+  try {
+    const saved = JSON.parse(sessionStorage.getItem('pw-booking'));
+    if(!saved || saved.service !== serviceName) return;
+    if(saved.name)    document.getElementById('bName').value    = saved.name;
+    if(saved.phone)   document.getElementById('bPhone').value   = saved.phone;
+    if(saved.email)   document.getElementById('bEmail').value   = saved.email;
+    if(saved.address) document.getElementById('bAddress').value = saved.address;
+    if(saved.notes)   document.getElementById('bNotes').value   = saved.notes;
+  } catch(e){}
+}
+
+// ===== ADD TO CALENDAR =====
+function buildGcalUrl(slot, service, address){
+  const [y,m,d] = slot.date.split('-').map(Number);
+  const h = slot.time.startsWith('10') ? 10 : slot.time.startsWith('12') ? 12 : 14;
+  const pad = n => String(n).padStart(2,'0');
+  const start = `${y}${pad(m)}${pad(d)}T${pad(h)}0000`;
+  const end   = `${y}${pad(m)}${pad(d)}T${pad(h+1)}0000`;
+  const p = new URLSearchParams({
+    action:'TEMPLATE',
+    text:`Pristine Powerwashing — ${service}`,
+    dates:`${start}/${end}`,
+    details:`Service: ${service}\nAddress: ${address}\nPay after the job is done. Questions? Text (984) 344-6217.`,
+    location: address
+  });
+  return 'https://calendar.google.com/calendar/render?' + p.toString();
+}
+function downloadIcs(slot, service, address){
+  const [y,m,d] = slot.date.split('-').map(Number);
+  const h = slot.time.startsWith('10') ? 10 : slot.time.startsWith('12') ? 12 : 14;
+  const pad = n => String(n).padStart(2,'0');
+  const ics = [
+    'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Pristine Powerwashing//EN',
+    'BEGIN:VEVENT',
+    `DTSTART:${y}${pad(m)}${pad(d)}T${pad(h)}0000`,
+    `DTEND:${y}${pad(m)}${pad(d)}T${pad(h+1)}0000`,
+    `SUMMARY:Pristine Powerwashing — ${service}`,
+    `DESCRIPTION:Service: ${service}\\nAddress: ${address}\\nPay after the job is done.`,
+    `LOCATION:${address}`,
+    'END:VEVENT','END:VCALENDAR'
+  ].join('\r\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([ics],{type:'text/calendar'}));
+  a.download = 'pristine-booking.ics';
+  a.click();
+}
+
 // Enter-key navigation through the onboarding steps
 document.addEventListener('DOMContentLoaded', () => {
+  // Phone masking
+  const phoneEl = document.getElementById('bPhone');
+  if(phoneEl){
+    phoneEl.addEventListener('input', function(){
+      const digits = this.value.replace(/\D/g,'').slice(0,10);
+      if(!digits){ this.value=''; return; }
+      if(digits.length <= 3){ this.value='('+digits; return; }
+      if(digits.length <= 6){ this.value='('+digits.slice(0,3)+') '+digits.slice(3); return; }
+      this.value='('+digits.slice(0,3)+') '+digits.slice(3,6)+'-'+digits.slice(6);
+    });
+  }
+
+  // Restore session storage
+  restoreProgress();
+
+  // Save on input
+  ['bName','bPhone','bEmail','bAddress','bNotes'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input', saveProgress);
+  });
+
+  // Enter-key navigation
   ['bName','bPhone','bEmail'].forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
@@ -1492,7 +1651,7 @@ async function submitBooking(){
   if (!selectedSlot) { goStep(2); flashPickTimePrompt(); return; }
 
   const btn = document.getElementById('submitBtn');
-  btn.textContent = 'Booking…'; btn.disabled = true;
+  btn.innerHTML = '<span class="btn-spinner"></span> Booking…'; btn.disabled = true;
 
   const name = document.getElementById('bName').value.trim();
   const phone = document.getElementById('bPhone').value.trim();
@@ -1526,7 +1685,7 @@ async function submitBooking(){
     }
   } catch(e){
     if (e.message === 'SLOT_TAKEN') {
-      btn.textContent = 'Confirm & Book ✓'; btn.disabled = false;
+      btn.innerHTML = 'Confirm &amp; Book ✓'; btn.disabled = false;
       selectedSlot = null;
       slotsInitialized = false;
       await initSlots();
@@ -1601,14 +1760,29 @@ async function submitBooking(){
   } catch(e) {}
 
   // Success view
-  document.getElementById('successMsg').innerHTML = "I'll text <strong>" + escapeHtml(phone) + "</strong> within a few hours to confirm the details.";
+  const fmtPhone = formatPhone(phone);
+  document.getElementById('successMsg').innerHTML = "I'll text <strong>" + escapeHtml(fmtPhone) + "</strong> within a few hours to confirm the details.";
   document.getElementById('successDetails').innerHTML = `
     <div class="row"><span class="lbl">Service</span><span class="val">${escapeHtml(serviceName)}</span></div>
     <div class="row"><span class="lbl">Time</span><span class="val">${escapeHtml(slotLabel(selectedSlot))}</span></div>
     <div class="row"><span class="lbl">Address</span><span class="val">${escapeHtml(address)}</span></div>
     <div class="row"><span class="lbl">Total</span><span class="val">$${svc.price}</span></div>
   `;
-  btn.textContent = 'Confirm & Book ✓'; btn.disabled = false;
+
+  // Populate Add to Calendar
+  const calSection = document.getElementById('calSection');
+  const gcalLink   = document.getElementById('gcalLink');
+  const icsBtn     = document.getElementById('icsBtn');
+  if(calSection && gcalLink && icsBtn && selectedSlot){
+    gcalLink.href = buildGcalUrl(selectedSlot, serviceName, address);
+    icsBtn.onclick = () => downloadIcs(selectedSlot, serviceName, address);
+    calSection.style.display = 'block';
+  }
+
+  // Clear saved progress on success
+  try { sessionStorage.removeItem('pw-booking'); } catch(e){}
+
+  btn.innerHTML = 'Confirm &amp; Book ✓'; btn.disabled = false;
   goStep(4);
 }
 </script>

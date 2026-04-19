@@ -75,17 +75,17 @@
 }
 
 /* BASE */
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;color-scheme:dark light}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;color-scheme:dark light;overflow-x:hidden;max-width:100vw}
 body{
   font-family:'Inter',system-ui,-apple-system,sans-serif;
   color:var(--text);background:var(--bg);
-  line-height:1.6;overflow-x:hidden;
+  line-height:1.6;overflow-x:hidden;max-width:100vw;
   -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
   transition:background .4s ease,color .4s ease;
 }
 a{color:var(--accent);text-decoration:none}
-.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px;overflow-x:hidden}
 ::selection{background:var(--brand-500);color:#fff}
 
 /* NAV */
@@ -211,6 +211,7 @@ nav{display:flex;align-items:center;justify-content:space-between;max-width:1120
 
 /* Droplets */
 .drops{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+#drops{overflow:hidden;position:absolute;inset:0;pointer-events:none}
 .drop{
   position:absolute;border-radius:50%;
   background:radial-gradient(circle at 30% 30%,rgba(186,230,253,.85),rgba(59,130,246,.25));

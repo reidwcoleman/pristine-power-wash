@@ -165,6 +165,48 @@ a{color:var(--accent);text-decoration:none}
   position:relative;z-index:1;
   font-size:12.5px;color:rgba(255,255,255,.62);line-height:1.4;
 }
+.svc-bar-toggle{
+  position:relative;z-index:1;
+  display:inline-flex;align-items:center;gap:5px;
+  background:none;border:none;font-family:inherit;
+  font-size:11.5px;font-weight:600;
+  color:rgba(255,255,255,.48);
+  cursor:pointer;margin-top:8px;padding:0;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+  transition:color .15s;
+}
+.svc-bar-toggle:hover{color:rgba(255,255,255,.8)}
+.svc-bar-chevron svg{
+  transition:transform .25s cubic-bezier(.2,.7,.2,1);
+  display:block;width:13px;height:13px;
+}
+.svc-bar.expanded .svc-bar-chevron svg{transform:rotate(180deg)}
+.svc-bar-xpand{
+  display:grid;grid-template-rows:0fr;
+  transition:grid-template-rows .3s cubic-bezier(.2,.7,.2,1);
+  overflow:hidden;position:relative;z-index:1;
+}
+.svc-bar-xpand-inner{min-height:0;overflow:hidden}
+.svc-bar.expanded .svc-bar-xpand{grid-template-rows:1fr}
+.svc-bar-includes{
+  list-style:none;margin:10px 0 5px;
+  display:flex;flex-direction:column;gap:5px;
+}
+.svc-bar-includes li{
+  font-size:12.5px;color:rgba(255,255,255,.6);
+  display:flex;align-items:flex-start;gap:7px;line-height:1.4;
+}
+.svc-bar-includes li::before{
+  content:'';flex-shrink:0;margin-top:2px;
+  width:13px;height:13px;min-width:13px;border-radius:50%;
+  background:rgba(52,211,153,.2);
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2334d399' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='4 12 10 18 20 6'/></svg>");
+  background-repeat:no-repeat;background-position:center;background-size:8px;
+}
+.svc-bar-inctime{
+  font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(255,255,255,.35);margin-bottom:4px;
+}
 
 /* ── FORM GRID ───────────────────────────────────────── */
 .form-grid{
@@ -676,6 +718,11 @@ a{color:var(--accent);text-decoration:none}
         <div class="svc-bar-price">$<span id="heroPrice">25</span></div>
       </div>
       <p class="svc-bar-desc" id="heroDesc">Front walks, stepping stones &amp; entry paths blasted back to fresh concrete.</p>
+      <button class="svc-bar-toggle" id="svcBarToggle" onclick="toggleBarDetails()" type="button">See details <span class="svc-bar-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></button>
+      <div class="svc-bar-xpand" id="svcBarXpand"><div class="svc-bar-xpand-inner">
+        <ul class="svc-bar-includes" id="svcBarIncludes"></ul>
+        <div class="svc-bar-inctime" id="svcBarTime"></div>
+      </div></div>
     </div>
 
     <div class="form-grid">
@@ -808,11 +855,11 @@ const db = firebase.firestore();
 
 // ===== SERVICES =====
 const services = {
-  'Sidewalks':{ tag:'Soap Wash', price:25, premium:false, desc:'Front walks, stepping stones & entry paths blasted back to fresh concrete.' },
-  'Trash Cans':{ tag:'Soap Wash', price:30, premium:false, desc:'Inside & out — soap wash that eliminates odors & bacteria buildup.' },
-  'Patios':{ tag:'Soap Wash', price:50, premium:false, desc:'Pavers, slabs & back porches — lifted, rinsed & ready for the cookout.' },
-  'Driveway (Standard)':{ tag:'Water Only · No Soap', price:75, premium:false, desc:'Standard high-pressure water blast — oil drips, tire marks & seasonal grime rinsed away.' },
-  'Pristine+ (Soap & Bleach)':{ tag:'Soap + Bleach · Grass-Safe', price:115, premium:true, desc:'Driveway + soap & bleach treatment that lifts stains, oil & ground-in grime — keeps the grass safe.' }
+  'Sidewalks':{ tag:'Soap Wash', price:25, premium:false, desc:'Front walks, stepping stones & entry paths blasted back to fresh concrete.', includes:['High-pressure wash + pet-safe soap','Front walks, stepping stones, entry paths','Edge detailing along grass line'], time:'30–45 min' },
+  'Trash Cans':{ tag:'Soap Wash', price:30, premium:false, desc:'Inside & out — soap wash that eliminates odors & bacteria buildup.', includes:['Inside & out deep clean','Eliminates odors & bacteria','Soap wash deodorizer treatment'], time:'~20 min' },
+  'Patios':{ tag:'Soap Wash', price:50, premium:false, desc:'Pavers, slabs & back porches — lifted, rinsed & ready for the cookout.', includes:['Pavers, slabs & back porches','Pet-safe soap treatment','Edge-to-edge coverage'], time:'45–60 min' },
+  'Driveway (Standard)':{ tag:'Water Only · No Soap', price:75, premium:false, desc:'Standard high-pressure water blast — oil drips, tire marks & seasonal grime rinsed away.', includes:['Standard high-pressure water blast','Oil drips, tire marks, seasonal grime','Full driveway coverage'], time:'45–60 min' },
+  'Pristine+ (Soap & Bleach)':{ tag:'Soap + Bleach · Grass-Safe', price:115, premium:true, desc:'Driveway + soap & bleach treatment that lifts stains, oil & ground-in grime — keeps the grass safe.', includes:['Everything in Driveway PLUS soap & bleach','Deep stain & oil lift treatment','Grass-safe bleach application'], time:'60–90 min' }
 };
 
 // ===== URL PARAMS =====
@@ -826,6 +873,14 @@ document.getElementById('heroTag').textContent = svc.tag;
 document.getElementById('heroPrice').textContent = svc.price;
 document.getElementById('heroDesc').textContent = svc.desc;
 if(svc.premium) document.getElementById('svcBar').classList.add('premium');
+const incList = document.getElementById('svcBarIncludes');
+(svc.includes||[]).forEach(item => { const li=document.createElement('li'); li.textContent=item; incList.appendChild(li); });
+const timeEl = document.getElementById('svcBarTime');
+if(timeEl && svc.time) timeEl.textContent = 'Typical time: ' + svc.time;
+
+function toggleBarDetails(){
+  document.getElementById('svcBar').classList.toggle('expanded');
+}
 
 // ===== HELPERS =====
 function validEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }

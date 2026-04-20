@@ -5,753 +5,603 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <meta name="theme-color" content="#0b1d3a"/>
 <title>Book Your Service — Pristine Powerwashing</title>
-<meta name="description" content="Schedule your Pristine Powerwashing appointment in a few quick steps."/>
+<meta name="description" content="Schedule your Pristine Powerwashing appointment online."/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-
 <style>
-/* DESIGN TOKENS */
+/* ── TOKENS ─────────────────────────────────────────── */
 :root{
-  --brand-300:#93c5fd; --brand-400:#60a5fa; --brand-500:#3b82f6;
-  --brand-600:#2563eb; --brand-700:#1d4ed8; --brand-800:#1e40af; --brand-900:#1e3a8a;
-  --ice-300:#7dd3fc; --ice-400:#38bdf8; --ice-500:#0ea5e9;
-  --amber-300:#fcd34d; --amber-400:#fbbf24; --amber-500:#f59e0b;
-  --green-400:#34d399; --red-400:#f87171;
-
-  --radius-sm:8px; --radius:12px; --radius-md:16px; --radius-lg:20px; --radius-xl:28px;
-  --shadow-sm:0 1px 2px rgba(0,0,0,.08);
-  --shadow:0 6px 20px -6px rgba(0,0,0,.22);
-  --shadow-lg:0 28px 60px -16px rgba(0,0,0,.35);
-  --shadow-blue:0 18px 44px -14px rgba(37,99,235,.5);
-
-  /* Dark theme (default) */
-  --bg:#0b1d3a;
-  --bg-alt:#102849;
-  --surface:#163261;
-  --surface-2:#1b3d72;
+  --brand-300:#93c5fd;--brand-400:#60a5fa;--brand-500:#3b82f6;
+  --brand-600:#2563eb;--brand-700:#1d4ed8;
+  --ice-300:#7dd3fc;--ice-400:#38bdf8;--ice-500:#0ea5e9;
+  --amber-400:#fbbf24;--amber-500:#f59e0b;
+  --green-400:#34d399;--red-400:#f87171;
+  --radius-sm:8px;--radius:10px;--radius-md:12px;--radius-lg:16px;--radius-xl:20px;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.1);
+  --shadow:0 6px 20px -6px rgba(0,0,0,.24);
+  --shadow-lg:0 24px 56px -14px rgba(0,0,0,.36);
+  --shadow-blue:0 12px 32px -8px rgba(37,99,235,.45);
+  --bg:#0b1d3a;--bg-alt:#102849;--surface:#163261;--surface-2:#1b3d72;
   --surface-glass:rgba(22,50,97,.72);
-  --border:rgba(96,165,250,.2);
-  --border-strong:rgba(96,165,250,.32);
-  --text:#e9f0fc;
-  --text-muted:#b2c5e0;
-  --text-subtle:#8aa2c2;
-  --accent:var(--brand-400);
-  --accent-hover:var(--brand-300);
-  --accent-contrast:#061432;
-  --ring:rgba(96,165,250,.45);
+  --border:rgba(96,165,250,.18);--border-strong:rgba(96,165,250,.3);
+  --text:#e9f0fc;--text-muted:#b2c5e0;--text-subtle:#8aa2c2;
+  --accent:var(--brand-400);--accent-hover:var(--brand-300);--accent-contrast:#061432;
+  --ring:rgba(96,165,250,.38);
   --hero-grad:linear-gradient(135deg,#0d2150 0%,#1a3a80 55%,#2563eb 100%);
 }
 [data-theme="light"]{
-  --bg:#eef4fb; --bg-alt:#dde9f6; --surface:#ffffff; --surface-2:#f5f9ff;
+  --bg:#eef4fb;--bg-alt:#dde9f6;--surface:#ffffff;--surface-2:#f5f9ff;
   --surface-glass:rgba(255,255,255,.72);
-  --border:rgba(30,64,175,.12); --border-strong:rgba(30,64,175,.22);
-  --text:#0b1c36; --text-muted:#516a8a; --text-subtle:#7b93b4;
-  --accent:var(--brand-600); --accent-hover:var(--brand-700); --accent-contrast:#ffffff;
-  --ring:rgba(59,130,246,.35);
+  --border:rgba(30,64,175,.11);--border-strong:rgba(30,64,175,.2);
+  --text:#0b1c36;--text-muted:#516a8a;--text-subtle:#7b93b4;
+  --accent:var(--brand-600);--accent-hover:var(--brand-700);--accent-contrast:#ffffff;
+  --ring:rgba(59,130,246,.3);
   --hero-grad:linear-gradient(135deg,#0b1c36 0%,#1e3a8a 55%,#1d4ed8 100%);
 }
 
-/* BASE */
+/* ── BASE ────────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{color-scheme:dark light;overflow-x:hidden;width:100%;max-width:100%}
 body{
   font-family:'Inter',system-ui,-apple-system,sans-serif;
   color:var(--text);background:var(--bg);
-  min-height:100vh;line-height:1.55;overflow-x:hidden;width:100%;max-width:100%;
+  min-height:100vh;line-height:1.55;
+  overflow-x:hidden;width:100%;max-width:100%;
   -webkit-font-smoothing:antialiased;
   -webkit-text-size-adjust:100%;
   touch-action:pan-y pinch-zoom;
-  transition:background .4s ease,color .4s ease;
+  transition:background .35s,color .35s;
 }
 a{color:var(--accent);text-decoration:none}
 ::selection{background:var(--brand-500);color:#fff}
 
-/* TOP BAR */
+/* ── TOPBAR ──────────────────────────────────────────── */
 .topbar{
   position:sticky;top:0;z-index:50;
-  background:var(--surface-glass);backdrop-filter:saturate(180%) blur(18px);
+  background:var(--surface-glass);
+  backdrop-filter:saturate(180%) blur(18px);
   -webkit-backdrop-filter:saturate(180%) blur(18px);
   border-bottom:1px solid var(--border);
 }
 .topbar-inner{
-  max-width:1100px;margin:0 auto;padding:14px 24px;
+  max-width:1100px;margin:0 auto;padding:12px 24px;
   display:flex;align-items:center;justify-content:space-between;gap:16px;
 }
-.brand{font-family:'Fraunces',serif;font-weight:900;font-size:20px;color:var(--text);letter-spacing:-.02em;display:flex;align-items:center;gap:12px}
+.brand{
+  font-family:'Fraunces',serif;font-weight:900;font-size:19px;
+  color:var(--text);letter-spacing:-.02em;
+  display:flex;align-items:center;gap:10px;
+}
 .brand-mark{
-  width:34px;height:34px;border-radius:10px;flex-shrink:0;
+  width:32px;height:32px;border-radius:9px;flex-shrink:0;
   background:linear-gradient(135deg,var(--brand-500),var(--ice-500));
   display:grid;place-items:center;
-  box-shadow:0 6px 20px -6px var(--brand-500),inset 0 1px 0 rgba(255,255,255,.25);
+  box-shadow:0 4px 14px -4px var(--brand-500),inset 0 1px 0 rgba(255,255,255,.2);
 }
 .brand em{font-style:italic;font-weight:500;color:var(--accent)}
-.topbar-right{display:flex;align-items:center;gap:10px}
+.topbar-right{display:flex;align-items:center;gap:8px}
 .back-link{
-  display:inline-flex;align-items:center;gap:6px;
-  color:var(--text-muted);font-weight:500;font-size:14px;
-  padding:8px 14px;border-radius:8px;transition:all .2s;
+  display:inline-flex;align-items:center;gap:5px;
+  color:var(--text-muted);font-weight:500;font-size:13.5px;
+  padding:7px 12px;border-radius:8px;transition:all .15s;
 }
 .back-link:hover{color:var(--text);background:var(--bg-alt)}
 .theme-toggle{
-  width:36px;height:36px;border-radius:10px;
+  width:34px;height:34px;border-radius:9px;
   border:1px solid var(--border);background:var(--surface);
   display:grid;place-items:center;cursor:pointer;
-  color:var(--text-muted);transition:all .2s;
+  color:var(--text-muted);transition:all .15s;
 }
 .theme-toggle:hover{color:var(--text);border-color:var(--border-strong)}
-.theme-toggle svg{width:18px;height:18px}
-.theme-toggle .sun{display:block}
-.theme-toggle .moon{display:none}
+.theme-toggle svg{width:17px;height:17px}
+.theme-toggle .sun{display:block}.theme-toggle .moon{display:none}
 [data-theme="light"] .theme-toggle .sun{display:none}
 [data-theme="light"] .theme-toggle .moon{display:block}
 
-/* MAIN SHELL */
+/* ── SHELL ───────────────────────────────────────────── */
 .shell{
-  max-width:1100px;margin:0 auto;
-  padding:32px 24px 80px;overflow-x:hidden;
+  max-width:960px;margin:0 auto;
+  padding:28px 24px 72px;
+  overflow-x:hidden;
 }
 
-/* Skeleton loader for slots while Firestore merges */
-.skeleton{background:linear-gradient(90deg,var(--bg-alt) 0%,var(--surface-2) 50%,var(--bg-alt) 100%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:12px}
-@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-
-/* Toast */
+/* ── TOAST ───────────────────────────────────────────── */
 .app-toast{
-  position:fixed;top:20px;left:50%;z-index:1000;
-  padding:13px 22px;border-radius:12px;
+  position:fixed;top:18px;left:50%;z-index:1000;
+  padding:11px 20px;border-radius:10px;
   background:var(--surface);border:1px solid var(--border-strong);
-  color:var(--text);font-weight:600;font-size:14px;
+  color:var(--text);font-weight:600;font-size:13.5px;
   box-shadow:var(--shadow-lg);
-  transform:translate(-50%,-30px);opacity:0;pointer-events:none;
-  transition:transform .3s cubic-bezier(.2,.7,.2,1),opacity .3s;
-  max-width:calc(100% - 40px);
+  transform:translate(-50%,-28px);opacity:0;pointer-events:none;
+  transition:transform .28s cubic-bezier(.2,.7,.2,1),opacity .28s;
+  max-width:calc(100% - 32px);
 }
 .app-toast.show{transform:translate(-50%,0);opacity:1}
-.app-toast.error{
-  background:rgba(248,113,113,.12);
-  border-color:rgba(248,113,113,.4);
-  color:var(--red-400);
+.app-toast.error{background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.36);color:var(--red-400)}
+
+/* ── SERVICE BAR ─────────────────────────────────────── */
+.svc-bar{
+  background:var(--hero-grad);
+  border-radius:var(--radius-xl);
+  padding:16px 20px;margin-bottom:24px;
+  position:relative;overflow:hidden;color:#fff;
+  box-shadow:var(--shadow-lg);
+}
+.svc-bar::before{
+  content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(70% 120% at 90% -10%,rgba(125,211,252,.22),transparent 60%),
+             radial-gradient(40% 60% at 0% 100%,rgba(96,165,250,.14),transparent 55%);
+}
+.svc-bar-top{
+  position:relative;z-index:1;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;margin-bottom:5px;
+}
+.svc-bar-left{display:flex;align-items:center;gap:9px;flex-wrap:wrap;min-width:0}
+.svc-bar-name{
+  font-family:'Fraunces',serif;font-weight:900;font-size:20px;
+  letter-spacing:-.025em;white-space:nowrap;
+}
+.svc-bar-tag{
+  font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(255,255,255,.62);
+  background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.16);
+  padding:2px 9px;border-radius:999px;white-space:nowrap;
+}
+.svc-bar-price{
+  font-family:'Fraunces',serif;font-weight:900;font-size:26px;letter-spacing:-.04em;
+  background:linear-gradient(135deg,#93c5fd,#7dd3fc);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  flex-shrink:0;white-space:nowrap;
+}
+.svc-bar.premium .svc-bar-price{
+  background:linear-gradient(135deg,#fcd34d,#fbbf24);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.svc-bar-desc{
+  position:relative;z-index:1;
+  font-size:12.5px;color:rgba(255,255,255,.62);line-height:1.4;
 }
 
-/* BUTTONS */
-.btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  background:var(--accent);color:var(--accent-contrast)!important;
-  padding:14px 28px;border-radius:12px;
-  font-weight:700;font-size:15px;font-family:'Inter',sans-serif;
-  border:none;cursor:pointer;
-  transition:transform .18s,box-shadow .2s,background .2s;
-  text-decoration:none!important;white-space:nowrap;
-  -webkit-tap-highlight-color:transparent;
-  box-shadow:var(--shadow-sm);
-}
-.btn:hover{background:var(--accent-hover);transform:translateY(-1px);box-shadow:var(--shadow-blue)}
-.btn:active{transform:translateY(0)}
-.btn.lg{padding:17px 34px;font-size:16px}
-.btn.xl{padding:20px 40px;font-size:17px;border-radius:14px}
-.btn.ghost{background:transparent;color:var(--text)!important;border:1px solid var(--border-strong);box-shadow:none}
-.btn.ghost:hover{background:var(--bg-alt);border-color:var(--accent)}
-.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important;box-shadow:none!important}
-.btn-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
-
-/* Section heading inside intro */
-.intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:32px}
-.intro-card{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius-lg);padding:28px;
-}
-.intro-card h3{
-  font-family:'Fraunces',serif;font-weight:800;font-size:22px;letter-spacing:-.02em;
-  color:var(--text);margin-bottom:18px;
-  display:flex;align-items:center;gap:12px;
-}
-.intro-card .icon{
-  width:36px;height:36px;border-radius:10px;flex-shrink:0;
-  display:grid;place-items:center;color:#fff;
-  background:linear-gradient(135deg,var(--brand-500),var(--ice-500));
-  box-shadow:0 6px 16px -6px var(--brand-500);
-}
-.intro-card .icon.amber{background:linear-gradient(135deg,var(--amber-400),var(--amber-500));color:#3a2a0a;box-shadow:0 6px 16px -6px var(--amber-400)}
-.intro-list{display:flex;flex-direction:column;gap:14px}
-.intro-item{display:flex;align-items:flex-start;gap:12px}
-.intro-item .check{
-  flex-shrink:0;width:22px;height:22px;border-radius:6px;
-  background:rgba(96,165,250,.15);color:var(--accent);
-  display:grid;place-items:center;margin-top:1px;
-}
-.intro-item strong{display:block;font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px}
-.intro-item span{font-size:13.5px;color:var(--text-muted);line-height:1.5}
-.intro-item .num{
-  flex-shrink:0;width:26px;height:26px;border-radius:50%;
-  background:var(--bg-alt);color:var(--accent);
-  display:grid;place-items:center;
-  font-family:'Fraunces',serif;font-weight:800;font-size:14px;
-  border:1px solid var(--border-strong);
+/* ── FORM GRID ───────────────────────────────────────── */
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 270px;
+  gap:28px;align-items:start;
 }
 
-.biz-strip{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;
-  padding:24px;margin-bottom:20px;
-  background:var(--bg-alt);border:1px solid var(--border);border-radius:var(--radius-md);
-  width:100%;overflow-x:hidden;
+/* ── FORM SECTIONS ───────────────────────────────────── */
+.form-col{min-width:0}
+.form-section{
+  padding-bottom:22px;
+  margin-bottom:22px;
+  border-bottom:1px solid var(--border);
+}
+.form-section:last-of-type{border-bottom:none;padding-bottom:0;margin-bottom:0}
+.section-lbl{
+  font-size:10.5px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--text-subtle);margin-bottom:12px;
 }
 
-/* Payment-after-service banner */
-.pay-banner{
-  display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:flex-start;
-  padding:22px 24px;margin-bottom:28px;
-  background:linear-gradient(135deg,rgba(52,211,153,.12),rgba(96,165,250,.08));
-  border:1px solid rgba(52,211,153,.28);
-  border-radius:var(--radius-md);position:relative;overflow:hidden;
+/* ── FIELDS ──────────────────────────────────────────── */
+.field{margin-bottom:10px}
+.field:last-child{margin-bottom:0}
+.field label{
+  display:block;font-size:10.5px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--text-muted);margin-bottom:5px;
 }
-.pay-banner::before{
-  content:'';position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(50% 60% at 0% 0%,rgba(52,211,153,.15),transparent 55%);
+.label-opt{
+  font-weight:500;letter-spacing:.06em;color:var(--text-subtle);
+  text-transform:none;
 }
-.pay-banner .pay-ic{
-  position:relative;z-index:1;width:48px;height:48px;border-radius:14px;flex-shrink:0;
-  background:linear-gradient(135deg,#10b981,#34d399);color:#04261b;
-  display:grid;place-items:center;
-  box-shadow:0 8px 24px -8px rgba(16,185,129,.5);
-}
-.pay-banner .pay-body{position:relative;z-index:1}
-.pay-banner .pay-kicker{font-size:10px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--green-400);margin-bottom:4px}
-.pay-banner h4{
-  font-family:'Fraunces',serif;font-weight:800;font-size:19px;color:var(--text);
-  letter-spacing:-.015em;margin-bottom:6px;line-height:1.2;
-}
-.pay-banner p{font-size:14px;color:var(--text-muted);line-height:1.55}
-.pay-banner p strong{color:var(--text);font-weight:600}
-
-/* Service area strip */
-.area-card{
-  display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;
-  padding:18px 22px;margin-bottom:28px;
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius-md);
-}
-.area-card .area-ic{
-  width:40px;height:40px;border-radius:12px;flex-shrink:0;
-  background:linear-gradient(135deg,var(--brand-500),var(--ice-500));color:#fff;
-  display:grid;place-items:center;
-  box-shadow:0 6px 16px -6px var(--brand-500);
-}
-.area-card strong{display:block;font-size:15px;color:var(--text);font-weight:700;margin-bottom:2px}
-.area-card span{font-size:13px;color:var(--text-muted);line-height:1.5}
-.biz-fact{display:flex;align-items:center;gap:12px}
-.biz-fact .ic{
-  width:36px;height:36px;border-radius:10px;flex-shrink:0;
-  background:linear-gradient(135deg,var(--brand-500),var(--ice-500));
-  color:#fff;display:grid;place-items:center;
-  box-shadow:0 4px 12px -4px var(--brand-500);
-}
-.biz-fact strong{display:block;font-size:13px;font-weight:700;color:var(--text);letter-spacing:-.01em}
-.biz-fact span{font-size:12px;color:var(--text-muted);line-height:1.4}
-
-/* FIELD/FORM */
-.field{margin-bottom:16px}
-.field label{display:block;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px}
 .field input,.field textarea{
-  width:100%;font-family:'Inter',sans-serif;font-size:15.5px;font-weight:500;
-  padding:14px 16px;border-radius:12px;
-  border:1px solid var(--border);background:var(--surface);color:var(--text);
-  outline:none;transition:border-color .2s,box-shadow .2s,background .2s;
+  width:100%;height:44px;padding:0 12px;
+  border-radius:var(--radius);border:1px solid var(--border);
+  background:var(--surface);color:var(--text);
+  font-family:'Inter',sans-serif;font-size:15px;font-weight:500;
+  outline:none;
+  transition:border-color .15s,box-shadow .15s,background .15s;
+  -webkit-tap-highlight-color:transparent;
+  max-width:100%;
+}
+.field textarea{
+  height:auto;padding:11px 12px;resize:none;
+  font-family:'Inter',sans-serif;
+}
+.field input:focus,.field textarea:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--ring);
+  background:var(--surface-2);
 }
 .field input::placeholder,.field textarea::placeholder{color:var(--text-subtle)}
-.field input:focus,.field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ring);background:var(--surface-2)}
 .field input.invalid,.field textarea.invalid{
   border-color:var(--red-400);
-  box-shadow:0 0 0 3px rgba(248,113,113,.2);
-  animation:shake .45s cubic-bezier(.36,.07,.19,.97) both;
+  box-shadow:0 0 0 3px rgba(248,113,113,.18);
+  animation:shake .4s cubic-bezier(.36,.07,.19,.97) both;
 }
 @keyframes shake{
   10%,90%{transform:translateX(-1px)}
   20%,80%{transform:translateX(2px)}
-  30%,50%,70%{transform:translateX(-4px)}
-  40%,60%{transform:translateX(4px)}
+  30%,50%,70%{transform:translateX(-3px)}
+  40%,60%{transform:translateX(3px)}
 }
-.field textarea{resize:vertical;min-height:80px;font-family:'Inter',sans-serif}
-.field .hint{font-size:12px;color:var(--text-subtle);margin-top:6px}
 .field-error{
-  display:none;align-items:center;gap:6px;
-  color:var(--red-400);font-size:12.5px;font-weight:600;margin-top:6px;
+  display:none;align-items:center;gap:5px;
+  color:var(--red-400);font-size:12px;font-weight:600;margin-top:5px;
 }
-.field-error.show{display:flex;animation:errSlide .22s cubic-bezier(.2,.7,.2,1)}
-@keyframes errSlide{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.field-error.show{display:flex;animation:errSlide .2s cubic-bezier(.2,.7,.2,1)}
+@keyframes errSlide{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:translateY(0)}}
 .field-error svg{flex-shrink:0}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
-/* CALENDAR */
-.time-picker{max-width:860px}
-.calendar{
+/* ── CALENDAR ────────────────────────────────────────── */
+.cal-wrap{
   background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius-lg);padding:22px;margin-bottom:18px;
-  box-shadow:var(--shadow-sm);
+  border-radius:var(--radius-md);padding:14px;margin-bottom:12px;
+  max-width:100%;overflow:hidden;
 }
-.cal-header{
-  display:flex;align-items:center;justify-content:space-between;gap:12px;
-  margin-bottom:18px;
+.cal-nav-row{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:8px;margin-bottom:12px;
 }
-.cal-header .cal-title{text-align:center;flex:1 1 auto}
-.cal-month{font-family:'Fraunces',serif;font-weight:800;font-size:22px;color:var(--text);letter-spacing:-.02em;line-height:1.1}
-.cal-range{font-size:12px;font-weight:600;color:var(--text-subtle);letter-spacing:.08em;text-transform:uppercase;margin-top:3px}
+.cal-title-block{flex:1;text-align:center}
+.cal-title-block .cal-month{
+  font-family:'Fraunces',serif;font-weight:800;font-size:16px;
+  color:var(--text);letter-spacing:-.02em;line-height:1.1;
+}
+.cal-title-block .cal-range{
+  font-size:10.5px;font-weight:600;color:var(--text-subtle);
+  letter-spacing:.08em;text-transform:uppercase;margin-top:2px;
+}
 .cal-nav{
-  width:40px;height:40px;border-radius:12px;flex-shrink:0;
-  border:1px solid var(--border-strong);background:var(--bg-alt);
+  width:30px;height:30px;border-radius:8px;flex-shrink:0;
+  border:1px solid var(--border);background:var(--bg-alt);
   color:var(--text-muted);display:grid;place-items:center;
-  cursor:pointer;transition:all .18s;
+  cursor:pointer;transition:all .15s;
+  -webkit-tap-highlight-color:transparent;
 }
-.cal-nav:hover:not(:disabled){color:var(--accent);border-color:var(--accent);transform:translateY(-1px)}
-.cal-nav:disabled{opacity:.35;cursor:not-allowed}
-.cal-nav svg{width:16px;height:16px}
+.cal-nav:hover:not(:disabled){color:var(--accent);border-color:var(--accent)}
+.cal-nav:disabled{opacity:.3;cursor:not-allowed}
+.cal-nav svg{width:15px;height:15px}
 
-.week-row{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;width:100%;min-width:0}
-.day-pill{
-  padding:14px 8px 12px;border-radius:14px;
-  background:var(--bg-alt);border:1.5px solid var(--border);
-  cursor:pointer;transition:all .2s cubic-bezier(.2,.7,.2,1);
-  display:flex;flex-direction:column;align-items:center;gap:3px;
-  position:relative;text-align:center;
-  font-family:'Inter',sans-serif;color:var(--text);
+/* ── DAY PILLS ───────────────────────────────────────── */
+.week-row{
+  display:grid;grid-template-columns:repeat(7,1fr);
+  gap:4px;width:100%;min-width:0;overflow:hidden;
 }
-.day-pill:hover:not(.unavailable):not(.selected){border-color:var(--border-strong);transform:translateY(-2px);background:var(--surface)}
+.day-pill{
+  padding:8px 2px 6px;border-radius:8px;
+  background:var(--bg-alt);border:1.5px solid var(--border);
+  cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  font-family:'Inter',sans-serif;color:var(--text);
+  transition:border-color .15s,background .15s,transform .15s;
+  -webkit-tap-highlight-color:transparent;min-width:0;
+}
+.day-pill:hover:not(.unavailable):not(.selected){
+  border-color:var(--border-strong);background:var(--surface);
+}
 .day-pill.selected{
-  border-color:var(--accent);background:var(--surface-2);color:var(--text);
-  box-shadow:0 8px 20px -8px rgba(96,165,250,.35),0 0 0 2px var(--ring);
-  transform:translateY(-2px);
+  background:var(--accent);border-color:var(--accent);
+  box-shadow:0 4px 14px -4px rgba(96,165,250,.5);
+  transform:translateY(-1px);
 }
 .day-pill.today{border-color:var(--amber-400)}
 .day-pill.today.selected{border-color:var(--accent)}
-.day-pill.today::after{
-  content:'•';position:absolute;top:4px;right:8px;
-  color:var(--amber-400);font-size:20px;line-height:1;
+.day-pill.unavailable{opacity:.28;cursor:not-allowed}
+.day-pill .day-name{
+  font-size:8.5px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.1em;color:var(--text-subtle);
 }
-.day-pill .day-name{font-size:10.5px;font-weight:700;color:var(--text-subtle);letter-spacing:.14em;text-transform:uppercase}
-.day-pill.selected .day-name{color:var(--accent)}
-.day-pill .day-num{font-family:'Fraunces',serif;font-weight:800;font-size:24px;letter-spacing:-.02em;line-height:1.15;margin:1px 0}
+.day-pill.selected .day-name{color:rgba(255,255,255,.75)}
+.day-pill .day-num{
+  font-family:'Fraunces',serif;font-weight:800;font-size:19px;
+  letter-spacing:-.02em;line-height:1;color:var(--text);
+}
+.day-pill.selected .day-num{color:var(--accent-contrast)}
 .day-pill .day-avail{
-  margin-top:4px;font-size:9.5px;font-weight:700;color:var(--accent);
-  letter-spacing:.05em;text-transform:uppercase;
+  font-size:8px;font-weight:700;color:var(--accent);
+  letter-spacing:.04em;text-transform:uppercase;
 }
-.day-pill.unavailable{opacity:.35;cursor:not-allowed;background:transparent}
 .day-pill.unavailable .day-avail{color:var(--text-subtle)}
+.day-pill.selected .day-avail{color:rgba(255,255,255,.65)}
 
-/* SLOT PANEL */
-.slot-panel{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius-lg);padding:28px;margin-bottom:18px;
-  box-shadow:var(--shadow-sm);
+/* ── TIME SLOT PILLS ─────────────────────────────────── */
+.slot-section{margin-top:0}
+.slot-day-label{
+  font-size:11px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.12em;color:var(--text-muted);
+  margin-bottom:8px;
 }
-.slot-panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap}
-.slot-panel h3{
-  font-family:'Fraunces',serif;font-weight:800;font-size:22px;letter-spacing:-.02em;
-  color:var(--text);line-height:1.15;
+.slot-row{display:flex;gap:8px;flex-wrap:wrap}
+.slot-placeholder{
+  font-size:13px;color:var(--text-subtle);
+  padding:12px 0;font-style:italic;width:100%;
 }
-.slot-panel .slot-sub{color:var(--text-muted);font-size:13.5px;margin-top:3px}
-.slot-panel-pill{
-  font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
-  background:var(--bg-alt);color:var(--accent);
-  padding:6px 12px;border-radius:999px;border:1px solid var(--border);
-  white-space:nowrap;
+.slot-empty-msg{
+  width:100%;padding:12px 0;
+  font-size:13px;color:var(--text-subtle);text-align:center;
 }
+.time-pill{
+  flex:1 1 80px;min-width:70px;
+  padding:10px 8px;border-radius:10px;
+  border:1.5px solid var(--border);background:var(--bg-alt);color:var(--text);
+  font-family:'Inter',sans-serif;
+  display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center;
+  cursor:pointer;
+  transition:border-color .15s,background .15s,box-shadow .15s,transform .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.time-pill:hover:not(.taken){
+  border-color:var(--accent);background:var(--surface);
+  transform:translateY(-1px);
+}
+.time-pill.selected{
+  background:var(--accent);border-color:var(--accent);
+  color:var(--accent-contrast);
+  box-shadow:0 4px 14px -4px rgba(96,165,250,.45);
+  transform:translateY(-1px);
+}
+.time-pill.taken{opacity:.3;cursor:not-allowed}
+.tp-time{font-size:14.5px;font-weight:700;line-height:1}
+.tp-period{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;opacity:.65}
 
-.slot-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.slot{
-  padding:24px 18px;border:1.5px solid var(--border);border-radius:16px;
-  cursor:pointer;transition:all .22s cubic-bezier(.2,.7,.2,1);
-  background:var(--bg-alt);position:relative;overflow:hidden;
-  display:flex;flex-direction:column;align-items:center;gap:10px;
-  text-align:center;
+/* ── MINI SUMMARY (mobile) ───────────────────────────── */
+.mini-summary{
+  display:none;
+  font-size:12.5px;color:var(--text-muted);
+  background:var(--bg-alt);border:1px solid var(--border);
+  border-radius:var(--radius);padding:10px 14px;
+  margin-bottom:12px;gap:0;
+  flex-wrap:wrap;line-height:1.6;
 }
-.slot:not(.taken):hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:var(--shadow)}
-.slot.selected{
-  border-color:var(--accent);
-  background:linear-gradient(135deg,rgba(96,165,250,.18),rgba(56,189,248,.08));
-  box-shadow:0 12px 32px -10px rgba(96,165,250,.45),0 0 0 3px var(--ring);
-  transform:translateY(-3px);
-}
-.slot.selected::before{
-  content:'';position:absolute;inset:0;border-radius:inherit;
-  background:radial-gradient(60% 60% at 50% 0%,rgba(96,165,250,.18),transparent 60%);
-  pointer-events:none;
-}
-.slot.selected::after{
-  content:'✓';
-  position:absolute;top:8px;right:10px;
-  width:20px;height:20px;border-radius:50%;
+.mini-summary [data-s]{color:var(--text);font-weight:600}
+.ms-sep{color:var(--border-strong);margin:0 5px}
+
+/* ── SUBMIT BUTTON ───────────────────────────────────── */
+.submit-btn{
+  width:100%;padding:15px 20px;border-radius:var(--radius-md);border:none;
   background:var(--accent);color:var(--accent-contrast);
-  display:grid;place-items:center;
-  font-size:11px;font-weight:800;line-height:1;
+  font-family:'Inter',sans-serif;font-size:15.5px;font-weight:700;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:background .18s,transform .18s,box-shadow .18s;
+  box-shadow:0 4px 18px -4px rgba(96,165,250,.38);
+  -webkit-tap-highlight-color:transparent;
 }
-.slot .period-ic{
-  width:44px;height:44px;border-radius:12px;
-  display:grid;place-items:center;color:#fff;
-  background:linear-gradient(135deg,var(--brand-500),var(--ice-500));
-  box-shadow:0 6px 16px -6px var(--brand-500);
-  transition:transform .25s;
+.submit-btn:hover{
+  background:var(--accent-hover);transform:translateY(-1px);
+  box-shadow:0 8px 24px -6px rgba(96,165,250,.5);
 }
-.slot.selected .period-ic{transform:scale(1.06) rotate(-6deg)}
-.slot .period-ic.morning{background:linear-gradient(135deg,#fbbf24,#f59e0b);box-shadow:0 6px 16px -6px #f59e0b}
-.slot .period-ic.noon{background:linear-gradient(135deg,#fcd34d,#fbbf24);box-shadow:0 6px 16px -6px #fbbf24}
-.slot .period-ic.afternoon{background:linear-gradient(135deg,#60a5fa,#3b82f6);box-shadow:0 6px 16px -6px #3b82f6}
-.slot .slot-time{font-family:'Fraunces',serif;font-weight:900;font-size:26px;color:var(--text);letter-spacing:-.02em;line-height:1}
-.slot .slot-period{font-size:10.5px;font-weight:700;color:var(--text-subtle);text-transform:uppercase;letter-spacing:.16em}
-.slot.selected .slot-period{color:var(--accent);font-weight:800}
-.slot.taken{
-  opacity:.45;cursor:not-allowed;
-  background:repeating-linear-gradient(135deg,transparent,transparent 6px,rgba(0,0,0,.07) 6px,rgba(0,0,0,.07) 10px),var(--bg-alt);
+.submit-btn:active{transform:translateY(0)}
+.submit-btn:disabled{
+  opacity:.55;cursor:not-allowed;
+  transform:none!important;box-shadow:none!important;
 }
-.slot.taken .slot-time{text-decoration:line-through;color:var(--text-subtle)}
-.slot .slot-taken-label{font-size:10px;font-weight:800;color:var(--red-400);letter-spacing:.16em;text-transform:uppercase;margin-top:2px;display:none}
-.slot.taken .slot-taken-label{display:block}
-.slot.taken .period-ic{background:var(--bg-alt);color:var(--text-subtle);box-shadow:none}
+.submit-btn svg{width:15px;height:15px;flex-shrink:0}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.btn-spinner{
+  width:15px;height:15px;border-radius:50%;
+  border:2px solid rgba(255,255,255,.3);border-top-color:#fff;
+  animation:spin .65s linear infinite;flex-shrink:0;
+}
 
-.slot-empty{
-  grid-column:1/-1;text-align:center;padding:32px 20px;
-  border:1.5px dashed var(--border-strong);border-radius:14px;
-  background:var(--bg-alt);color:var(--text-muted);font-size:14px;
-}
-.slot-empty strong{color:var(--text);display:block;margin-bottom:6px;font-size:15px}
-
-/* SUMMARY CARD */
+/* ── DESKTOP SUMMARY SIDEBAR ─────────────────────────── */
+.summary-col{position:sticky;top:80px}
 .summary-card{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius-lg);padding:28px;position:sticky;top:120px;
-  box-shadow:var(--shadow-sm);
+  background:var(--surface-glass);
+  backdrop-filter:saturate(160%) blur(14px);
+  -webkit-backdrop-filter:saturate(160%) blur(14px);
+  border:1px solid var(--border);border-radius:var(--radius-lg);
+  padding:20px;box-shadow:var(--shadow);
 }
-.summary-card h3{
-  font-family:'Fraunces',serif;font-weight:800;font-size:18px;color:var(--text);
-  margin-bottom:18px;letter-spacing:-.02em;
+.summary-title{
+  font-family:'Fraunces',serif;font-weight:800;font-size:15px;
+  letter-spacing:-.02em;color:var(--text);margin-bottom:14px;
 }
-.summary-row{
-  display:flex;justify-content:space-between;align-items:flex-start;gap:16px;
-  padding:12px 0;border-bottom:1px solid var(--border);font-size:14px;
+.summary-item{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  gap:10px;padding:8px 0;border-bottom:1px solid var(--border);
+  font-size:13px;
 }
-.summary-row:last-of-type{border-bottom:none}
-.summary-row .lbl{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-subtle);flex-shrink:0}
-.summary-row .val{color:var(--text);font-weight:500;text-align:right}
+.summary-item:last-of-type{border-bottom:none}
+.si-label{
+  font-size:10px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.11em;color:var(--text-subtle);flex-shrink:0;
+}
+.si-val{color:var(--text);font-weight:500;text-align:right;font-size:13px}
 .summary-total{
-  margin-top:16px;padding-top:16px;border-top:2px solid var(--border-strong);
   display:flex;justify-content:space-between;align-items:baseline;
+  margin-top:12px;padding-top:12px;
+  border-top:2px solid var(--border-strong);
 }
-.summary-total .lbl{font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
-.summary-total .val{font-family:'Fraunces',serif;font-weight:900;font-size:32px;color:var(--accent);letter-spacing:-.03em}
+.summary-total > span:first-child{
+  font-size:11px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.1em;color:var(--text-muted);
+}
+.st-price{
+  font-family:'Fraunces',serif;font-weight:900;font-size:26px;
+  color:var(--accent);letter-spacing:-.03em;
+}
 .summary-note{
-  margin-top:16px;padding:12px 14px;border-radius:10px;
-  background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.28);
-  color:var(--green-400);font-size:12.5px;font-weight:600;
-  display:flex;align-items:center;gap:8px;line-height:1.4;
+  margin-top:12px;font-size:12px;color:var(--green-400);
+  font-weight:600;display:flex;align-items:center;gap:5px;
 }
-.summary-note strong{color:var(--green-400);font-weight:800}
-.summary-note svg{flex-shrink:0}
+.summary-note::before{content:'✓';font-size:11px;opacity:.8}
 
-/* SUCCESS SCREEN */
+/* ── SUCCESS SCREEN ──────────────────────────────────── */
 .success-wrap{
-  text-align:center;max-width:min(620px,100%);margin:32px auto;
-  padding:48px 36px;background:var(--surface);
+  text-align:center;max-width:min(580px,100%);margin:24px auto;
+  padding:44px 32px;background:var(--surface);
   border:1px solid var(--border);border-radius:var(--radius-xl);
-  box-shadow:var(--shadow-lg);
-  position:relative;overflow:hidden;isolation:isolate;
+  box-shadow:var(--shadow-lg);position:relative;overflow:hidden;isolation:isolate;
 }
 .success-wrap::before{
-  content:'';position:absolute;inset:0 0 auto 0;height:220px;pointer-events:none;z-index:0;
-  background:radial-gradient(60% 100% at 50% 0%,rgba(52,211,153,.14),transparent 70%);
+  content:'';position:absolute;inset:0 0 auto 0;height:200px;pointer-events:none;z-index:0;
+  background:radial-gradient(60% 100% at 50% 0%,rgba(52,211,153,.13),transparent 70%);
 }
 .success-wrap > *{position:relative;z-index:1}
 .success-halo{
-  position:relative;width:120px;height:120px;margin:0 auto 24px;
+  position:relative;width:110px;height:110px;margin:0 auto 22px;
   display:grid;place-items:center;
 }
-.success-halo::before,
-.success-halo::after{
+.success-halo::before,.success-halo::after{
   content:'';position:absolute;inset:0;border-radius:50%;
-  background:radial-gradient(circle,rgba(52,211,153,.35) 0%,transparent 65%);
+  background:radial-gradient(circle,rgba(52,211,153,.32) 0%,transparent 65%);
   animation:halo 2.4s ease-out infinite;
 }
 .success-halo::after{animation-delay:1.2s}
-@keyframes halo{
-  0%{transform:scale(.6);opacity:.9}
-  100%{transform:scale(1.4);opacity:0}
-}
+@keyframes halo{0%{transform:scale(.6);opacity:.9}100%{transform:scale(1.4);opacity:0}}
 .success-check{
-  position:relative;z-index:1;
-  width:92px;height:92px;border-radius:28px;
+  position:relative;z-index:1;width:86px;height:86px;border-radius:26px;
   background:linear-gradient(135deg,#10b981,#34d399);color:#04261b;
   display:grid;place-items:center;
-  box-shadow:0 24px 56px -16px rgba(16,185,129,.55),inset 0 1px 0 rgba(255,255,255,.3);
-  animation:pop .6s cubic-bezier(.17,.67,.32,1.4);
+  box-shadow:0 20px 48px -14px rgba(16,185,129,.52),inset 0 1px 0 rgba(255,255,255,.3);
+  animation:pop .55s cubic-bezier(.17,.67,.32,1.4);
 }
-@keyframes pop{0%{transform:scale(0) rotate(-180deg);opacity:0}60%{transform:scale(1.08) rotate(12deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
-
+@keyframes pop{0%{transform:scale(0) rotate(-180deg);opacity:0}60%{transform:scale(1.08) rotate(10deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
 .success-kicker{
-  display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.26em;
-  text-transform:uppercase;color:#34d399;
-  background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.28);
-  padding:6px 14px;border-radius:999px;margin-bottom:14px;
+  display:inline-block;font-size:10px;font-weight:800;letter-spacing:.26em;text-transform:uppercase;
+  color:#34d399;background:rgba(52,211,153,.11);border:1px solid rgba(52,211,153,.26);
+  padding:5px 13px;border-radius:999px;margin-bottom:12px;
 }
 .success-wrap h2{
-  font-family:'Fraunces',serif;font-weight:900;font-size:clamp(32px,5vw,44px);
-  color:var(--text);margin-bottom:12px;letter-spacing:-.03em;line-height:1.05;
-  position:relative;
+  font-family:'Fraunces',serif;font-weight:900;font-size:clamp(30px,5vw,42px);
+  color:var(--text);margin-bottom:10px;letter-spacing:-.03em;line-height:1.05;
 }
 .success-wrap h2 em{font-style:italic;font-weight:400;color:var(--accent)}
-.success-intro{color:var(--text-muted);font-size:16px;margin-bottom:28px;line-height:1.6}
+.success-intro{color:var(--text-muted);font-size:15px;margin-bottom:24px;line-height:1.6}
 .success-intro strong{color:var(--text);font-weight:600}
-
 .success-details{
   background:var(--bg-alt);border:1px solid var(--border);
-  border-radius:var(--radius-md);padding:20px 22px;margin-bottom:22px;text-align:left;
-  font-size:14px;
+  border-radius:var(--radius-md);padding:18px 20px;margin-bottom:20px;text-align:left;font-size:14px;
 }
-.success-details .row{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:8px 0}
+.success-details .row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:7px 0}
 .success-details .row:not(:last-child){border-bottom:1px solid var(--border)}
-.success-details .lbl{color:var(--text-subtle);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.14em;flex-shrink:0}
+.success-details .lbl{color:var(--text-subtle);font-weight:700;font-size:10.5px;text-transform:uppercase;letter-spacing:.13em;flex-shrink:0}
 .success-details .val{color:var(--text);font-weight:500;text-align:right}
-.success-details .row:last-child .val{font-family:'Fraunces',serif;font-weight:900;font-size:20px;color:var(--accent);letter-spacing:-.02em}
-
+.success-details .row:last-child .val{font-family:'Fraunces',serif;font-weight:900;font-size:19px;color:var(--accent);letter-spacing:-.02em}
 .success-timeline{
   background:var(--bg-alt);border:1px solid var(--border);
-  border-radius:var(--radius-md);padding:22px 24px;margin-bottom:22px;text-align:left;
+  border-radius:var(--radius-md);padding:20px 22px;margin-bottom:20px;text-align:left;
 }
-.timeline-title{
-  font-size:10.5px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;
-  color:var(--accent);margin-bottom:14px;
-}
-.timeline-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:14px;position:relative}
+.timeline-title{font-size:10px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+.timeline-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px;position:relative}
 .timeline-list::before{
-  content:'';position:absolute;left:14px;top:14px;bottom:14px;width:2px;
-  background:linear-gradient(to bottom,var(--accent) 0%,var(--accent) 50%,var(--border-strong) 100%);
-  opacity:.35;
+  content:'';position:absolute;left:13px;top:13px;bottom:13px;width:2px;
+  background:linear-gradient(to bottom,var(--accent) 0%,var(--border-strong) 100%);opacity:.3;
 }
-.timeline-list li{display:flex;align-items:flex-start;gap:14px;position:relative}
+.timeline-list li{display:flex;align-items:flex-start;gap:12px}
 .timeline-list .t-num{
-  flex-shrink:0;width:30px;height:30px;border-radius:50%;z-index:1;
+  flex-shrink:0;width:28px;height:28px;border-radius:50%;z-index:1;
   background:linear-gradient(135deg,var(--brand-500),var(--ice-500));color:#fff;
   display:grid;place-items:center;
-  font-family:'Fraunces',serif;font-weight:800;font-size:14px;
-  box-shadow:0 4px 12px -4px var(--brand-500);
+  font-family:'Fraunces',serif;font-weight:800;font-size:13px;
+  box-shadow:0 3px 10px -3px var(--brand-500);
 }
-.timeline-list strong{display:block;font-size:14.5px;font-weight:700;color:var(--text);margin-bottom:2px}
-.timeline-list span{font-size:13px;color:var(--text-muted);line-height:1.5}
-
+.timeline-list strong{display:block;font-size:14px;font-weight:700;color:var(--text);margin-bottom:2px}
+.timeline-list span{font-size:12.5px;color:var(--text-muted);line-height:1.5}
 .success-reminder{
-  display:flex;align-items:flex-start;gap:12px;
-  padding:14px 18px;margin-bottom:22px;
-  background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.28);
-  border-radius:12px;text-align:left;
-  font-size:13.5px;line-height:1.55;
+  display:flex;align-items:flex-start;gap:10px;
+  padding:13px 16px;margin-bottom:20px;
+  background:rgba(52,211,153,.09);border:1px solid rgba(52,211,153,.26);
+  border-radius:10px;text-align:left;font-size:13px;line-height:1.55;
 }
 .success-reminder strong{color:#34d399;font-weight:800}
-.success-reminder span{color:var(--text-muted);font-weight:500}
+.success-reminder span{color:var(--text-muted)}
 .success-reminder svg{flex-shrink:0;margin-top:1px;color:#34d399}
-
-.success-actions{
-  display:flex;gap:10px;flex-wrap:wrap;justify-content:center;
-}
-.success-actions .btn{flex:1 1 auto;min-width:130px}
-.success-actions .btn.xl{flex:1 1 100%;margin-top:4px}
-
-/* Add to Calendar section */
 .cal-section{
-  margin-bottom:18px;
-  background:var(--bg-alt);border:1px solid var(--border);
-  border-radius:var(--radius-md);padding:18px 20px;
-  text-align:left;
+  margin-bottom:16px;background:var(--bg-alt);border:1px solid var(--border);
+  border-radius:var(--radius-md);padding:16px 18px;text-align:left;
 }
-.cal-section-label{
-  font-size:10.5px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;
-  color:var(--text-subtle);margin-bottom:12px;
+.cal-section-label{font-size:10px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--text-subtle);margin-bottom:10px}
+.cal-btns{display:flex;gap:8px;flex-wrap:wrap}
+.cal-btns .btn{flex:1 1 auto;min-width:120px;font-size:12.5px;padding:9px 14px}
+.success-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.success-actions .btn{flex:1 1 auto;min-width:120px}
+.success-actions .btn.xl{flex:1 1 100%;margin-top:4px}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  background:var(--accent);color:var(--accent-contrast)!important;
+  padding:12px 22px;border-radius:var(--radius);
+  font-weight:700;font-size:14px;font-family:'Inter',sans-serif;
+  border:none;cursor:pointer;
+  transition:background .18s,transform .18s,box-shadow .18s;
+  text-decoration:none!important;white-space:nowrap;
+  box-shadow:var(--shadow-sm);
+  -webkit-tap-highlight-color:transparent;
 }
-.cal-btns{display:flex;gap:10px;flex-wrap:wrap}
-.cal-btns .btn{flex:1 1 auto;min-width:130px;font-size:13px;padding:10px 16px}
+.btn:hover{background:var(--accent-hover);transform:translateY(-1px);box-shadow:var(--shadow-blue)}
+.btn:active{transform:translateY(0)}
+.btn.xl{padding:14px 28px;font-size:15px;border-radius:var(--radius-md)}
+.btn.ghost{background:transparent;color:var(--text)!important;border:1px solid var(--border-strong);box-shadow:none}
+.btn.ghost:hover{background:var(--bg-alt);border-color:var(--accent)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important;box-shadow:none!important}
 
-/* Spinner for submit button */
-@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-.btn-spinner{
-  width:16px;height:16px;border-radius:50%;
-  border:2px solid rgba(255,255,255,.3);border-top-color:#fff;
-  animation:spin .7s linear infinite;flex-shrink:0;
-}
-
-/* More-info toggle */
-.more-info-toggle{display:none;width:100%;padding:12px 18px;border-radius:12px;border:1px solid var(--border);background:var(--bg-alt);color:var(--text-muted);font-size:14px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:all .2s;margin-bottom:16px;text-align:center}
-.more-info-toggle:hover{border-color:var(--border-strong);color:var(--text)}
-.more-info-toggle.open{color:var(--accent);border-color:var(--accent)}
-@media(max-width:640px){.more-info-toggle{display:block}.more-info-panel{display:none}.more-info-panel.open{display:block}}
-
-/* PAGE HEADER */
-.page-eyebrow{
-  display:inline-flex;align-items:center;gap:10px;
-  font-size:11px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;
-  color:var(--accent);background:var(--bg-alt);border:1px solid var(--border);
-  padding:7px 14px;border-radius:999px;margin-bottom:16px;
-}
-.page-eyebrow .pip{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--ring)}
-.page-title{
-  font-family:'Fraunces',serif;font-weight:900;
-  font-size:clamp(28px,4vw,42px);letter-spacing:-.03em;line-height:1.05;
-  color:var(--text);margin-bottom:32px;
-}
-.page-title em{font-style:italic;font-weight:400;color:var(--accent)}
-.page-head{margin-bottom:0}
-
-/* BOOK LAYOUT */
-.book-layout{display:grid;grid-template-columns:1fr 320px;gap:32px;align-items:start}
-.book-sidebar{position:sticky;top:80px}
-
-/* SECTIONS */
-.book-section{padding:28px 0;border-bottom:1px solid var(--border)}
-.section-label{font-size:10.5px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
-.section-sub{font-size:15px;color:var(--text-muted);margin-bottom:22px;line-height:1.55}
-.section-sub strong{color:var(--text);font-weight:600}
-
-/* COMPACT SERVICE CARD */
-.svc-compact{
-  background:var(--hero-grad);border-radius:var(--radius-xl);
-  padding:22px 24px;margin-bottom:18px;
-  position:relative;overflow:hidden;color:#fff;
-  box-shadow:var(--shadow-lg);
-}
-.svc-compact::before{
-  content:'';position:absolute;inset:0;z-index:0;
-  background:radial-gradient(50% 50% at 80% 0%,rgba(125,211,252,.22),transparent 60%);
-}
-.svc-compact-inner{position:relative;z-index:1;display:flex;align-items:flex-start;justify-content:space-between;gap:20px}
-.svc-tag{
-  display:inline-block;font-size:9.5px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;
-  color:var(--ice-300);background:rgba(125,211,252,.12);border:1px solid rgba(125,211,252,.25);
-  padding:5px 12px;border-radius:999px;margin-bottom:10px;
-}
-.svc-compact .svc-name{
-  font-family:'Fraunces',serif;font-weight:900;
-  font-size:clamp(22px,3.5vw,34px);color:#fff;
-  letter-spacing:-.03em;line-height:1.05;margin-bottom:8px;
-}
-.svc-compact .svc-desc{color:rgba(255,255,255,.82);font-size:14.5px;line-height:1.5}
-.svc-price-block{text-align:right;flex-shrink:0}
-.svc-price-num{
-  font-family:'Fraunces',serif;font-weight:900;
-  font-size:clamp(40px,5vw,60px);letter-spacing:-.04em;line-height:1;
-  background:linear-gradient(135deg,#93c5fd,#7dd3fc);
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-}
-.svc-compact.premium .svc-price-num{background:linear-gradient(135deg,#fcd34d,#fbbf24);-webkit-background-clip:text;background-clip:text;color:transparent}
-.svc-price-num .d{font-size:22px;font-style:italic;font-weight:400;vertical-align:top;opacity:.75}
-.svc-price-block .flat{font-size:10px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:4px}
-
-/* FIELDS 2-COL */
-.fields-2col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-
-/* MOBILE SUMMARY */
-.mobile-summary-inline{display:none;padding-top:24px}
-
-/* SUBMIT FOOTER */
-.book-footer{padding-top:28px}
-.pay-note{
-  display:flex;align-items:flex-start;gap:12px;
-  padding:14px 18px;margin-bottom:20px;
-  background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.28);
-  border-radius:12px;font-size:13.5px;color:var(--text-muted);line-height:1.55;
-}
-.pay-note strong{color:#34d399;font-weight:800}
-.pay-note svg{flex-shrink:0;color:#34d399;margin-top:2px}
-.btn-full{width:100%}
-
-/* RESPONSIVE */
-@media(max-width:900px){
-  .book-layout{grid-template-columns:1fr}
-  .book-sidebar{display:none}
-  .mobile-summary-inline{display:block}
-}
-@media(max-width:760px){
-  .intro-grid{grid-template-columns:1fr}
+/* ── RESPONSIVE ──────────────────────────────────────── */
+@media(max-width:860px){
+  .form-grid{grid-template-columns:1fr}
+  .summary-col{display:none}
+  .mini-summary{display:flex}
 }
 @media(max-width:640px){
-  .svc-compact-inner{flex-direction:column;gap:12px}
-  .svc-price-block{text-align:left}
-  .fields-2col{grid-template-columns:1fr}
-  .time-picker{gap:12px}
-  .calendar{padding:12px 10px}
-  .week-row{gap:3px}
-  .day-pill{padding:7px 2px;border-radius:9px}
-  .day-pill .day-num{font-size:17px}
-  .day-pill .day-name{font-size:8.5px}
-  .day-pill .day-avail{font-size:8px}
-  .slot{padding:12px 14px;min-height:56px}
-  .slot .slot-time{font-size:18px}
-  .shell{padding:20px 14px 60px}
+  .shell{padding:16px 14px 60px}
   .topbar-inner{padding:10px 14px}
-  .section-sub{font-size:14px}
-  .biz-strip{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;padding:18px}
-  .biz-fact{flex:1 1 calc(50% - 12px);min-width:120px;max-width:100%}
-  .week-row{overflow:hidden;padding-bottom:0}
-  .day-pill{min-width:0;-webkit-tap-highlight-color:transparent}
-}
-@media(max-width:480px){
+  .svc-bar{padding:13px 16px;border-radius:var(--radius-lg)}
+  .svc-bar-name{font-size:17px}
+  .svc-bar-price{font-size:22px}
+  .svc-bar-desc{font-size:12px}
+  .form-section{padding-bottom:18px;margin-bottom:18px}
+  .field{margin-bottom:8px}
+  .field input,.field textarea{height:44px;font-size:15px;padding:0 11px}
+  .field textarea{height:auto;padding:10px 11px}
+  .cal-wrap{padding:12px}
+  .cal-nav-row{margin-bottom:10px}
+  .cal-title-block .cal-month{font-size:14px}
+  .week-row{gap:3px}
+  .day-pill{padding:7px 1px 5px;border-radius:7px}
+  .day-pill .day-num{font-size:16px}
   .day-pill .day-name{font-size:8px}
-  .cal-month{font-size:16px}
-  .slot-grid{grid-template-columns:1fr}
-  .slot{flex-direction:row;gap:16px;padding:14px 16px;text-align:left;justify-content:flex-start}
-  .slot .slot-time{font-size:20px}
+  .day-pill .day-avail{display:none}
+  .field-row{grid-template-columns:1fr}
+  .time-pill{padding:9px 6px}
+  .tp-time{font-size:13.5px}
+  .submit-btn{padding:14px 18px;font-size:15px}
   .success-wrap{padding:28px 18px}
-  .success-halo{width:90px;height:90px;margin-bottom:16px}
-  .success-check{width:70px;height:70px;border-radius:20px}
-  .success-check svg{width:32px;height:32px}
-  .success-wrap h2{font-size:clamp(26px,7vw,36px)}
-  .success-intro{font-size:14.5px;margin-bottom:20px}
+  .success-halo{width:80px;height:80px;margin-bottom:16px}
+  .success-check{width:62px;height:62px;border-radius:18px}
+  .success-check svg{width:28px;height:28px}
+  .success-wrap h2{font-size:clamp(24px,7vw,32px)}
   .success-details{padding:14px 16px}
   .success-timeline{padding:16px 18px}
   .success-actions{gap:8px}
-  .success-actions .btn{padding:12px 16px;font-size:13.5px}
-  .btn.xl{padding:16px 28px;font-size:15px}
-  .field input,.field textarea{padding:12px 14px;font-size:15px}
-  .field{margin-bottom:12px}
 }
-/* Nuclear containment */
-@media(max-width:640px){
-  .time-picker,.calendar,.slot-panel,.slot-grid,.form-wrap,.success-wrap,.success-details,.success-timeline,.success-actions,.field,.summary-card{max-width:100%!important;width:100%!important;overflow-x:hidden!important}
-  .field input,.field textarea{width:100%;max-width:100%;box-sizing:border-box}
-  .btn{max-width:100%;white-space:normal;word-break:break-word}
+@media(max-width:400px){
+  .svc-bar-tag{display:none}
+  .time-pill{flex:1 1 60px;min-width:60px}
 }
-@media (prefers-reduced-motion: reduce){
+@media(prefers-reduced-motion:reduce){
   *{animation-duration:.01ms!important;transition-duration:.01ms!important}
-}
-
-/* Success screen mobile */
-@media(max-width:640px){
-  .success-wrap{padding:24px 16px}
-  .success-halo{width:86px;height:86px;margin-bottom:14px}
-  .success-check{width:66px;height:66px;border-radius:18px}
-  .success-check svg{width:30px;height:30px}
-  .success-wrap h2{font-size:clamp(24px,7vw,34px);margin-bottom:8px}
-  .success-intro{font-size:14px;margin-bottom:16px}
-  .success-kicker{font-size:11px;margin-bottom:10px}
-  .success-details{padding:12px 14px}
-  .success-timeline{padding:14px 16px}
-  .success-reminder{font-size:13px;padding:12px 14px;margin-bottom:16px}
-  .success-actions{gap:8px;margin-top:16px}
-  .success-actions .btn{padding:11px 14px;font-size:13px}
 }
 </style>
 </head>
 <body>
 
-<!-- TOP BAR -->
+<!-- TOPBAR -->
 <div class="topbar">
   <div class="topbar-inner">
     <a href="index.html" class="brand">
       <span class="brand-mark" aria-hidden="true">
-        <svg width="18" height="22" viewBox="0 0 20 24" fill="none"><path d="M10 1C14 7 19 13 19 17a9 9 0 0 1-18 0c0-4 5-10 9-16z" fill="#fff"/><ellipse cx="7" cy="13" rx="3" ry="1.5" fill="#bfdbfe" transform="rotate(-30 7 13)"/></svg>
+        <svg width="17" height="21" viewBox="0 0 20 24" fill="none"><path d="M10 1C14 7 19 13 19 17a9 9 0 0 1-18 0c0-4 5-10 9-16z" fill="#fff"/><ellipse cx="7" cy="13" rx="3" ry="1.5" fill="#bfdbfe" transform="rotate(-30 7 13)"/></svg>
       </span>
       Pristine <em>Powerwashing</em>
     </a>
     <div class="topbar-right">
       <a href="index.html" class="back-link">← Cancel</a>
-      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
         <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
         <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       </button>
@@ -759,76 +609,53 @@ a{color:var(--accent);text-decoration:none}
   </div>
 </div>
 
-<!-- MAIN SHELL -->
 <main class="shell">
 
-  <!-- Success screen (hidden until booking completes) -->
+  <!-- SUCCESS SCREEN -->
   <div id="successScreen" style="display:none">
     <div class="success-wrap">
       <div class="success-halo">
         <div class="success-check">
-          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg>
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg>
         </div>
       </div>
       <div class="success-kicker">Appointment Scheduled</div>
       <h2>You're <em>booked!</em></h2>
-      <p class="success-intro" id="successMsg">I'll text you within a few hours to confirm all the details.</p>
-
-      <!-- Booking summary -->
+      <p class="success-intro" id="successMsg">I'll text you within a few hours to confirm the details.</p>
       <div class="success-details" id="successDetails"></div>
-
-      <!-- What happens next timeline -->
       <div class="success-timeline">
         <div class="timeline-title">What happens next</div>
         <ol class="timeline-list">
-          <li>
-            <span class="t-num">1</span>
-            <div><strong>Confirmation text</strong><span>You'll get a text from me within a few hours.</span></div>
-          </li>
-          <li>
-            <span class="t-num">2</span>
-            <div><strong>Reminder the day before</strong><span>Quick heads-up so you're not caught off guard.</span></div>
-          </li>
-          <li>
-            <span class="t-num">3</span>
-            <div><strong>I show up on time</strong><span>With every tool I need — you don't need to be home.</span></div>
-          </li>
-          <li>
-            <span class="t-num">4</span>
-            <div><strong>Inspect &amp; pay</strong><span>Walk the work with me — pay only if you're happy.</span></div>
-          </li>
+          <li><span class="t-num">1</span><div><strong>Confirmation text</strong><span>You'll get a text from me within a few hours.</span></div></li>
+          <li><span class="t-num">2</span><div><strong>Reminder the day before</strong><span>Quick heads-up so you're not caught off guard.</span></div></li>
+          <li><span class="t-num">3</span><div><strong>I show up on time</strong><span>With every tool I need — you don't need to be home.</span></div></li>
+          <li><span class="t-num">4</span><div><strong>Inspect &amp; pay</strong><span>Walk the work with me — pay only if you're happy.</span></div></li>
         </ol>
       </div>
-
-      <!-- Payment reminder -->
       <div class="success-reminder">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7h-3V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h3v3a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/></svg>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7h-3V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h3v3a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/></svg>
         <span><strong>No payment today.</strong> Cash or CashApp — only after the job is complete and you've inspected the work.</span>
       </div>
-
-      <!-- Add to Calendar -->
       <div class="cal-section" id="calSection" style="display:none">
         <div class="cal-section-label">Add to Calendar</div>
         <div class="cal-btns">
           <a id="gcalLink" href="#" target="_blank" rel="noopener" class="btn ghost">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
             Google Calendar
           </a>
           <button id="icsBtn" class="btn ghost" type="button">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
             Apple Calendar
           </button>
         </div>
       </div>
-
-      <!-- Quick actions -->
       <div class="success-actions">
-        <a href="sms:+19843446217" class="btn ghost lg">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <a href="sms:+19843446217" class="btn ghost">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           Text Reid
         </a>
-        <a href="tel:+19843446217" class="btn ghost lg">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.86 19.86 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.86 19.86 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
+        <a href="tel:+19843446217" class="btn ghost">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.86 19.86 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.86 19.86 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
           Call Reid
         </a>
         <a href="index.html" class="btn xl">Back to Home</a>
@@ -836,211 +663,121 @@ a{color:var(--accent);text-decoration:none}
     </div>
   </div>
 
-  <!-- Booking form (shown by default) -->
+  <!-- BOOKING FORM -->
   <div id="bookForm">
 
-    <!-- Page header -->
-    <div class="page-head">
-      <div class="page-eyebrow"><span class="pip"></span>Schedule your appointment</div>
-      <h1 class="page-title">Book: <em id="pageServiceName">Sidewalks</em></h1>
+    <!-- Service bar -->
+    <div class="svc-bar" id="svcBar">
+      <div class="svc-bar-top">
+        <div class="svc-bar-left">
+          <span class="svc-bar-name" id="heroName">Sidewalks</span>
+          <span class="svc-bar-tag" id="heroTag">Soap Wash</span>
+        </div>
+        <div class="svc-bar-price">$<span id="heroPrice">25</span></div>
+      </div>
+      <p class="svc-bar-desc" id="heroDesc">Front walks, stepping stones &amp; entry paths blasted back to fresh concrete.</p>
     </div>
 
-    <div class="book-layout">
+    <div class="form-grid">
+
       <!-- Left: form -->
-      <div class="book-form">
+      <div class="form-col">
 
-        <!-- SECTION: Service -->
-        <div class="book-section">
-          <div class="section-label">Your Service</div>
-          <div class="svc-compact" id="svcHero">
-            <div class="svc-compact-inner">
-              <div>
-                <div class="svc-tag" id="heroTag">Soap Wash</div>
-                <div class="svc-name" id="heroName">Sidewalks</div>
-                <p class="svc-desc" id="heroDesc">Front walks, stepping stones &amp; entry paths blasted back to fresh concrete.</p>
-              </div>
-              <div class="svc-price-block">
-                <div class="svc-price-num"><span class="d">$</span><span id="heroPrice">25</span></div>
-                <div class="flat">Flat Rate</div>
-              </div>
+        <!-- 1. Your Info -->
+        <div class="form-section">
+          <div class="section-lbl">Your Info</div>
+          <div class="field-row">
+            <div class="field">
+              <label>Name</label>
+              <input type="text" id="bName" placeholder="First &amp; last name" autocomplete="name">
+            </div>
+            <div class="field">
+              <label>Phone</label>
+              <input type="tel" id="bPhone" placeholder="(555) 123-4567" autocomplete="tel">
             </div>
           </div>
-
-          <!-- Trust badges -->
-          <div class="biz-strip">
-            <div class="biz-fact">
-              <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M12 3l9 9-9 9-9-9 9-9z"/></svg></span>
-              <div><strong>Flat-rate pricing</strong><span>No hidden fees, ever</span></div>
-            </div>
-            <div class="biz-fact">
-              <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 16 14"/></svg></span>
-              <div><strong>Same-week service</strong><span>Text today, done this week</span></div>
-            </div>
-            <div class="biz-fact">
-              <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="14" r="3"/><circle cx="16" cy="10" r="2"/><circle cx="13" cy="17" r="1.5"/></svg></span>
-              <div><strong>Pet-safe soap</strong><span>Eco-friendly &amp; grass-safe</span></div>
-            </div>
-            <div class="biz-fact">
-              <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></span>
-              <div><strong>Satisfaction guaranteed</strong><span>I come back free if unhappy</span></div>
-            </div>
+          <div class="field">
+            <label>Email</label>
+            <input type="email" id="bEmail" placeholder="you@example.com" autocomplete="email">
           </div>
+        </div>
 
-          <button id="moreInfoToggle" class="more-info-toggle">See what's included ↓</button>
-
-          <div id="moreInfoPanel" class="more-info-panel">
-            <!-- Payment-after-service reassurance -->
-            <div class="pay-banner">
-              <span class="pay-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7h-3V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h3v3a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M7 11h8"/><path d="M11 15h4"/></svg></span>
-              <div class="pay-body">
-                <div class="pay-kicker">You're scheduling an appointment</div>
-                <h4>No payment today — you pay <em>after</em> the job is done.</h4>
-                <p>You'll only pay once the work is complete and <strong>you've inspected it and are fully happy with the results.</strong> Cash or CashApp accepted. No card needed to book.</p>
+        <!-- 2. Pick a Time -->
+        <div class="form-section">
+          <div class="section-lbl">Pick a Date &amp; Time</div>
+          <div class="cal-wrap">
+            <div class="cal-nav-row">
+              <button type="button" class="cal-nav" id="calPrev" aria-label="Previous week">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <div class="cal-title-block">
+                <div class="cal-month" id="calMonth">June 2026</div>
+                <div class="cal-range" id="calRange">Jun 11 – Jun 17</div>
               </div>
+              <button type="button" class="cal-nav" id="calNext" aria-label="Next week">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
             </div>
-
-            <!-- Service area -->
-            <div class="area-card">
-              <span class="area-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
-              <div><strong>Currently serving Highcroft &amp; surrounding neighborhoods</strong><span>Cary, Morrisville, and nearby North Raleigh — text <a href="sms:+19843446217">(984) 344‑6217</a> if you're outside the area.</span></div>
-            </div>
-
-            <div class="intro-grid">
-              <!-- What's included -->
-              <div class="intro-card">
-                <h3><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></span>What's Included</h3>
-                <div class="intro-list" id="includesList"></div>
-              </div>
-              <!-- How it works -->
-              <div class="intro-card">
-                <h3><span class="icon amber"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></span>How It Works</h3>
-                <div class="intro-list">
-                  <div class="intro-item">
-                    <span class="num">1</span>
-                    <div><strong>Book online in under a minute</strong><span>Pick a time slot that fits your schedule. You'll get a text confirmation within a few hours.</span></div>
-                  </div>
-                  <div class="intro-item">
-                    <span class="num">2</span>
-                    <div><strong>We show up at the scheduled time</strong><span>No waiting all day. Most jobs take <strong id="howDuration">30-60 minutes</strong> — quick, clean, and thorough.</span></div>
-                  </div>
-                  <div class="intro-item">
-                    <span class="num">3</span>
-                    <div><strong>You don't have to do a thing</strong><span id="howPrep">Just leave the outside water on if possible. We bring everything — hoses, pressure washer, soap, the works.</span></div>
-                  </div>
-                  <div class="intro-item">
-                    <span class="num">4</span>
-                    <div><strong>Pay on the spot</strong><span>Cash or CashApp. Flat rate — the price you see is exactly what you pay.</span></div>
-                  </div>
-                </div>
-              </div>
+            <div class="week-row" id="weekRow"></div>
+          </div>
+          <div class="slot-section" id="slotSection">
+            <div class="slot-day-label" id="slotDayLabel" style="display:none"></div>
+            <div class="slot-row" id="slotRow">
+              <div class="slot-placeholder">Select a date above to see available times</div>
             </div>
           </div>
         </div>
 
-        <!-- SECTION: Your Info -->
-        <div class="book-section">
-          <div class="section-label">1 — Your Info</div>
-          <div class="fields-2col">
-            <div class="field"><label>Your Name</label><input type="text" id="bName" placeholder="First &amp; last name" autocomplete="name"></div>
-            <div class="field"><label>Phone Number</label><input type="tel" id="bPhone" placeholder="(555) 123-4567" autocomplete="tel"><div class="hint">I'll text this to confirm.</div></div>
+        <!-- 3. Address -->
+        <div class="form-section">
+          <div class="section-lbl">Service Address</div>
+          <div class="field">
+            <label>Street Address</label>
+            <input type="text" id="bAddress" placeholder="123 Main St, Cary NC" autocomplete="street-address">
           </div>
-          <div class="field"><label>Email</label><input type="email" id="bEmail" placeholder="you@example.com" autocomplete="email"><div class="hint">Booking confirmation only — no marketing.</div></div>
-        </div>
-
-        <!-- SECTION: Pick a Time -->
-        <div class="book-section">
-          <div class="section-label">2 — Pick a Date &amp; Time</div>
-          <p class="section-sub">Three time slots every day — <strong>10 AM, 12 PM, or 2 PM.</strong> Booking opens <strong>Thursday, June 11, 2026</strong>. If nothing fits, text <a href="sms:+19843446217">(984) 344‑6217</a>.</p>
-          <div class="time-picker">
-            <div class="calendar">
-              <div class="cal-header">
-                <button type="button" class="cal-nav" id="calPrev" aria-label="Previous week">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-                </button>
-                <div class="cal-title">
-                  <div class="cal-month" id="calMonth">June 2026</div>
-                  <div class="cal-range" id="calRange">Jun 11 – Jun 17</div>
-                </div>
-                <button type="button" class="cal-nav" id="calNext" aria-label="Next week">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-                </button>
-              </div>
-              <div class="week-row" id="weekRow"></div>
-            </div>
-
-            <div class="slot-panel" id="slotPanelEl">
-              <div class="slot-panel-head">
-                <div>
-                  <h3 id="slotPanelTitle">Pick a day to see times</h3>
-                  <div class="slot-sub" id="slotPanelSub">Three slots daily · 10 AM, 12 PM, 2 PM</div>
-                </div>
-                <span class="slot-panel-pill" id="slotPanelPill" style="display:none">All times available</span>
-              </div>
-              <div class="slot-grid" id="slotGrid"></div>
-            </div>
+          <div class="field">
+            <label>Notes <span class="label-opt">optional</span></label>
+            <textarea id="bNotes" rows="2" placeholder="Gate code, parking notes, anything to know..."></textarea>
           </div>
         </div>
 
-        <!-- SECTION: Address & Notes -->
-        <div class="book-section">
-          <div class="section-label">3 — Service Address</div>
-          <div class="field"><label>Street Address</label><input type="text" id="bAddress" placeholder="123 Main Street, Cary NC" autocomplete="street-address"></div>
-          <div class="field"><label>Notes (optional)</label><textarea id="bNotes" placeholder="Gate code, area to focus on, or anything else..."></textarea></div>
+        <!-- Mobile mini-summary -->
+        <div class="mini-summary" id="miniSummary">
+          <span data-s="service">—</span><span class="ms-sep">·</span><span data-s="time">—</span><span class="ms-sep">·</span><span data-s="price">—</span>
         </div>
 
-        <!-- Mobile-only: inline summary shown before submit button -->
-        <div class="mobile-summary-inline">
-          <div class="section-label">Booking Summary</div>
-          <div class="summary-card" style="position:static;margin-bottom:0">
-            <div class="summary-row"><span class="lbl">Service</span><span class="val" data-s="service">—</span></div>
-            <div class="summary-row"><span class="lbl">Time</span><span class="val" data-s="time">—</span></div>
-            <div class="summary-row"><span class="lbl">Name</span><span class="val" data-s="name">—</span></div>
-            <div class="summary-row"><span class="lbl">Phone</span><span class="val" data-s="phone">—</span></div>
-            <div class="summary-row"><span class="lbl">Address</span><span class="val" data-s="address">—</span></div>
-            <div class="summary-total"><span class="lbl">Total</span><span class="val" data-s="price" style="font-family:'Fraunces',serif;font-weight:900;font-size:32px;color:var(--accent);letter-spacing:-.03em">—</span></div>
-            <div class="summary-note">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 7 12 12 14 14"/></svg>
-              <span>Paid <strong>after</strong> the job — not today.</span>
-            </div>
-          </div>
-        </div>
+        <!-- Submit -->
+        <button class="submit-btn" id="submitBtn" onclick="submitBooking()">
+          Confirm &amp; Book
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
 
-        <!-- Submit footer -->
-        <div class="book-footer">
-          <div class="pay-note">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg>
-            <span>No payment today — you pay <strong>after</strong> the job is done and you've inspected the results. Cash or CashApp.</span>
-          </div>
-          <button class="btn xl btn-full" id="submitBtn" onclick="submitBooking()">Confirm &amp; Book ✓</button>
-        </div>
+      </div><!-- end .form-col -->
 
-      </div><!-- end .book-form -->
-
-      <!-- Desktop sticky sidebar -->
-      <aside class="book-sidebar">
+      <!-- Right: desktop summary -->
+      <aside class="summary-col">
         <div class="summary-card">
-          <h3>Booking Summary</h3>
-          <div class="summary-row"><span class="lbl">Service</span><span class="val" data-s="service">—</span></div>
-          <div class="summary-row"><span class="lbl">Time</span><span class="val" data-s="time">—</span></div>
-          <div class="summary-row"><span class="lbl">Name</span><span class="val" data-s="name">—</span></div>
-          <div class="summary-row"><span class="lbl">Phone</span><span class="val" data-s="phone">—</span></div>
-          <div class="summary-row"><span class="lbl">Address</span><span class="val" data-s="address">—</span></div>
-          <div class="summary-total"><span class="lbl">Total</span><span class="val" data-s="price" style="font-family:'Fraunces',serif;font-weight:900;font-size:32px;color:var(--accent);letter-spacing:-.03em">—</span></div>
-          <div class="summary-note">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 7 12 12 14 14"/></svg>
-            <span>Paid <strong>after</strong> the job — not today.</span>
+          <div class="summary-title">Booking Summary</div>
+          <div class="summary-item"><span class="si-label">Service</span><span class="si-val" data-s="service">—</span></div>
+          <div class="summary-item"><span class="si-label">Date &amp; Time</span><span class="si-val" data-s="time">—</span></div>
+          <div class="summary-item"><span class="si-label">Name</span><span class="si-val" data-s="name">—</span></div>
+          <div class="summary-item"><span class="si-label">Phone</span><span class="si-val" data-s="phone">—</span></div>
+          <div class="summary-item"><span class="si-label">Address</span><span class="si-val" data-s="address">—</span></div>
+          <div class="summary-total">
+            <span>Total</span>
+            <span class="st-price" data-s="price">—</span>
           </div>
-          <a href="index.html" class="btn ghost" style="width:100%;margin-top:16px;justify-content:center">← Different service</a>
+          <div class="summary-note">Pay after the job is done — not today.</div>
         </div>
       </aside>
 
-    </div><!-- end .book-layout -->
+    </div><!-- end .form-grid -->
   </div><!-- end #bookForm -->
 
 </main>
 
 <script>
-// ===== THEME — defaults to dark =====
+// ===== THEME =====
 (function(){
   const root = document.documentElement;
   const stored = localStorage.getItem('pw-theme');
@@ -1060,703 +797,451 @@ a{color:var(--accent);text-decoration:none}
 
 // ===== FIREBASE =====
 firebase.initializeApp({
-  projectId: "pristine-powerwash-app",
-  appId: "1:1025511095450:web:0b6d6ff05f18bb0653f323",
-  storageBucket: "pristine-powerwash-app.firebasestorage.app",
-  apiKey: "AIzaSyBsuZ_aG7_tFf8rKCrRvLaPjSmc-2XZ27E",
-  authDomain: "pristine-powerwash-app.firebaseapp.com",
-  messagingSenderId: "1025511095450"
+  projectId:"pristine-powerwash-app",
+  appId:"1:1025511095450:web:0b6d6ff05f18bb0653f323",
+  storageBucket:"pristine-powerwash-app.firebasestorage.app",
+  apiKey:"AIzaSyBsuZ_aG7_tFf8rKCrRvLaPjSmc-2XZ27E",
+  authDomain:"pristine-powerwash-app.firebaseapp.com",
+  messagingSenderId:"1025511095450"
 });
 const db = firebase.firestore();
 
 // ===== SERVICES =====
 const services = {
-  'Sidewalks': {
-    tag: 'Soap Wash', price: 25, premium: false,
-    desc: 'Front walks, stepping stones & entry paths blasted back to fresh concrete.',
-    duration: '30-45 minutes',
-    prep: 'Move any planters or decorative items off the walkway. We bring everything else.',
-    includes: [
-      { title: 'High-Pressure Wash', detail: 'Industrial-grade pressure that strips away dirt, mold, and buildup — the kind you can\'t get with a garden hose.' },
-      { title: 'Pet-Safe Soap Treatment', detail: 'Eco-friendly soap that cleans deep without harming pets, plants, or your lawn.' },
-      { title: 'Full Walkway Coverage', detail: 'Front walks, stepping stones, entry paths, and any connected walkways.' },
-      { title: 'Edge Detailing', detail: 'We clean right up to the edges where grime hides along the grass line.' },
-      { title: 'Rinse & Inspection', detail: 'Final rinse and walkthrough so every inch looks brand new before we leave.' },
-      { title: 'Done in Under an Hour', detail: 'Most sidewalk jobs wrap in 30-45 minutes so you\'re not waiting around.' }
-    ]
-  },
-  'Trash Cans': {
-    tag: 'Soap Wash', price: 30, premium: false,
-    desc: 'Inside & out — soap wash that eliminates odors & bacteria buildup.',
-    duration: 'About 20 minutes',
-    prep: 'Empty the cans before we arrive — easiest to schedule on trash day right after pickup.',
-    includes: [
-      { title: 'Interior Deep Clean', detail: 'High-pressure blast inside the can to remove stuck-on grime, sludge, and residue.' },
-      { title: 'Exterior Wash', detail: 'Full exterior cleaning — lids, handles, sides, and wheels get the same treatment.' },
-      { title: 'Antibacterial Soap Treatment', detail: 'Kills bacteria and eliminates the source of those trash can odors.' },
-      { title: 'Odor Elimination', detail: 'Not just a cover-up — the soap neutralizes smells at their source.' },
-      { title: 'All Bins Included', detail: 'Trash and recycling bins both get cleaned at no extra charge.' },
-      { title: 'Quick Turnaround', detail: 'Done in about 20 minutes — easiest scheduled on trash day.' }
-    ]
-  },
-  'Patios': {
-    tag: 'Soap Wash', price: 50, premium: false,
-    desc: 'Pavers, slabs & back porches — lifted, rinsed & ready for the cookout.',
-    duration: '45-60 minutes',
-    prep: 'Move lightweight furniture and grill if you can — no worries if not, we\'ll work around it.',
-    includes: [
-      { title: 'Full Patio Surface Wash', detail: 'Concrete, pavers, flagstone, brick — whatever your patio is made of, we clean it.' },
-      { title: 'Pet-Safe Soap Treatment', detail: 'Eco-friendly soap that breaks down green algae, mold, and ground-in dirt.' },
-      { title: 'Furniture Area Cleaning', detail: 'We move lightweight furniture to clean underneath — no dirty patches left behind.' },
-      { title: 'Grout & Joint Cleaning', detail: 'For pavers and brick patios, we blast the joints where moss and weeds build up.' },
-      { title: 'Back Porch Included', detail: 'Covered porches and steps connected to the patio are included at no extra cost.' },
-      { title: 'Done in Under an Hour', detail: 'Most patios take 45-60 minutes depending on size and buildup.' }
-    ]
-  },
-  'Driveway (Standard)': {
-    tag: 'Water Only · No Soap', price: 75, premium: false,
-    desc: 'Standard high-pressure water blast — oil drips, tire marks & seasonal grime rinsed away.',
-    duration: '45-60 minutes',
-    prep: 'Move cars off the driveway and clear any loose debris. We handle the rest.',
-    includes: [
-      { title: 'High-Pressure Water Blast', detail: 'Industrial-strength water pressure that strips away tire marks, oil drips, and grime.' },
-      { title: 'Full Driveway Coverage', detail: 'Edge to edge cleaning from the street to the garage — the entire surface.' },
-      { title: 'Oil & Stain Lifting', detail: 'Water pressure alone lifts most oil spots, tire marks, and seasonal buildup.' },
-      { title: 'Edge & Curb Cleaning', detail: 'We hit the edges where dirt and debris collect along the driveway borders.' },
-      { title: 'Debris Removal', detail: 'Leaves, dirt, and loose debris are cleared before we start for the best result.' },
-      { title: 'No Chemicals', detail: 'Pure water pressure — great for driveways that just need a solid rinse.' }
-    ]
-  },
-  'Pristine+ (Soap & Bleach)': {
-    tag: 'Soap + Bleach · Grass-Safe', price: 115, premium: true,
-    desc: 'Driveway + soap & bleach treatment that lifts stains, oil & ground-in grime — keeps the grass safe.',
-    duration: '60-90 minutes',
-    prep: 'Move cars off the driveway. Water nearby plants beforehand — the pre-rinse protects them further.',
-    includes: [
-      { title: 'Everything in Standard Driveway', detail: 'Full high-pressure wash, edge-to-edge coverage, debris removal — all included.' },
-      { title: 'Soap & Bleach Treatment', detail: 'Professional-grade soap and bleach solution that dissolves stains water alone can\'t touch.' },
-      { title: 'Deep Stain Removal', detail: 'Oil stains, rust, algae, mold, and years of ground-in grime — this is the heavy hitter.' },
-      { title: 'Grass-Safe Formula', detail: 'Our bleach solution is diluted and applied carefully to protect your lawn and landscaping.' },
-      { title: 'Pre-Treatment Soak', detail: 'We apply the solution and let it soak before blasting — this is what makes the difference.' },
-      { title: 'The "Like New" Result', detail: 'Most customers say their driveway looks better than when they moved in.' }
-    ]
-  }
+  'Sidewalks':{ tag:'Soap Wash', price:25, premium:false, desc:'Front walks, stepping stones & entry paths blasted back to fresh concrete.' },
+  'Trash Cans':{ tag:'Soap Wash', price:30, premium:false, desc:'Inside & out — soap wash that eliminates odors & bacteria buildup.' },
+  'Patios':{ tag:'Soap Wash', price:50, premium:false, desc:'Pavers, slabs & back porches — lifted, rinsed & ready for the cookout.' },
+  'Driveway (Standard)':{ tag:'Water Only · No Soap', price:75, premium:false, desc:'Standard high-pressure water blast — oil drips, tire marks & seasonal grime rinsed away.' },
+  'Pristine+ (Soap & Bleach)':{ tag:'Soap + Bleach · Grass-Safe', price:115, premium:true, desc:'Driveway + soap & bleach treatment that lifts stains, oil & ground-in grime — keeps the grass safe.' }
 };
 
-// ===== READ URL PARAMS =====
+// ===== URL PARAMS =====
 const params = new URLSearchParams(window.location.search);
 const serviceName = params.get('service') || 'Sidewalks';
 const svc = services[serviceName] || services['Sidewalks'];
 
-// ===== POPULATE SERVICE CARD =====
-document.getElementById('pageServiceName').textContent = serviceName;
-document.getElementById('heroTag').textContent = svc.tag;
+// ===== POPULATE SERVICE BAR =====
 document.getElementById('heroName').textContent = serviceName;
+document.getElementById('heroTag').textContent = svc.tag;
 document.getElementById('heroPrice').textContent = svc.price;
 document.getElementById('heroDesc').textContent = svc.desc;
-document.getElementById('howDuration').textContent = svc.duration;
-document.getElementById('howPrep').textContent = svc.prep;
-if (svc.premium) document.getElementById('svcHero').classList.add('premium');
+if(svc.premium) document.getElementById('svcBar').classList.add('premium');
 
-const includesList = document.getElementById('includesList');
-svc.includes.forEach(item => {
-  const el = document.createElement('div');
-  el.className = 'intro-item';
-  el.innerHTML = `
-    <span class="check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></span>
-    <div><strong>${item.title}</strong><span>${item.detail}</span></div>`;
-  includesList.appendChild(el);
-});
-
+// ===== HELPERS =====
 function validEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+function formatPhone(raw){
+  const d=String(raw).replace(/\D/g,'');
+  if(d.length<10) return raw;
+  return '('+d.slice(0,3)+') '+d.slice(3,6)+'-'+d.slice(6,10);
+}
 
-// Scroll to & flash the slot picker if user tries to advance without picking
-function flashPickTimePrompt(){
-  const panel = document.getElementById('slotPanelEl');
-  if (!panel) return;
-  panel.scrollIntoView({ behavior:'smooth', block:'center' });
-  panel.style.transition = 'box-shadow .25s, border-color .25s';
-  panel.style.boxShadow = '0 0 0 3px var(--ring)';
-  panel.style.borderColor = 'var(--accent)';
-  setTimeout(() => { panel.style.boxShadow = ''; panel.style.borderColor = ''; }, 1400);
+function showToast(msg, tone){
+  let toast=document.getElementById('appToast');
+  if(!toast){ toast=document.createElement('div'); toast.id='appToast'; toast.className='app-toast'; document.body.appendChild(toast); }
+  toast.textContent=msg;
+  toast.className='app-toast'+(tone==='error'?' error':'');
+  requestAnimationFrame(()=>toast.classList.add('show'));
+  clearTimeout(toast.__t);
+  toast.__t=setTimeout(()=>toast.classList.remove('show'),4000);
 }
 
 function bad(id, msg){
-  const el = document.getElementById(id);
-  if (!el) return;
-  const field = el.closest('.field') || el.parentElement;
-  let errEl = field.querySelector('.field-error');
-  if (!errEl){
-    errEl = document.createElement('div');
-    errEl.className = 'field-error';
-    errEl.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span></span>';
+  const el=document.getElementById(id);
+  if(!el) return;
+  const field=el.closest('.field')||el.parentElement;
+  let errEl=field.querySelector('.field-error');
+  if(!errEl){
+    errEl=document.createElement('div');
+    errEl.className='field-error';
+    errEl.innerHTML='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span></span>';
     field.appendChild(errEl);
   }
-  errEl.querySelector('span').textContent = msg;
+  errEl.querySelector('span').textContent=msg;
   errEl.classList.add('show');
   el.classList.add('invalid');
-  const clear = () => {
-    errEl.classList.remove('show');
-    el.classList.remove('invalid');
-  };
-  el.addEventListener('input', clear, { once: true });
+  el.addEventListener('input',()=>{ errEl.classList.remove('show'); el.classList.remove('invalid'); },{once:true});
 }
 
-function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
-
-// Toast — top-of-screen transient message
-function showToast(msg, tone){
-  let toast = document.getElementById('appToast');
-  if (!toast){
-    toast = document.createElement('div');
-    toast.id = 'appToast';
-    toast.className = 'app-toast';
-    document.body.appendChild(toast);
-  }
-  toast.textContent = msg;
-  toast.className = 'app-toast' + (tone === 'error' ? ' error' : '');
-  requestAnimationFrame(() => toast.classList.add('show'));
-  clearTimeout(toast.__t);
-  toast.__t = setTimeout(() => toast.classList.remove('show'), 4000);
-}
-
-// ===== PHONE FORMATTER =====
-function formatPhone(raw){
-  const d = String(raw).replace(/\D/g,'');
-  if(d.length < 10) return raw;
-  return '(' + d.slice(0,3) + ') ' + d.slice(3,6) + '-' + d.slice(6,10);
+function flashSlotPrompt(){
+  const sec=document.getElementById('slotSection');
+  if(!sec) return;
+  sec.scrollIntoView({behavior:'smooth',block:'center'});
+  const row=document.getElementById('slotRow');
+  if(!row) return;
+  row.style.transition='outline .2s';
+  row.style.outline='2px solid var(--accent)';
+  row.style.borderRadius='10px';
+  setTimeout(()=>{ row.style.outline=''; row.style.borderRadius=''; },1300);
 }
 
 // ===== SESSION STORAGE =====
 function saveProgress(){
-  try {
-    sessionStorage.setItem('pw-booking', JSON.stringify({
-      service: serviceName,
-      name:    document.getElementById('bName')?.value    || '',
-      phone:   document.getElementById('bPhone')?.value   || '',
-      email:   document.getElementById('bEmail')?.value   || '',
-      address: document.getElementById('bAddress')?.value || '',
-      notes:   document.getElementById('bNotes')?.value   || ''
+  try{
+    sessionStorage.setItem('pw-booking',JSON.stringify({
+      service:serviceName,
+      name:document.getElementById('bName')?.value||'',
+      phone:document.getElementById('bPhone')?.value||'',
+      email:document.getElementById('bEmail')?.value||'',
+      address:document.getElementById('bAddress')?.value||'',
+      notes:document.getElementById('bNotes')?.value||''
     }));
-  } catch(e){}
+  }catch(e){}
 }
 function restoreProgress(){
-  try {
-    const saved = JSON.parse(sessionStorage.getItem('pw-booking'));
-    if(!saved || saved.service !== serviceName) return;
-    if(saved.name)    document.getElementById('bName').value    = saved.name;
-    if(saved.phone)   document.getElementById('bPhone').value   = saved.phone;
-    if(saved.email)   document.getElementById('bEmail').value   = saved.email;
-    if(saved.address) document.getElementById('bAddress').value = saved.address;
-    if(saved.notes)   document.getElementById('bNotes').value   = saved.notes;
-  } catch(e){}
+  try{
+    const saved=JSON.parse(sessionStorage.getItem('pw-booking'));
+    if(!saved||saved.service!==serviceName) return;
+    if(saved.name) document.getElementById('bName').value=saved.name;
+    if(saved.phone) document.getElementById('bPhone').value=saved.phone;
+    if(saved.email) document.getElementById('bEmail').value=saved.email;
+    if(saved.address) document.getElementById('bAddress').value=saved.address;
+    if(saved.notes) document.getElementById('bNotes').value=saved.notes;
+  }catch(e){}
+}
+
+// ===== SUMMARY =====
+function updateSummary(){
+  const name=document.getElementById('bName')?.value.trim()||'';
+  const phone=document.getElementById('bPhone')?.value.trim()||'';
+  const addr=document.getElementById('bAddress')?.value.trim()||'';
+  const set=(key,val)=>document.querySelectorAll('[data-s="'+key+'"]').forEach(el=>el.textContent=val||'—');
+  set('service',serviceName);
+  set('price','$'+svc.price);
+  set('name',name);
+  set('phone',phone);
+  set('time',selectedSlot?slotLabel(selectedSlot):'');
+  set('address',addr);
 }
 
 // ===== ADD TO CALENDAR =====
-function buildGcalUrl(slot, service, address){
-  const [y,m,d] = slot.date.split('-').map(Number);
-  const h = slot.time.startsWith('10') ? 10 : slot.time.startsWith('12') ? 12 : 14;
-  const pad = n => String(n).padStart(2,'0');
-  const start = `${y}${pad(m)}${pad(d)}T${pad(h)}0000`;
-  const end   = `${y}${pad(m)}${pad(d)}T${pad(h+1)}0000`;
-  const p = new URLSearchParams({
-    action:'TEMPLATE',
-    text:`Pristine Powerwashing — ${service}`,
+function buildGcalUrl(slot,service,address){
+  const [y,m,d]=slot.date.split('-').map(Number);
+  const h=slot.time.startsWith('10')?10:slot.time.startsWith('12')?12:14;
+  const pad=n=>String(n).padStart(2,'0');
+  const start=`${y}${pad(m)}${pad(d)}T${pad(h)}0000`;
+  const end=`${y}${pad(m)}${pad(d)}T${pad(h+1)}0000`;
+  return 'https://calendar.google.com/calendar/render?'+new URLSearchParams({
+    action:'TEMPLATE',text:`Pristine Powerwashing — ${service}`,
     dates:`${start}/${end}`,
     details:`Service: ${service}\nAddress: ${address}\nPay after the job is done. Questions? Text (984) 344-6217.`,
-    location: address
-  });
-  return 'https://calendar.google.com/calendar/render?' + p.toString();
+    location:address
+  }).toString();
 }
-function downloadIcs(slot, service, address){
-  const [y,m,d] = slot.date.split('-').map(Number);
-  const h = slot.time.startsWith('10') ? 10 : slot.time.startsWith('12') ? 12 : 14;
-  const pad = n => String(n).padStart(2,'0');
-  const ics = [
-    'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Pristine Powerwashing//EN',
-    'BEGIN:VEVENT',
-    `DTSTART:${y}${pad(m)}${pad(d)}T${pad(h)}0000`,
-    `DTEND:${y}${pad(m)}${pad(d)}T${pad(h+1)}0000`,
+function downloadIcs(slot,service,address){
+  const [y,m,d]=slot.date.split('-').map(Number);
+  const h=slot.time.startsWith('10')?10:slot.time.startsWith('12')?12:14;
+  const pad=n=>String(n).padStart(2,'0');
+  const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Pristine Powerwashing//EN','BEGIN:VEVENT',
+    `DTSTART:${y}${pad(m)}${pad(d)}T${pad(h)}0000`,`DTEND:${y}${pad(m)}${pad(d)}T${pad(h+1)}0000`,
     `SUMMARY:Pristine Powerwashing — ${service}`,
     `DESCRIPTION:Service: ${service}\\nAddress: ${address}\\nPay after the job is done.`,
-    `LOCATION:${address}`,
-    'END:VEVENT','END:VCALENDAR'
-  ].join('\r\n');
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([ics],{type:'text/calendar'}));
-  a.download = 'pristine-booking.ics';
-  a.click();
-}
-
-// ===== SUMMARY UPDATE =====
-function updateSummary(){
-  const name = document.getElementById('bName')?.value.trim() || '';
-  const phone = document.getElementById('bPhone')?.value.trim() || '';
-  const addr = document.getElementById('bAddress')?.value.trim() || '';
-  const setAll = (key, val) => document.querySelectorAll('[data-s="'+key+'"]').forEach(el => el.textContent = val || '—');
-  setAll('service', serviceName);
-  setAll('price', '$' + svc.price);
-  setAll('name', name);
-  setAll('phone', phone);
-  setAll('time', selectedSlot ? slotLabel(selectedSlot) : '');
-  setAll('address', addr);
+    `LOCATION:${address}`,'END:VEVENT','END:VCALENDAR'].join('\r\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([ics],{type:'text/calendar'}));
+  a.download='pristine-booking.ics'; a.click();
 }
 
 // ===== DOMContentLoaded =====
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded',()=>{
   // Phone masking
-  const phoneEl = document.getElementById('bPhone');
+  const phoneEl=document.getElementById('bPhone');
   if(phoneEl){
-    phoneEl.addEventListener('input', function(){
-      const digits = this.value.replace(/\D/g,'').slice(0,10);
-      if(!digits){ this.value=''; return; }
-      if(digits.length <= 3){ this.value='('+digits; return; }
-      if(digits.length <= 6){ this.value='('+digits.slice(0,3)+') '+digits.slice(3); return; }
+    phoneEl.addEventListener('input',function(){
+      const digits=this.value.replace(/\D/g,'').slice(0,10);
+      if(!digits){this.value='';return;}
+      if(digits.length<=3){this.value='('+digits;return;}
+      if(digits.length<=6){this.value='('+digits.slice(0,3)+') '+digits.slice(3);return;}
       this.value='('+digits.slice(0,3)+') '+digits.slice(3,6)+'-'+digits.slice(6);
     });
   }
-
-  // Restore session storage
   restoreProgress();
-
-  // Save on input + update summary
-  ['bName','bPhone','bEmail','bAddress','bNotes'].forEach(id => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.addEventListener('input', () => { saveProgress(); updateSummary(); });
+  ['bName','bPhone','bEmail','bAddress','bNotes'].forEach(id=>{
+    document.getElementById(id)?.addEventListener('input',()=>{ saveProgress(); updateSummary(); });
   });
-
-  // Init slots immediately
   initSlots();
-
-  // Initial summary state
   updateSummary();
 });
 
-// ===== TIME SLOTS =====
-const DEFAULT_SLOTS = [
-  { time: '10:00 AM', period: 'Morning',   sort: 0, iconClass: 'morning'   },
-  { time: '12:00 PM', period: 'Midday',    sort: 1, iconClass: 'noon'      },
-  { time: '2:00 PM',  period: 'Afternoon', sort: 2, iconClass: 'afternoon' }
+// ===== CALENDAR & SLOTS =====
+const DEFAULT_SLOTS=[
+  {time:'10:00 AM',period:'Morning',sort:0,iconClass:'morning'},
+  {time:'12:00 PM',period:'Midday',sort:1,iconClass:'noon'},
+  {time:'2:00 PM',period:'Afternoon',sort:2,iconClass:'afternoon'}
 ];
-// Bookings open Thursday, June 11, 2026 and run forward for 2 months.
-const START_DATE = new Date(2026, 5, 11); // month is 0-indexed → June
-START_DATE.setHours(0,0,0,0);
-const END_DATE   = new Date(2026, 7, 11); // August 11, 2026
-END_DATE.setHours(23,59,59,999);
+const START_DATE=new Date(2026,5,11); START_DATE.setHours(0,0,0,0);
+const END_DATE=new Date(2026,7,11);   END_DATE.setHours(23,59,59,999);
+const DAY_NAMES_SHORT=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const DAY_NAMES_LONG=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MON_NAMES=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MON_NAMES_LONG=['January','February','March','April','May','June','July','August','September','October','November','December'];
 
-const DAY_NAMES_SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-const DAY_NAMES_LONG  = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-const MON_NAMES       = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const MON_NAMES_LONG  = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+let daysData=[];
+let selectedDateStr=null;
+let selectedSlot=null;
+let weekStartIdx=0;
 
-// Clean, minimal icons — sunrise, sun, sunset
-const PERIOD_ICONS = {
-  morning:
-    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18a6 6 0 0 0-12 0"/><line x1="3" y1="18" x2="21" y2="18"/><line x1="12" y1="9" x2="12" y2="4"/><polyline points="9 7 12 4 15 7"/></svg>',
-  noon:
-    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><line x1="12" y1="3" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="21"/><line x1="3" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="21" y2="12"/><line x1="5.5" y1="5.5" x2="6.9" y2="6.9"/><line x1="17.1" y1="17.1" x2="18.5" y2="18.5"/><line x1="5.5" y1="18.5" x2="6.9" y2="17.1"/><line x1="17.1" y1="6.9" x2="18.5" y2="5.5"/></svg>',
-  afternoon:
-    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18a6 6 0 0 0-12 0"/><line x1="3" y1="18" x2="21" y2="18"/><line x1="12" y1="4" x2="12" y2="9"/><polyline points="9 6 12 9 15 6"/></svg>'
-};
-
-function fmtDate(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
-function parseTimeToHour(timeStr){
-  const m = timeStr.match(/^(\d+):(\d+)\s*(AM|PM)$/i);
-  if (!m) return 0;
-  let h = +m[1]; const min = +m[2]; const p = m[3].toUpperCase();
-  if (p === 'PM' && h !== 12) h += 12;
-  if (p === 'AM' && h === 12) h = 0;
-  return h + min/60;
+function fmtDate(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function parseTimeToHour(t){
+  const m=t.match(/^(\d+):(\d+)\s*(AM|PM)$/i);
+  if(!m) return 0;
+  let h=+m[1]; const p=m[3].toUpperCase();
+  if(p==='PM'&&h!==12) h+=12;
+  if(p==='AM'&&h===12) h=0;
+  return h+(+m[2])/60;
 }
-
-let daysData = []; // [{dateStr, dateObj, slots:[{time,period,sort,iconClass,booked,id?}]}]
-let selectedDateStr = null;
-let selectedSlot = null; // {date, time, period, sort, iconClass, id?}
-let weekStartIdx = 0;
+function dayDiff(date){
+  const t=new Date(); t.setHours(0,0,0,0);
+  return Math.round((date.getTime()-t.getTime())/86400000);
+}
 
 async function initSlots(){
-  const now = new Date();
-  const today0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-  // Build days from START_DATE through END_DATE (inclusive).
-  daysData = [];
-  const cursor = new Date(START_DATE);
-  while (cursor.getTime() <= END_DATE.getTime()){
-    const dateStr = fmtDate(cursor);
-    const slots = DEFAULT_SLOTS.map(s => ({ ...s, booked:false, id:null }));
-    daysData.push({ dateStr, dateObj: new Date(cursor), slots });
-    cursor.setDate(cursor.getDate() + 1);
+  const now=new Date();
+  const today0=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  daysData=[];
+  const cursor=new Date(START_DATE);
+  while(cursor.getTime()<=END_DATE.getTime()){
+    daysData.push({dateStr:fmtDate(cursor),dateObj:new Date(cursor),slots:DEFAULT_SLOTS.map(s=>({...s,booked:false,id:null}))});
+    cursor.setDate(cursor.getDate()+1);
   }
-
-  // Pull Firestore bookings & admin-marked slots, merge in
-  try {
-    const fromStr = fmtDate(START_DATE);
-    const [bookingsSnap, slotsSnap] = await Promise.all([
-      db.collection('bookings').where('slotDate', '>=', fromStr).get().catch(() => null),
-      db.collection('availableSlots').where('date', '>=', fromStr).get().catch(() => null)
+  try{
+    const fromStr=fmtDate(START_DATE);
+    const [bSnap,sSnap]=await Promise.all([
+      db.collection('bookings').where('slotDate','>=',fromStr).get().catch(()=>null),
+      db.collection('availableSlots').where('date','>=',fromStr).get().catch(()=>null)
     ]);
+    if(bSnap) bSnap.forEach(doc=>{
+      const b=doc.data(); const ts=b.timeSlot||'';
+      const match=ts.match(/^(\d{4}-\d{2}-\d{2})\s+(.+)$/);
+      if(!match) return;
+      const day=daysData.find(x=>x.dateStr===match[1]);
+      const slot=day?.slots.find(s=>s.time===match[2]);
+      if(slot) slot.booked=true;
+    });
+    if(sSnap) sSnap.forEach(doc=>{
+      const d=doc.data();
+      const day=daysData.find(x=>x.dateStr===d.date);
+      const slot=day?.slots.find(s=>s.time===d.time);
+      if(slot){ slot.id=doc.id; if(d.booked) slot.booked=true; }
+    });
+  }catch(e){ console.warn('Firestore merge failed',e); }
 
-    if (bookingsSnap) {
-      bookingsSnap.forEach(doc => {
-        const b = doc.data();
-        const ts = b.timeSlot || '';
-        const match = ts.match(/^(\d{4}-\d{2}-\d{2})\s+(.+)$/);
-        if (!match) return;
-        const day = daysData.find(x => x.dateStr === match[1]);
-        if (!day) return;
-        const slot = day.slots.find(s => s.time === match[2]);
-        if (slot) slot.booked = true;
-      });
-    }
-    if (slotsSnap) {
-      slotsSnap.forEach(doc => {
-        const d = doc.data();
-        const day = daysData.find(x => x.dateStr === d.date);
-        if (!day) return;
-        const slot = day.slots.find(s => s.time === d.time);
-        if (slot) {
-          slot.id = doc.id;
-          if (d.booked) slot.booked = true;
-        }
-      });
-    }
-  } catch(e){ console.warn('Firestore merge failed, continuing with defaults', e); }
-
-  // If today happens to fall inside the booking range, filter past time slots
-  const todayStr = fmtDate(today0);
-  const todayInRange = daysData.find(d => d.dateStr === todayStr);
-  if (todayInRange){
-    const nowHour = now.getHours() + now.getMinutes()/60;
-    todayInRange.slots = todayInRange.slots.filter(s => parseTimeToHour(s.time) > nowHour + 0.25);
+  const todayStr=fmtDate(today0);
+  const todayDay=daysData.find(d=>d.dateStr===todayStr);
+  if(todayDay){
+    const nowH=now.getHours()+now.getMinutes()/60;
+    todayDay.slots=todayDay.slots.filter(s=>parseTimeToHour(s.time)>nowH+0.25);
   }
-
-  // Pick first day with open slots → snap to that week and auto-select it
-  const firstOpenIdx = daysData.findIndex(d => d.slots.some(s => !s.booked));
-  const startIdx = firstOpenIdx >= 0 ? firstOpenIdx : 0;
-  weekStartIdx = Math.floor(startIdx / 7) * 7;
-
+  const firstOpenIdx=daysData.findIndex(d=>d.slots.some(s=>!s.booked));
+  weekStartIdx=firstOpenIdx>=0?Math.floor(firstOpenIdx/7)*7:0;
   renderWeek();
-  if (firstOpenIdx >= 0) selectDay(daysData[firstOpenIdx].dateStr);
+  if(firstOpenIdx>=0) selectDay(daysData[firstOpenIdx].dateStr);
   else renderSlotGrid();
 
-  // Wire prev/next buttons once
-  const prev = document.getElementById('calPrev');
-  const next = document.getElementById('calNext');
-  if (prev && !prev.__wired){ prev.__wired = true; prev.addEventListener('click', () => shiftWeek(-1)); }
-  if (next && !next.__wired){ next.__wired = true; next.addEventListener('click', () => shiftWeek(1)); }
+  const prev=document.getElementById('calPrev');
+  const next=document.getElementById('calNext');
+  if(prev&&!prev.__wired){ prev.__wired=true; prev.addEventListener('click',()=>shiftWeek(-1)); }
+  if(next&&!next.__wired){ next.__wired=true; next.addEventListener('click',()=>shiftWeek(1)); }
 }
 
-function dayDiff(date){
-  const today0 = new Date(); today0.setHours(0,0,0,0);
-  return Math.round((date.getTime() - today0.getTime()) / 86400000);
-}
-
-function shiftWeek(direction){
-  const newStart = weekStartIdx + direction * 7;
-  if (newStart < 0) return;
-  if (newStart >= daysData.length) return;
-  weekStartIdx = newStart;
-  renderWeek();
+function shiftWeek(dir){
+  const n=weekStartIdx+dir*7;
+  if(n<0||n>=daysData.length) return;
+  weekStartIdx=n; renderWeek();
 }
 
 function renderWeek(){
-  const row = document.getElementById('weekRow');
-  row.innerHTML = '';
-  const start = weekStartIdx;
-  const end = Math.min(start + 7, daysData.length);
-
-  for (let i = start; i < end; i++){
-    const day = daysData[i];
-    const open = day.slots.filter(s => !s.booked).length;
-    const diff = dayDiff(day.dateObj);
-    const isToday = diff === 0;
-    const isTomorrow = diff === 1;
-    const isSelected = selectedDateStr === day.dateStr;
-    const pill = document.createElement('button');
-    pill.type = 'button';
-    pill.className = 'day-pill' + (isToday ? ' today' : '') + (isSelected ? ' selected' : '') + (open === 0 ? ' unavailable' : '');
-    const dayName = isToday ? 'Today' : isTomorrow ? 'Tomorrow' : DAY_NAMES_SHORT[day.dateObj.getDay()];
-    pill.innerHTML = `
-      <div class="day-name">${dayName}</div>
-      <div class="day-num">${day.dateObj.getDate()}</div>
-      <div class="day-avail">${open === 0 ? '—' : open + ' open'}</div>
-    `;
-    if (open > 0) pill.addEventListener('click', () => selectDay(day.dateStr));
+  const row=document.getElementById('weekRow');
+  row.innerHTML='';
+  const start=weekStartIdx;
+  const end=Math.min(start+7,daysData.length);
+  for(let i=start;i<end;i++){
+    const day=daysData[i];
+    const open=day.slots.filter(s=>!s.booked).length;
+    const diff=dayDiff(day.dateObj);
+    const isToday=diff===0;
+    const isSelected=selectedDateStr===day.dateStr;
+    const pill=document.createElement('button');
+    pill.type='button';
+    const dayName=isToday?'Today':DAY_NAMES_SHORT[day.dateObj.getDay()];
+    pill.className='day-pill'+(isToday?' today':'')+(isSelected?' selected':'')+(open===0?' unavailable':'');
+    pill.innerHTML=`<div class="day-name">${dayName}</div><div class="day-num">${day.dateObj.getDate()}</div><div class="day-avail">${open===0?'—':open+' open'}</div>`;
+    if(open>0) pill.addEventListener('click',()=>selectDay(day.dateStr));
     row.appendChild(pill);
   }
-  // If the week has < 7 days (tail of range), pad remaining with ghost pills for grid alignment
-  const padCount = 7 - (end - start);
-  for (let i = 0; i < padCount; i++){
-    const ghost = document.createElement('div');
-    ghost.className = 'day-pill unavailable';
-    ghost.style.visibility = 'hidden';
-    row.appendChild(ghost);
+  const padCount=7-(end-start);
+  for(let i=0;i<padCount;i++){
+    const g=document.createElement('div');
+    g.className='day-pill unavailable'; g.style.visibility='hidden';
+    row.appendChild(g);
   }
-
-  // Header labels
-  const first = daysData[start].dateObj;
-  const last  = daysData[end-1].dateObj;
-  const monthLbl = document.getElementById('calMonth');
-  const rangeLbl = document.getElementById('calRange');
-  if (first.getMonth() === last.getMonth()){
-    monthLbl.textContent = MON_NAMES_LONG[first.getMonth()] + ' ' + first.getFullYear();
-  } else {
-    monthLbl.textContent = MON_NAMES[first.getMonth()] + ' → ' + MON_NAMES[last.getMonth()] + ' ' + last.getFullYear();
-  }
-  rangeLbl.textContent = MON_NAMES[first.getMonth()] + ' ' + first.getDate() + ' – ' + MON_NAMES[last.getMonth()] + ' ' + last.getDate();
-
-  // Nav button state
-  document.getElementById('calPrev').disabled = start === 0;
-  document.getElementById('calNext').disabled = end >= daysData.length;
+  const first=daysData[start].dateObj, last=daysData[end-1].dateObj;
+  const mEl=document.getElementById('calMonth'), rEl=document.getElementById('calRange');
+  mEl.textContent=first.getMonth()===last.getMonth()
+    ? MON_NAMES_LONG[first.getMonth()]+' '+first.getFullYear()
+    : MON_NAMES[first.getMonth()]+' → '+MON_NAMES[last.getMonth()]+' '+last.getFullYear();
+  rEl.textContent=MON_NAMES[first.getMonth()]+' '+first.getDate()+' – '+MON_NAMES[last.getMonth()]+' '+last.getDate();
+  document.getElementById('calPrev').disabled=start===0;
+  document.getElementById('calNext').disabled=end>=daysData.length;
 }
 
 function selectDay(dateStr){
-  selectedDateStr = dateStr;
-  if (selectedSlot && selectedSlot.date !== dateStr) selectedSlot = null;
-  // Make sure the selected day is within the currently visible week
-  const idx = daysData.findIndex(d => d.dateStr === dateStr);
-  if (idx >= 0 && (idx < weekStartIdx || idx >= weekStartIdx + 7)){
-    weekStartIdx = Math.floor(idx / 7) * 7;
-  }
-  renderWeek();
-  renderSlotGrid();
+  selectedDateStr=dateStr;
+  if(selectedSlot&&selectedSlot.date!==dateStr) selectedSlot=null;
+  const idx=daysData.findIndex(d=>d.dateStr===dateStr);
+  if(idx>=0&&(idx<weekStartIdx||idx>=weekStartIdx+7)) weekStartIdx=Math.floor(idx/7)*7;
+  renderWeek(); renderSlotGrid(); updateSummary();
 }
 
 function renderSlotGrid(){
-  const grid  = document.getElementById('slotGrid');
-  const title = document.getElementById('slotPanelTitle');
-  const sub   = document.getElementById('slotPanelSub');
-  const pill  = document.getElementById('slotPanelPill');
-  grid.innerHTML = '';
-
-  if (!selectedDateStr){
-    title.textContent = 'Pick a day above';
-    sub.innerHTML = 'Three slots daily · 10 AM, 12 PM, 2 PM';
-    pill.style.display = 'none';
-    grid.innerHTML = '<div class="slot-empty"><strong>Select a date to see available times.</strong>Use the calendar above to pick a day.</div>';
+  const row=document.getElementById('slotRow');
+  const label=document.getElementById('slotDayLabel');
+  row.innerHTML='';
+  if(!selectedDateStr){
+    label.style.display='none';
+    row.innerHTML='<div class="slot-placeholder">Select a date above to see available times</div>';
     return;
   }
+  const day=daysData.find(x=>x.dateStr===selectedDateStr);
+  if(!day){ label.style.display='none'; return; }
+  const diff=dayDiff(day.dateObj);
+  const dayLabel=diff===0?'Today':diff===1?'Tomorrow':DAY_NAMES_LONG[day.dateObj.getDay()];
+  label.textContent=dayLabel+', '+MON_NAMES_LONG[day.dateObj.getMonth()]+' '+day.dateObj.getDate();
+  label.style.display='block';
 
-  const day = daysData.find(x => x.dateStr === selectedDateStr);
-  if (!day) return;
-  const dateObj = day.dateObj;
-  const diff = dayDiff(dateObj);
-  const dayLabel = diff === 0 ? 'Today' : diff === 1 ? 'Tomorrow' : DAY_NAMES_LONG[dateObj.getDay()];
-  title.textContent = dayLabel + ', ' + MON_NAMES_LONG[dateObj.getMonth()] + ' ' + dateObj.getDate();
-  const openCount = day.slots.filter(s => !s.booked).length;
-  sub.textContent = openCount + ' of ' + day.slots.length + ' time slots open';
-
-  if (openCount === day.slots.length && day.slots.length > 0){
-    pill.textContent = 'All times open';
-    pill.style.display = 'inline-block';
-  } else if (openCount === 0){
-    pill.textContent = 'Fully booked';
-    pill.style.display = 'inline-block';
-  } else {
-    pill.style.display = 'none';
-  }
-
-  if (day.slots.length === 0){
-    grid.innerHTML = '<div class="slot-empty"><strong>No more slots today.</strong>Pick a future date above — each day has 10 AM, 12 PM, and 2 PM.</div>';
+  if(day.slots.length===0){
+    row.innerHTML='<div class="slot-empty-msg">No slots today — pick another date.</div>';
     return;
   }
-
-  day.slots.forEach(slot => {
-    const isSelected = selectedSlot && selectedSlot.date === selectedDateStr && selectedSlot.time === slot.time;
-    const el = document.createElement('button');
-    el.type = 'button';
-    el.className = 'slot' + (slot.booked ? ' taken' : '') + (isSelected ? ' selected' : '');
-    el.innerHTML = `
-      <span class="period-ic ${slot.iconClass}" aria-hidden="true">${PERIOD_ICONS[slot.iconClass] || ''}</span>
-      <div class="slot-time">${slot.time}</div>
-      <div class="slot-period">${slot.period}</div>
-      <div class="slot-taken-label">Taken</div>
-    `;
-    if (!slot.booked) el.addEventListener('click', () => pickSlot(slot));
-    grid.appendChild(el);
+  day.slots.forEach(slot=>{
+    const isSelected=selectedSlot&&selectedSlot.date===selectedDateStr&&selectedSlot.time===slot.time;
+    const btn=document.createElement('button');
+    btn.type='button';
+    btn.className='time-pill'+(slot.booked?' taken':'')+(isSelected?' selected':'');
+    btn.innerHTML=`<div class="tp-time">${slot.time}</div><div class="tp-period">${slot.period}</div>`;
+    if(!slot.booked) btn.addEventListener('click',()=>pickSlot(slot));
+    row.appendChild(btn);
   });
 }
 
 function pickSlot(slot){
-  selectedSlot = { date: selectedDateStr, time: slot.time, period: slot.period, sort: slot.sort, iconClass: slot.iconClass, id: slot.id || null };
+  selectedSlot={date:selectedDateStr,time:slot.time,period:slot.period,sort:slot.sort,iconClass:slot.iconClass,id:slot.id||null};
   renderSlotGrid();
   updateSummary();
 }
 
 function slotLabel(slot){
-  const [y,m,d] = slot.date.split('-').map(Number);
-  const dateObj = new Date(y, m-1, d);
-  const diff = dayDiff(dateObj);
-  const dayLabel = diff === 0 ? 'Today' : diff === 1 ? 'Tomorrow' : DAY_NAMES_LONG[dateObj.getDay()];
-  return dayLabel + ', ' + MON_NAMES[dateObj.getMonth()] + ' ' + dateObj.getDate() + ' · ' + slot.time;
+  const [y,m,d]=slot.date.split('-').map(Number);
+  const dateObj=new Date(y,m-1,d);
+  const diff=dayDiff(dateObj);
+  const dayLabel=diff===0?'Today':diff===1?'Tomorrow':DAY_NAMES_LONG[dateObj.getDay()];
+  return dayLabel+', '+MON_NAMES[dateObj.getMonth()]+' '+dateObj.getDate()+' · '+slot.time;
 }
 
 // ===== SHOW SUCCESS =====
 function showSuccess(){
-  document.getElementById('bookForm').style.display = 'none';
-  document.getElementById('successScreen').style.display = 'block';
+  document.getElementById('bookForm').style.display='none';
+  document.getElementById('successScreen').style.display='block';
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
 // ===== SUBMIT =====
 async function submitBooking(){
-  const name = document.getElementById('bName').value.trim();
-  const phone = document.getElementById('bPhone').value.trim();
-  const email = document.getElementById('bEmail').value.trim();
-  const address = document.getElementById('bAddress').value.trim();
+  const name=document.getElementById('bName').value.trim();
+  const phone=document.getElementById('bPhone').value.trim();
+  const email=document.getElementById('bEmail').value.trim();
+  const address=document.getElementById('bAddress').value.trim();
 
-  // Collect all errors, mark all bad fields, scroll to first
-  let firstErrEl = null;
-  let slotErr = false;
+  let firstErrEl=null;
+  let slotErr=false;
+  if(!name){ bad('bName','Please enter your name.'); if(!firstErrEl) firstErrEl=document.getElementById('bName'); }
+  if(!phone||phone.replace(/\D/g,'').length<7){ bad('bPhone','Enter a valid phone number.'); if(!firstErrEl) firstErrEl=document.getElementById('bPhone'); }
+  if(!email||!validEmail(email)){ bad('bEmail','Enter a valid email address.'); if(!firstErrEl) firstErrEl=document.getElementById('bEmail'); }
+  if(!selectedSlot) slotErr=true;
+  if(!address){ bad('bAddress','Enter your service address.'); if(!firstErrEl) firstErrEl=document.getElementById('bAddress'); }
 
-  if(!name){ bad('bName','Please enter your name.'); if(!firstErrEl) firstErrEl = document.getElementById('bName'); }
-  if(!phone || phone.replace(/\D/g,'').length < 7){ bad('bPhone','Enter a valid phone number — I text this to confirm.'); if(!firstErrEl) firstErrEl = document.getElementById('bPhone'); }
-  if(!email || !validEmail(email)){ bad('bEmail','Enter a valid email address.'); if(!firstErrEl) firstErrEl = document.getElementById('bEmail'); }
-  if(!selectedSlot){ slotErr = true; }
-  if(!address){ bad('bAddress','Please enter your service address.'); if(!firstErrEl) firstErrEl = document.getElementById('bAddress'); }
-
-  if(firstErrEl || slotErr){
-    if(firstErrEl){ firstErrEl.scrollIntoView({behavior:'smooth',block:'center'}); firstErrEl.focus(); }
-    else if(slotErr){ flashPickTimePrompt(); }
+  if(firstErrEl||slotErr){
+    if(firstErrEl){ firstErrEl.scrollIntoView({behavior:'smooth',block:'center'}); setTimeout(()=>firstErrEl.focus(),350); }
+    else if(slotErr) flashSlotPrompt();
     return;
   }
 
-  const btn = document.getElementById('submitBtn');
-  btn.innerHTML = '<span class="btn-spinner"></span> Booking…'; btn.disabled = true;
+  const btn=document.getElementById('submitBtn');
+  btn.innerHTML='<span class="btn-spinner"></span> Booking…'; btn.disabled=true;
 
-  const notes = document.getElementById('bNotes').value.trim();
-
-  const bookingData = {
-    service: serviceName,
-    price: svc.price,
-    name, phone, email, address, notes,
-    timeSlot: selectedSlot.date + ' ' + selectedSlot.time,
-    slotId: selectedSlot.id || null,
-    slotDate: selectedSlot.date,
-    slotTime: selectedSlot.time,
-    timestamp: new Date().toISOString(),
-    status: 'pending'
+  const notes=document.getElementById('bNotes').value.trim();
+  const bookingData={
+    service:serviceName,price:svc.price,
+    name,phone,email,address,notes,
+    timeSlot:selectedSlot.date+' '+selectedSlot.time,
+    slotId:selectedSlot.id||null,
+    slotDate:selectedSlot.date,slotTime:selectedSlot.time,
+    timestamp:new Date().toISOString(),status:'pending'
   };
 
-  try {
-    if (selectedSlot.id) {
-      const slotRef = db.collection('availableSlots').doc(selectedSlot.id);
-      const bookingRef = db.collection('bookings').doc();
-      await db.runTransaction(async tx => {
-        const slotDoc = await tx.get(slotRef);
-        if (slotDoc.exists && slotDoc.data().booked) throw new Error('SLOT_TAKEN');
-        tx.set(bookingRef, bookingData);
-        if (slotDoc.exists) tx.update(slotRef, { booked:true, bookingId:bookingRef.id });
+  try{
+    if(selectedSlot.id){
+      const slotRef=db.collection('availableSlots').doc(selectedSlot.id);
+      const bookingRef=db.collection('bookings').doc();
+      await db.runTransaction(async tx=>{
+        const slotDoc=await tx.get(slotRef);
+        if(slotDoc.exists&&slotDoc.data().booked) throw new Error('SLOT_TAKEN');
+        tx.set(bookingRef,bookingData);
+        if(slotDoc.exists) tx.update(slotRef,{booked:true,bookingId:bookingRef.id});
       });
     } else {
       await db.collection('bookings').add(bookingData);
     }
-  } catch(e){
-    if (e.message === 'SLOT_TAKEN') {
-      btn.innerHTML = 'Confirm &amp; Book ✓'; btn.disabled = false;
-      selectedSlot = null;
-      await initSlots();
-      flashPickTimePrompt();
+  }catch(e){
+    if(e.message==='SLOT_TAKEN'){
+      btn.innerHTML='Confirm &amp; Book <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+      btn.disabled=false;
+      selectedSlot=null; await initSlots();
+      flashSlotPrompt();
       showToast('That slot was just taken — please pick another time.');
       return;
     }
-    console.warn('Firebase save failed, storing locally:', e);
-    const local = JSON.parse(localStorage.getItem('bookings') || '[]');
-    local.push(bookingData);
-    localStorage.setItem('bookings', JSON.stringify(local));
+    console.warn('Firebase save failed, storing locally:',e);
+    const local=JSON.parse(localStorage.getItem('bookings')||'[]');
+    local.push(bookingData); localStorage.setItem('bookings',JSON.stringify(local));
   }
 
-  // ===== NOTIFICATIONS (push + email via ntfy) =====
-  const friendlyTime = slotLabel(selectedSlot);
-  const phoneDigits = phone.replace(/\D/g,'');
-  const smsHref = phoneDigits ? 'sms:+1' + phoneDigits : '';
+  // Notifications
+  const friendlyTime=slotLabel(selectedSlot);
+  const phoneDigits=phone.replace(/\D/g,'');
+  const smsHref=phoneDigits?'sms:+1'+phoneDigits:'';
+  const pushLines=['Customer: '+name,'Phone: '+phone,'Email: '+email,'Address: '+address,'When: '+friendlyTime];
+  if(notes) pushLines.push('','Notes: '+notes);
+  pushLines.push('','Tap to text them back.');
+  const pushHeaders={'Title':'New Booking · '+bookingData.service+' · $'+bookingData.price,'Priority':'high','Tags':'droplet,moneybag'};
+  if(smsHref) pushHeaders['Click']=smsHref;
+  try{ await fetch('https://ntfy.sh/pristine-pwash-reid-bookings',{method:'POST',headers:pushHeaders,body:pushLines.join('\n')}); }catch(e){}
 
-  const pushLines = [
-    'Customer: ' + name,
-    'Phone: ' + phone,
-    'Email: ' + email,
-    'Address: ' + address,
-    'When: ' + friendlyTime
-  ];
-  if (notes) pushLines.push('', 'Notes: ' + notes);
-  pushLines.push('', 'Tap to text them back.');
+  const emailLines=['NEW PRISTINE POWERWASHING BOOKING','','— Service —',bookingData.service+'  ($'+bookingData.price+')',friendlyTime,'','— Customer —',name,phone,email,'','— Address —',address];
+  if(notes) emailLines.push('','— Notes —',notes);
+  emailLines.push('','— Next step —','Text '+phone+' to confirm.');
+  try{ await fetch('https://ntfy.sh/pristine-pwash-reid-bookings',{method:'POST',headers:{'Email':'reidwcoleman@gmail.com','Title':'New booking · '+bookingData.service+' · '+friendlyTime,'Tags':'droplet'},body:emailLines.join('\n')}); }catch(e){}
 
-  const pushHeaders = {
-    'Title': 'New Booking · ' + bookingData.service + ' · $' + bookingData.price,
-    'Priority': 'high',
-    'Tags': 'droplet,moneybag'
-  };
-  if (smsHref) pushHeaders['Click'] = smsHref;
-
-  try {
-    await fetch('https://ntfy.sh/pristine-pwash-reid-bookings', {
-      method: 'POST',
-      headers: pushHeaders,
-      body: pushLines.join('\n')
-    });
-  } catch(e) {}
-
-  const emailLines = [
-    'NEW PRISTINE POWERWASHING BOOKING',
-    '',
-    '— Service —',
-    bookingData.service + '  ($' + bookingData.price + ')',
-    friendlyTime,
-    '',
-    '— Customer —',
-    name,
-    phone,
-    email,
-    '',
-    '— Address —',
-    address
-  ];
-  if (notes) { emailLines.push('', '— Notes —', notes); }
-  emailLines.push('', '— Next step —', 'Text ' + phone + ' to confirm the appointment.');
-
-  try {
-    await fetch('https://ntfy.sh/pristine-pwash-reid-bookings', {
-      method: 'POST',
-      headers: {
-        'Email': 'reidwcoleman@gmail.com',
-        'Title': 'New booking · ' + bookingData.service + ' · ' + friendlyTime,
-        'Tags': 'droplet'
-      },
-      body: emailLines.join('\n')
-    });
-  } catch(e) {}
-
-  // Success view
-  const fmtPhone = formatPhone(phone);
-  document.getElementById('successMsg').innerHTML = "I'll text <strong>" + escapeHtml(fmtPhone) + "</strong> within a few hours to confirm the details.";
-  document.getElementById('successDetails').innerHTML = `
+  // Success
+  const fmtPhone=formatPhone(phone);
+  document.getElementById('successMsg').innerHTML="I'll text <strong>"+escapeHtml(fmtPhone)+"</strong> within a few hours to confirm the details.";
+  document.getElementById('successDetails').innerHTML=`
     <div class="row"><span class="lbl">Service</span><span class="val">${escapeHtml(serviceName)}</span></div>
     <div class="row"><span class="lbl">Time</span><span class="val">${escapeHtml(slotLabel(selectedSlot))}</span></div>
     <div class="row"><span class="lbl">Address</span><span class="val">${escapeHtml(address)}</span></div>
-    <div class="row"><span class="lbl">Total</span><span class="val">$${svc.price}</span></div>
-  `;
-
-  // Populate Add to Calendar
-  const calSection = document.getElementById('calSection');
-  const gcalLink   = document.getElementById('gcalLink');
-  const icsBtn     = document.getElementById('icsBtn');
-  if(calSection && gcalLink && icsBtn && selectedSlot){
-    gcalLink.href = buildGcalUrl(selectedSlot, serviceName, address);
-    icsBtn.onclick = () => downloadIcs(selectedSlot, serviceName, address);
-    calSection.style.display = 'block';
+    <div class="row"><span class="lbl">Total</span><span class="val">$${svc.price}</span></div>`;
+  const calSection=document.getElementById('calSection');
+  const gcalLink=document.getElementById('gcalLink');
+  const icsBtn=document.getElementById('icsBtn');
+  if(calSection&&gcalLink&&icsBtn&&selectedSlot){
+    gcalLink.href=buildGcalUrl(selectedSlot,serviceName,address);
+    icsBtn.onclick=()=>downloadIcs(selectedSlot,serviceName,address);
+    calSection.style.display='block';
   }
-
-  // Clear saved progress on success
-  try { sessionStorage.removeItem('pw-booking'); } catch(e){}
-
-  btn.innerHTML = 'Confirm &amp; Book ✓'; btn.disabled = false;
+  try{ sessionStorage.removeItem('pw-booking'); }catch(e){}
+  btn.disabled=false;
   showSuccess();
 }
-
-// More info toggle
-(function(){const t=document.getElementById('moreInfoToggle'),p=document.getElementById('moreInfoPanel');if(!t||!p)return;t.addEventListener('click',()=>{const o=p.classList.toggle('open');t.classList.toggle('open',o);t.textContent=o?'Hide details ↑':'See what\'s included ↓'})})();
 </script>
-
 </body>
 </html>

@@ -762,6 +762,61 @@ footer a{color:var(--accent);font-weight:500}
 @media (prefers-reduced-motion: reduce){
   *{animation-duration:.01ms!important;transition-duration:.01ms!important}
 }
+
+/* ===== EXPANDABLE SERVICE CARDS ===== */
+.svc{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.book-hint{display:none!important}
+.svc-toggle-row{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:14px;padding-top:14px;
+  border-top:1px solid var(--border);
+  pointer-events:none;
+}
+.svc.feat .svc-toggle-row{border-top-color:rgba(255,255,255,.15)}
+.learn-more-txt{font-size:13px;font-weight:600;color:var(--accent)}
+.svc.feat .learn-more-txt{color:rgba(255,255,255,.7)}
+.svc-chevron svg{transition:transform .28s cubic-bezier(.2,.7,.2,1);display:block;color:var(--text-subtle)}
+.svc.feat .svc-chevron svg{color:rgba(255,255,255,.45)}
+.svc.expanded .svc-chevron svg{transform:rotate(180deg)}
+.svc-details{
+  display:grid;grid-template-rows:0fr;
+  transition:grid-template-rows .32s cubic-bezier(.2,.7,.2,1);
+  overflow:hidden;
+}
+.svc-details-inner{min-height:0;overflow:hidden}
+.svc.expanded .svc-details{grid-template-rows:1fr}
+.svc-includes{list-style:none;margin:14px 0 10px;display:flex;flex-direction:column;gap:7px}
+.svc-includes li{
+  font-size:13.5px;color:var(--text-muted);
+  display:flex;align-items:flex-start;gap:9px;line-height:1.45;
+}
+.svc-includes li::before{
+  content:'';flex-shrink:0;margin-top:2px;
+  width:16px;height:16px;min-width:16px;border-radius:50%;
+  background:rgba(52,211,153,.15);
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2334d399' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='4 12 10 18 20 6'/></svg>");
+  background-repeat:no-repeat;background-position:center;background-size:9px;
+}
+.svc.feat .svc-includes li{color:rgba(255,255,255,.72)}
+.svc-time{
+  font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--text-subtle);margin-bottom:14px;padding-top:2px;
+}
+.svc.feat .svc-time{color:rgba(255,255,255,.45)}
+.svc-book-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  background:var(--accent);color:var(--accent-contrast)!important;
+  padding:13px 20px;border-radius:10px;margin-bottom:4px;
+  font-weight:600;font-size:14px;
+  text-decoration:none!important;
+  transition:background .2s,transform .15s,box-shadow .2s;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+.svc-book-btn:hover{background:var(--accent-hover);transform:translateY(-1px);box-shadow:var(--shadow-blue)}
+.svc-book-btn:active{transform:translateY(0)!important}
+.svc.feat .svc-book-btn{background:var(--amber-400);color:#3a2a0a!important;box-shadow:0 4px 16px -8px var(--amber-500)}
+.svc.feat .svc-book-btn:hover{background:var(--amber-300)}
 </style>
 </head>
 <body>
@@ -847,50 +902,110 @@ footer a{color:var(--accent);font-weight:500}
     </div>
 
     <div class="svc-grid reveal">
-      <a class="svc" href="book.html?service=Sidewalks">
+      <div class="svc" onclick="svcClick(event,this)" tabindex="0">
         <span class="tag">Soap Wash</span>
         <h3>Sidewalks</h3>
         <div class="amt"><span class="d">$</span>25</div>
         <div class="flat">Flat Rate</div>
         <p class="desc">Front walks, stepping stones &amp; entry paths blasted back to fresh concrete.</p>
-        <span class="book-hint">Book this service <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
-      </a>
-      <a class="svc" href="book.html?service=Trash%20Cans">
+        <div class="svc-toggle-row">
+          <span class="learn-more-txt">What's included</span>
+          <span class="svc-chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+        </div>
+        <div class="svc-details"><div class="svc-details-inner">
+          <ul class="svc-includes">
+            <li>High-pressure wash + pet-safe soap</li>
+            <li>Front walks, stepping stones, entry paths</li>
+            <li>Edge detailing along grass line</li>
+          </ul>
+          <div class="svc-time">Typical time: 30–45 min</div>
+          <a class="svc-book-btn" href="book.html?service=Sidewalks" onclick="event.stopPropagation()">Book this service <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+        </div></div>
+      </div>
+      <div class="svc" onclick="svcClick(event,this)" tabindex="0">
         <span class="tag">Soap Wash</span>
         <h3>Trash Cans</h3>
         <div class="amt"><span class="d">$</span>30</div>
         <div class="flat">Flat Rate</div>
         <p class="desc">Inside &amp; out — soap wash that eliminates odors &amp; bacteria buildup.</p>
-        <span class="book-hint">Book this service <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
-      </a>
-      <a class="svc" href="book.html?service=Patios">
+        <div class="svc-toggle-row">
+          <span class="learn-more-txt">What's included</span>
+          <span class="svc-chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+        </div>
+        <div class="svc-details"><div class="svc-details-inner">
+          <ul class="svc-includes">
+            <li>Inside &amp; out deep clean</li>
+            <li>Eliminates odors &amp; bacteria</li>
+            <li>Soap wash deodorizer treatment</li>
+          </ul>
+          <div class="svc-time">Typical time: ~20 min</div>
+          <a class="svc-book-btn" href="book.html?service=Trash%20Cans" onclick="event.stopPropagation()">Book this service <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+        </div></div>
+      </div>
+      <div class="svc" onclick="svcClick(event,this)" tabindex="0">
         <span class="tag">Soap Wash</span>
         <h3>Patios</h3>
         <div class="amt"><span class="d">$</span>50</div>
         <div class="flat">Flat Rate</div>
         <p class="desc">Pavers, slabs &amp; back porches — lifted, rinsed &amp; ready for the cookout.</p>
-        <span class="book-hint">Book this service <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
-      </a>
+        <div class="svc-toggle-row">
+          <span class="learn-more-txt">What's included</span>
+          <span class="svc-chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+        </div>
+        <div class="svc-details"><div class="svc-details-inner">
+          <ul class="svc-includes">
+            <li>Pavers, slabs &amp; back porches</li>
+            <li>Pet-safe soap treatment</li>
+            <li>Edge-to-edge coverage</li>
+          </ul>
+          <div class="svc-time">Typical time: 45–60 min</div>
+          <a class="svc-book-btn" href="book.html?service=Patios" onclick="event.stopPropagation()">Book this service <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+        </div></div>
+      </div>
     </div>
 
     <div class="svc-grid-lg reveal">
-      <a class="svc" href="book.html?service=Driveway%20(Standard)">
+      <div class="svc" onclick="svcClick(event,this)" tabindex="0">
         <span class="tag">Water Only · No Soap</span>
         <h3>Driveway</h3>
         <div class="amt"><span class="d">$</span>75</div>
         <div class="flat">Flat Rate</div>
         <p class="desc">Standard high-pressure water blast — oil drips, tire marks &amp; seasonal grime rinsed away.</p>
-        <span class="book-hint">Book this service <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
-      </a>
-      <a class="svc feat" href="book.html?service=Pristine%2B%20(Soap%20%26%20Bleach)">
+        <div class="svc-toggle-row">
+          <span class="learn-more-txt">What's included</span>
+          <span class="svc-chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+        </div>
+        <div class="svc-details"><div class="svc-details-inner">
+          <ul class="svc-includes">
+            <li>Standard high-pressure water blast</li>
+            <li>Oil drips, tire marks, seasonal grime</li>
+            <li>Full driveway coverage</li>
+          </ul>
+          <div class="svc-time">Typical time: 45–60 min</div>
+          <a class="svc-book-btn" href="book.html?service=Driveway%20(Standard)" onclick="event.stopPropagation()">Book this service <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+        </div></div>
+      </div>
+      <div class="svc feat" onclick="svcClick(event,this)" tabindex="0">
         <span class="badge">★ Premium</span>
         <span class="tag">Soap + Bleach · Grass-Safe</span>
         <h3>Pristine+</h3>
         <div class="amt"><span class="d">$</span>115</div>
         <div class="flat">Flat Rate</div>
         <p class="desc">Driveway + soap &amp; bleach treatment that lifts stains, oil &amp; ground-in grime — keeps the grass safe.</p>
-        <span class="book-hint">Book this service <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
-      </a>
+        <div class="svc-toggle-row">
+          <span class="learn-more-txt">What's included</span>
+          <span class="svc-chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+        </div>
+        <div class="svc-details"><div class="svc-details-inner">
+          <ul class="svc-includes">
+            <li>Everything in Driveway PLUS soap &amp; bleach</li>
+            <li>Deep stain &amp; oil lift treatment</li>
+            <li>Grass-safe bleach application</li>
+          </ul>
+          <div class="svc-time">Typical time: 60–90 min</div>
+          <a class="svc-book-btn" href="book.html?service=Pristine%2B%20(Soap%20%26%20Bleach)" onclick="event.stopPropagation()">Book this service <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+        </div></div>
+      </div>
     </div>
 
     <!-- Pay-after-service reassurance -->
@@ -1259,6 +1374,19 @@ for (let i = 0; i < 16; i++) {
   d.style.animationDuration = (5 + Math.random() * 4) + 's';
   dropsEl.appendChild(d);
 }
+
+// ===== SERVICE CARD EXPAND/COLLAPSE =====
+function svcClick(e, card) {
+  if (e.target.closest('.svc-book-btn')) return;
+  card.classList.toggle('expanded');
+}
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.svc[tabindex]').forEach(card => {
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); card.classList.toggle('expanded'); }
+    });
+  });
+});
 
 // ===== SCROLL REVEAL =====
 const observer = new IntersectionObserver((entries) => {

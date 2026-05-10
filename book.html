@@ -1307,34 +1307,6 @@ document.addEventListener('DOMContentLoaded',()=>{
 const START_DATE=new Date(2026,4,10); START_DATE.setHours(0,0,0,0);   // May 10, 2026
 const END_DATE=new Date(2026,7,19);   END_DATE.setHours(23,59,59,999); // Aug 19, 2026 (last bookable day)
 
-function slotsForDate(date){
-  const dow=date.getDay();
-  const isWeekend=(dow===0||dow===6);
-  const ymd=date.getFullYear()*10000+(date.getMonth()+1)*100+date.getDate();
-  if(ymd>=20260820) return [];
-  if(ymd>=20260725){
-    if(isWeekend) return [{time:'11:00 AM',period:'Late Morning',sort:0,iconClass:'noon'}];
-    return [
-      {time:'10:00 AM',period:'Morning',sort:0,iconClass:'morning'},
-      {time:'12:00 PM',period:'Midday',sort:1,iconClass:'noon'},
-      {time:'2:00 PM',period:'Afternoon',sort:2,iconClass:'afternoon'}
-    ];
-  }
-  if(ymd>=20260706){
-    if(isWeekend) return [{time:'10:00 AM',period:'Morning',sort:0,iconClass:'morning'}];
-    return [
-      {time:'9:00 AM',period:'Morning',sort:0,iconClass:'morning'},
-      {time:'11:30 AM',period:'Late Morning',sort:1,iconClass:'noon'}
-    ];
-  }
-  if(ymd>=20260705) return isWeekend?[{time:'10:00 AM',period:'Morning',sort:0,iconClass:'morning'}]:[];
-  if(ymd>=20260628) return [];
-  if(ymd>=20260620){
-    if(isWeekend) return [{time:'10:00 AM',period:'Morning',sort:0,iconClass:'morning'}];
-    return [{time:'11:00 AM',period:'Late Morning',sort:0,iconClass:'noon'}];
-  }
-  return isWeekend?[{time:'10:00 AM',period:'Morning',sort:0,iconClass:'morning'}]:[];
-}
 const DAY_NAMES_SHORT=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const DAY_NAMES_LONG=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const MON_NAMES=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -1367,15 +1339,55 @@ let slotsInitialized=false;
 const slotsCache=new Map();    // key: doc.id -> {date, time, booked, ...}
 let slotsUnsub=null;
 
+function iconClassFor(period,time){
+  const p=(period||'').toLowerCase();
+  if(p.includes('early')||p==='morning') return 'morning';
+  if(p.includes('late morning')||p.includes('midday')) return 'noon';
+  if(p.includes('afternoon')||p.includes('evening')) return 'afternoon';
+  const m=(time||'').match(/^(\d+):(\d+)\s*(AM|PM)$/i);
+  if(m){
+    let h=+m[1]; const ap=m[3].toUpperCase();
+    if(ap==='PM'&&h!==12) h+=12;
+    if(ap==='AM'&&h===12) h=0;
+    if(h<11) return 'morning';
+    if(h<13) return 'noon';
+    return 'afternoon';
+  }
+  return 'morning';
+}
+
 function rebuildDaysData(){
   const now=new Date();
   const today0=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+
+  // Group Firestore slots by date.
+  const slotsByDate={};
+  for(const d of slotsCache.values()){
+    if(!d.date||!d.time) continue;
+    (slotsByDate[d.date]=slotsByDate[d.date]||[]).push({
+      time:d.time,
+      period:d.period||'',
+      sort:typeof d.sort==='number'?d.sort:0,
+      iconClass:iconClassFor(d.period,d.time),
+      booked:!!d.booked,
+      id:d.id
+    });
+  }
+  // Sort each day's slots chronologically.
+  Object.values(slotsByDate).forEach(arr=>arr.sort((a,b)=>{
+    if(a.sort!==b.sort) return a.sort-b.sort;
+    return parseTimeToHour(a.time)-parseTimeToHour(b.time);
+  }));
+
   daysData=[];
   const cursor=new Date(START_DATE);
   while(cursor.getTime()<=END_DATE.getTime()){
-    daysData.push({dateStr:fmtDate(cursor),dateObj:new Date(cursor),slots:slotsForDate(cursor).map(s=>({...s,booked:false,id:null}))});
+    const dateStr=fmtDate(cursor);
+    daysData.push({dateStr,dateObj:new Date(cursor),slots:slotsByDate[dateStr]||[]});
     cursor.setDate(cursor.getDate()+1);
   }
+
+  // Filter out today's slots that are already in the past.
   const todayStr=fmtDate(today0);
   const todayDay=daysData.find(d=>d.dateStr===todayStr);
   if(todayDay){
@@ -1385,12 +1397,8 @@ function rebuildDaysData(){
 }
 
 function applyFirestoreState(){
+  // Firestore is now the source of truth for which slots exist.
   rebuildDaysData();
-  for(const d of slotsCache.values()){
-    const day=daysData.find(x=>x.dateStr===d.date);
-    const slot=day?.slots.find(s=>s.time===d.time);
-    if(slot){ slot.id=d.id; if(d.booked) slot.booked=true; }
-  }
 }
 
 function onFirestoreChanged(){

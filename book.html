@@ -232,8 +232,8 @@ a{color:var(--accent);text-decoration:none}
 }
 .form-section:last-of-type{border-bottom:none;padding-bottom:0;margin-bottom:0}
 .section-lbl{
-  font-size:10.5px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;
-  color:var(--text-subtle);margin-bottom:12px;
+  font-size:10.5px;font-weight:800;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--text-subtle);margin-bottom:14px;
 }
 
 /* ── FIELDS ──────────────────────────────────────────── */
@@ -248,22 +248,22 @@ a{color:var(--accent);text-decoration:none}
   text-transform:none;
 }
 .field input,.field textarea{
-  width:100%;height:44px;padding:0 12px;
-  border-radius:var(--radius);border:1px solid var(--border);
+  width:100%;height:44px;padding:0 13px;
+  border-radius:var(--radius);border:1.5px solid var(--border);
   background:var(--surface);color:var(--text);
   font-family:'Inter',sans-serif;font-size:15px;font-weight:500;
   outline:none;
-  transition:border-color .15s,box-shadow .15s,background .15s;
+  transition:border-color .22s cubic-bezier(0.16,1,0.3,1),box-shadow .22s cubic-bezier(0.16,1,0.3,1),background .22s;
   -webkit-tap-highlight-color:transparent;
   max-width:100%;
 }
 .field textarea{
-  height:auto;padding:11px 12px;resize:none;
+  height:auto;padding:12px 13px;resize:none;
   font-family:'Inter',sans-serif;
 }
 .field input:focus,.field textarea:focus{
   border-color:var(--accent);
-  box-shadow:0 0 0 3px var(--ring);
+  box-shadow:0 0 0 4px var(--ring);
   background:var(--surface-2);
 }
 .field input::placeholder,.field textarea::placeholder{color:var(--text-subtle)}
@@ -328,16 +328,17 @@ a{color:var(--accent);text-decoration:none}
   cursor:pointer;
   display:flex;flex-direction:column;align-items:center;gap:2px;
   font-family:'Inter',sans-serif;color:var(--text);
-  transition:border-color .15s,background .15s,transform .15s;
+  transition:border-color .22s cubic-bezier(0.16,1,0.3,1),background .22s,transform .22s cubic-bezier(0.16,1,0.3,1),box-shadow .22s;
   -webkit-tap-highlight-color:transparent;min-width:0;
 }
 .day-pill:hover:not(.unavailable):not(.selected){
   border-color:var(--border-strong);background:var(--surface);
+  transform:translateY(-1px) scale(1.02);
 }
 .day-pill.selected{
   background:var(--accent);border-color:var(--accent);
-  box-shadow:0 4px 14px -4px rgba(96,165,250,.5);
-  transform:translateY(-1px);
+  box-shadow:0 8px 22px -6px rgba(96,165,250,.62),0 0 0 1px rgba(96,165,250,.3);
+  transform:translateY(-2px);
 }
 .day-pill.today{border-color:var(--amber-400)}
 .day-pill.today.selected{border-color:var(--accent)}
@@ -377,27 +378,145 @@ a{color:var(--accent);text-decoration:none}
 }
 .time-pill{
   flex:1 1 80px;min-width:70px;
-  padding:10px 8px;border-radius:10px;
+  padding:11px 8px;border-radius:10px;
   border:1.5px solid var(--border);background:var(--bg-alt);color:var(--text);
   font-family:'Inter',sans-serif;
   display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center;
   cursor:pointer;
-  transition:border-color .15s,background .15s,box-shadow .15s,transform .15s;
+  transition:border-color .22s cubic-bezier(0.16,1,0.3,1),background .22s,box-shadow .22s,transform .22s cubic-bezier(0.16,1,0.3,1);
   -webkit-tap-highlight-color:transparent;
 }
-.time-pill:hover:not(.taken){
+.time-pill:hover:not(.taken):not(.selected){
   border-color:var(--accent);background:var(--surface);
-  transform:translateY(-1px);
+  transform:translateY(-1px) scale(1.02);
+  box-shadow:0 4px 14px -8px rgba(96,165,250,.32);
 }
 .time-pill.selected{
   background:var(--accent);border-color:var(--accent);
   color:var(--accent-contrast);
-  box-shadow:0 4px 14px -4px rgba(96,165,250,.45);
-  transform:translateY(-1px);
+  box-shadow:0 10px 26px -8px rgba(96,165,250,.55),0 0 0 1px rgba(96,165,250,.28);
+  transform:translateY(-2px);
 }
 .time-pill.taken{opacity:.3;cursor:not-allowed}
 .tp-time{font-size:14.5px;font-weight:700;line-height:1}
 .tp-period{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;opacity:.65}
+
+/* ── HOSE ACKNOWLEDGMENT CARD ────────────────────────── */
+.hose-card{
+  position:relative;overflow:hidden;
+  display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:flex-start;
+  padding:20px 22px;margin:0 0 16px;
+  background:linear-gradient(135deg,rgba(251,191,36,.12),rgba(251,191,36,.04));
+  border:1px solid rgba(251,191,36,.42);
+  border-left:4px solid var(--amber-400);
+  border-radius:var(--radius-lg);
+  box-shadow:0 6px 22px -10px rgba(251,191,36,.32);
+  transition:background .35s cubic-bezier(0.16,1,0.3,1),border-color .35s,box-shadow .35s;
+}
+.hose-card::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(70% 100% at 0% 0%,rgba(251,191,36,.1),transparent 55%);
+}
+.hose-card.acknowledged{
+  background:linear-gradient(135deg,rgba(52,211,153,.13),rgba(52,211,153,.04));
+  border-color:rgba(52,211,153,.45);
+  border-left-color:var(--green-400);
+  box-shadow:0 6px 22px -10px rgba(52,211,153,.32);
+}
+.hose-card.acknowledged::before{
+  background:radial-gradient(70% 100% at 0% 0%,rgba(52,211,153,.12),transparent 55%);
+}
+.hose-card.flash{animation:hoseShake .5s cubic-bezier(.36,.07,.19,.97)}
+@keyframes hoseShake{
+  10%,90%{transform:translateX(-1px)}
+  20%,80%{transform:translateX(3px)}
+  30%,50%,70%{transform:translateX(-4px)}
+  40%,60%{transform:translateX(4px)}
+}
+.hose-ic{
+  position:relative;z-index:1;flex-shrink:0;
+  width:44px;height:44px;border-radius:12px;
+  background:linear-gradient(135deg,var(--amber-400),var(--amber-500));color:#3a2a0a;
+  display:grid;place-items:center;
+  box-shadow:0 6px 16px -6px rgba(251,191,36,.5),inset 0 1px 0 rgba(255,255,255,.4);
+  transition:background .35s cubic-bezier(0.16,1,0.3,1),box-shadow .35s;
+}
+.hose-card.acknowledged .hose-ic{
+  background:linear-gradient(135deg,#10b981,#34d399);color:#04261b;
+  box-shadow:0 6px 16px -6px rgba(52,211,153,.55),inset 0 1px 0 rgba(255,255,255,.35);
+}
+.hose-body{position:relative;z-index:1;min-width:0}
+.hose-kicker{
+  font-size:10px;font-weight:800;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--amber-500);margin-bottom:3px;
+  transition:color .35s;
+}
+.hose-card.acknowledged .hose-kicker{color:var(--green-400)}
+[data-theme="light"] .hose-kicker{color:#b45309}
+[data-theme="light"] .hose-card.acknowledged .hose-kicker{color:#047857}
+.hose-title{
+  font-family:'Fraunces',serif;font-weight:800;font-size:18px;
+  letter-spacing:-.02em;color:var(--text);margin-bottom:10px;line-height:1.2;
+}
+.hose-list{list-style:none;display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+.hose-list li{
+  display:flex;align-items:flex-start;gap:10px;
+  font-size:13.5px;color:var(--text-muted);line-height:1.5;
+}
+.hose-list li strong{color:var(--text);font-weight:600}
+.hose-list .hose-check{
+  flex-shrink:0;margin-top:2px;
+  width:18px;height:18px;min-width:18px;border-radius:50%;
+  background:rgba(251,191,36,.2);color:var(--amber-500);
+  border:1px solid rgba(251,191,36,.4);
+  display:grid;place-items:center;
+  transition:background .35s,color .35s,border-color .35s;
+}
+.hose-card.acknowledged .hose-list .hose-check{
+  background:rgba(52,211,153,.22);color:var(--green-400);border-color:rgba(52,211,153,.46);
+}
+[data-theme="light"] .hose-list .hose-check{color:#b45309}
+[data-theme="light"] .hose-card.acknowledged .hose-list .hose-check{color:#047857}
+/* Styled checkbox */
+.hose-confirm{
+  position:relative;
+  display:flex;align-items:flex-start;gap:11px;
+  padding:11px 14px;background:var(--surface);
+  border:1.5px solid var(--border-strong);border-radius:10px;
+  cursor:pointer;user-select:none;
+  transition:border-color .25s,background .25s,box-shadow .25s;
+}
+.hose-confirm:hover{border-color:var(--amber-400);background:var(--surface-2)}
+.hose-card.acknowledged .hose-confirm{
+  background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.4);
+}
+.hose-confirm input{position:absolute;opacity:0;pointer-events:none}
+.hose-box{
+  flex-shrink:0;margin-top:1px;
+  width:20px;height:20px;border-radius:6px;
+  background:var(--bg-alt);border:1.5px solid var(--border-strong);
+  display:grid;place-items:center;
+  transition:all .22s cubic-bezier(0.16,1,0.3,1);
+}
+.hose-box svg{
+  width:13px;height:13px;color:#fff;
+  opacity:0;transform:scale(.5);
+  transition:opacity .22s cubic-bezier(0.16,1,0.3,1),transform .22s cubic-bezier(0.16,1,0.3,1);
+}
+.hose-confirm input:checked + .hose-box{
+  background:var(--green-400);border-color:var(--green-400);
+}
+.hose-confirm input:checked + .hose-box svg{opacity:1;transform:scale(1)}
+.hose-confirm input:focus-visible + .hose-box{box-shadow:0 0 0 3px var(--ring)}
+.hose-confirm-txt{
+  font-size:13.5px;font-weight:600;color:var(--text);line-height:1.45;
+}
+.hose-confirm-txt small{display:block;font-size:11.5px;font-weight:500;color:var(--text-subtle);margin-top:1px}
+@media(max-width:640px){
+  .hose-card{grid-template-columns:1fr;gap:12px;padding:18px 18px}
+  .hose-ic{width:38px;height:38px;border-radius:11px}
+  .hose-title{font-size:16.5px}
+}
 
 /* ── MINI SUMMARY (mobile) ───────────────────────────── */
 .mini-summary{
@@ -413,24 +532,25 @@ a{color:var(--accent);text-decoration:none}
 
 /* ── SUBMIT BUTTON ───────────────────────────────────── */
 .submit-btn{
-  width:100%;padding:15px 20px;border-radius:var(--radius-md);border:none;
+  width:100%;padding:16px 20px;border-radius:var(--radius-md);border:none;
   background:var(--accent);color:var(--accent-contrast);
-  font-family:'Inter',sans-serif;font-size:15.5px;font-weight:700;
+  font-family:'Inter',sans-serif;font-size:15.5px;font-weight:700;letter-spacing:-.005em;
   cursor:pointer;
   display:flex;align-items:center;justify-content:center;gap:8px;
-  transition:background .18s,transform .18s,box-shadow .18s;
-  box-shadow:0 4px 18px -4px rgba(96,165,250,.38);
+  transition:background .22s cubic-bezier(0.16,1,0.3,1),transform .18s cubic-bezier(0.16,1,0.3,1),box-shadow .22s cubic-bezier(0.16,1,0.3,1);
+  box-shadow:0 6px 22px -6px rgba(96,165,250,.42);
   -webkit-tap-highlight-color:transparent;
 }
 .submit-btn:hover{
-  background:var(--accent-hover);transform:translateY(-1px);
-  box-shadow:0 8px 24px -6px rgba(96,165,250,.5);
+  background:var(--accent-hover);transform:translateY(-2px);
+  box-shadow:0 12px 28px -6px rgba(96,165,250,.55);
 }
-.submit-btn:active{transform:translateY(0)}
-.submit-btn:disabled{
+.submit-btn:active{transform:translateY(1px);box-shadow:0 2px 10px -4px rgba(96,165,250,.4)}
+.submit-btn:disabled,.submit-btn.locked{
   opacity:.55;cursor:not-allowed;
   transform:none!important;box-shadow:none!important;
 }
+.submit-btn.locked:hover{background:var(--accent)}
 .submit-btn svg{width:15px;height:15px;flex-shrink:0}
 @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
 .btn-spinner{
@@ -485,10 +605,26 @@ a{color:var(--accent);text-decoration:none}
 /* ── SUCCESS SCREEN ──────────────────────────────────── */
 .success-wrap{
   text-align:center;max-width:min(580px,100%);margin:24px auto;
-  padding:44px 32px;background:var(--surface);
+  padding:48px 36px;background:var(--surface);
   border:1px solid var(--border);border-radius:var(--radius-xl);
   box-shadow:var(--shadow-lg);position:relative;overflow:hidden;isolation:isolate;
+  animation:successIn .7s cubic-bezier(0.16,1,0.3,1);
 }
+@keyframes successIn{
+  from{opacity:0;transform:translateY(20px) scale(.98)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+/* Stagger inner elements */
+.success-wrap > .success-halo{animation:succItem .6s cubic-bezier(0.16,1,0.3,1) both;animation-delay:.05s}
+.success-wrap > .success-kicker{animation:succItem .6s cubic-bezier(0.16,1,0.3,1) both;animation-delay:.18s}
+.success-wrap > h2{animation:succItem .6s cubic-bezier(0.16,1,0.3,1) both;animation-delay:.26s}
+.success-wrap > .success-intro{animation:succItem .6s cubic-bezier(0.16,1,0.3,1) both;animation-delay:.34s}
+.success-wrap > .success-details{animation:succItem .6s cubic-bezier(0.16,1,0.3,1) both;animation-delay:.42s}
+.success-wrap > .success-timeline{animation:succItem .6s cubic-bezier(0.16,1,0.3,1) both;animation-delay:.5s}
+.success-wrap > .success-reminder{animation:succItem .6s cubic-bezier(0.16,1,0.3,1) both;animation-delay:.58s}
+.success-wrap > .cal-section{animation:succItem .6s cubic-bezier(0.16,1,0.3,1) both;animation-delay:.62s}
+.success-wrap > .success-actions{animation:succItem .6s cubic-bezier(0.16,1,0.3,1) both;animation-delay:.66s}
+@keyframes succItem{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .success-wrap::before{
   content:'';position:absolute;inset:0 0 auto 0;height:200px;pointer-events:none;z-index:0;
   background:radial-gradient(60% 100% at 50% 0%,rgba(52,211,153,.13),transparent 70%);
@@ -813,8 +949,46 @@ a{color:var(--accent);text-decoration:none}
           <span data-s="service">—</span><span class="ms-sep">·</span><span data-s="time">—</span><span class="ms-sep">·</span><span data-s="price">—</span>
         </div>
 
+        <!-- HOSE REQUIREMENT — must acknowledge before booking -->
+        <div class="hose-card" id="hoseCard">
+          <div class="hose-ic" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v6"/>
+              <path d="M12 8c-3 2-5 5-5 9a5 5 0 0 0 10 0c0-4-2-7-5-9z"/>
+            </svg>
+          </div>
+          <div class="hose-body">
+            <div class="hose-kicker">Heads up</div>
+            <div class="hose-title">You'll need a garden hose set up</div>
+            <ul class="hose-list">
+              <li>
+                <span class="hose-check" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></span>
+                <span><strong>Working garden hose</strong> connected to your outdoor spigot, water turned on.</span>
+              </li>
+              <li>
+                <span class="hose-check" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></span>
+                <span><strong>Hose positioned within reach</strong> of the area being cleaned — it has to reach the spot we're washing.</span>
+              </li>
+              <li>
+                <span class="hose-check" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></span>
+                <span>We bring everything else — pressure washer, soap, nozzles. We hook into your hose for water.</span>
+              </li>
+            </ul>
+            <label class="hose-confirm" for="hoseAck">
+              <input type="checkbox" id="hoseAck">
+              <span class="hose-box" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg>
+              </span>
+              <span class="hose-confirm-txt">
+                I'll have a garden hose hooked up and within reach.
+                <small>Required to confirm your booking</small>
+              </span>
+            </label>
+          </div>
+        </div>
+
         <!-- Submit -->
-        <button class="submit-btn" id="submitBtn" onclick="submitBooking()">
+        <button class="submit-btn locked" id="submitBtn" type="button" aria-disabled="true" onclick="submitBooking()">
           Confirm &amp; Book
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </button>
@@ -875,11 +1049,11 @@ const db = firebase.firestore();
 
 // ===== SERVICES =====
 const services = {
-  'Sidewalks':{ tag:'Soap Wash', price:25, premium:false, desc:'Front walks, stepping stones & entry paths blasted back to fresh concrete.', includes:['High-pressure wash + pet-safe soap','Front walks, stepping stones, entry paths','Edge detailing along grass line'], time:'30–45 min' },
-  'Trash Cans':{ tag:'Soap Wash', price:30, premium:false, desc:'Inside & out — soap wash that eliminates odors & bacteria buildup.', includes:['Inside & out deep clean','Eliminates odors & bacteria','Soap wash deodorizer treatment'], time:'~20 min' },
-  'Patios':{ tag:'Soap Wash', price:50, premium:false, desc:'Pavers, slabs & back porches — lifted, rinsed & ready for the cookout.', includes:['Pavers, slabs & back porches','Pet-safe soap treatment','Edge-to-edge coverage'], time:'45–60 min' },
-  'Driveway (Standard)':{ tag:'Water Only · No Soap', price:75, premium:false, desc:'Standard high-pressure water blast — oil drips, tire marks & seasonal grime rinsed away.', includes:['Standard high-pressure water blast','Oil drips, tire marks, seasonal grime','Full driveway coverage'], time:'45–60 min' },
-  'Pristine+ (Soap & Bleach)':{ tag:'Soap + Bleach · Grass-Safe', price:115, premium:true, desc:'Driveway + soap & bleach treatment that lifts stains, oil & ground-in grime — keeps the grass safe.', includes:['Everything in Driveway PLUS soap & bleach','Deep stain & oil lift treatment','Grass-safe bleach application'], time:'60–90 min' }
+  'Sidewalks':{ tag:'Soap Wash', price:25, premium:false, desc:'Front walks, stepping stones & entry paths blasted back to fresh concrete.', includes:['High-pressure wash + pet-safe soap','Front walks, stepping stones, entry paths','Edge detailing along grass line','You provide: a garden hose hooked up & within reach of the walkway'], time:'30–45 min' },
+  'Trash Cans':{ tag:'Soap Wash', price:30, premium:false, desc:'Inside & out — soap wash that eliminates odors & bacteria buildup.', includes:['Inside & out deep clean','Eliminates odors & bacteria','Soap wash deodorizer treatment','You provide: a garden hose hooked up & within reach of the bins'], time:'~20 min' },
+  'Patios':{ tag:'Soap Wash', price:50, premium:false, desc:'Pavers, slabs & back porches — lifted, rinsed & ready for the cookout.', includes:['Pavers, slabs & back porches','Pet-safe soap treatment','Edge-to-edge coverage','You provide: a garden hose hooked up & within reach of the patio'], time:'45–60 min' },
+  'Driveway (Standard)':{ tag:'Water Only · No Soap', price:75, premium:false, desc:'Standard high-pressure water blast — oil drips, tire marks & seasonal grime rinsed away.', includes:['Standard high-pressure water blast','Oil drips, tire marks, seasonal grime','Full driveway coverage','You provide: a garden hose hooked up & within reach of the driveway'], time:'45–60 min' },
+  'Pristine+ (Soap & Bleach)':{ tag:'Soap + Bleach · Grass-Safe', price:115, premium:true, desc:'Driveway + soap & bleach treatment that lifts stains, oil & ground-in grime — keeps the grass safe.', includes:['Everything in Driveway PLUS soap & bleach','Deep stain & oil lift treatment','Grass-safe bleach application','You provide: a garden hose hooked up & within reach of the driveway'], time:'60–90 min' }
 };
 
 // ===== URL PARAMS =====
@@ -937,6 +1111,17 @@ function bad(id, msg){
   errEl.classList.add('show');
   el.classList.add('invalid');
   el.addEventListener('input',()=>{ errEl.classList.remove('show'); el.classList.remove('invalid'); },{once:true});
+}
+
+function flashHoseReq(){
+  const card=document.getElementById('hoseCard');
+  if(!card) return;
+  card.scrollIntoView({behavior:'smooth',block:'center'});
+  card.classList.remove('flash');
+  // force reflow so animation can replay
+  void card.offsetWidth;
+  card.classList.add('flash');
+  setTimeout(()=>card.classList.remove('flash'),700);
 }
 
 function flashSlotPrompt(){
@@ -1037,16 +1222,55 @@ document.addEventListener('DOMContentLoaded',()=>{
   });
   initSlots();
   updateSummary();
+
+  // Hose acknowledgment — toggle card state + submit button "locked" look
+  const hoseAck=document.getElementById('hoseAck');
+  const hoseCard=document.getElementById('hoseCard');
+  const submitBtn=document.getElementById('submitBtn');
+  function syncHose(){
+    const ok=!!hoseAck?.checked;
+    if(hoseCard) hoseCard.classList.toggle('acknowledged',ok);
+    if(submitBtn){
+      submitBtn.classList.toggle('locked',!ok);
+      submitBtn.setAttribute('aria-disabled',ok?'false':'true');
+    }
+  }
+  if(hoseAck) hoseAck.addEventListener('change',syncHose);
+  syncHose();
 });
 
-// ===== CALENDAR & SLOTS =====
-const DEFAULT_SLOTS=[
-  {time:'10:00 AM',period:'Morning',sort:0,iconClass:'morning'},
-  {time:'12:00 PM',period:'Midday',sort:1,iconClass:'noon'},
-  {time:'2:00 PM',period:'Afternoon',sort:2,iconClass:'afternoon'}
-];
-const START_DATE=new Date(2026,5,11); START_DATE.setHours(0,0,0,0);
-const END_DATE=new Date(2026,7,11);   END_DATE.setHours(23,59,59,999);
+// ===== CALENDAR & SLOTS — schedule varies by date =====
+const START_DATE=new Date(2026,4,10); START_DATE.setHours(0,0,0,0);   // May 10, 2026
+const END_DATE=new Date(2026,7,19);   END_DATE.setHours(23,59,59,999); // Aug 19, 2026 (last bookable day)
+
+function slotsForDate(date){
+  const dow=date.getDay();
+  const isWeekend=(dow===0||dow===6);
+  const ymd=date.getFullYear()*10000+(date.getMonth()+1)*100+date.getDate();
+  if(ymd>=20260820) return [];
+  if(ymd>=20260725){
+    if(isWeekend) return [{time:'11:00 AM',period:'Late Morning',sort:0,iconClass:'noon'}];
+    return [
+      {time:'10:00 AM',period:'Morning',sort:0,iconClass:'morning'},
+      {time:'12:00 PM',period:'Midday',sort:1,iconClass:'noon'},
+      {time:'2:00 PM',period:'Afternoon',sort:2,iconClass:'afternoon'}
+    ];
+  }
+  if(ymd>=20260706){
+    if(isWeekend) return [{time:'10:00 AM',period:'Morning',sort:0,iconClass:'morning'}];
+    return [
+      {time:'9:00 AM',period:'Morning',sort:0,iconClass:'morning'},
+      {time:'11:30 AM',period:'Late Morning',sort:1,iconClass:'noon'}
+    ];
+  }
+  if(ymd>=20260705) return isWeekend?[{time:'10:00 AM',period:'Morning',sort:0,iconClass:'morning'}]:[];
+  if(ymd>=20260628) return [];
+  if(ymd>=20260620){
+    if(isWeekend) return [{time:'10:00 AM',period:'Morning',sort:0,iconClass:'morning'}];
+    return [{time:'11:00 AM',period:'Late Morning',sort:0,iconClass:'noon'}];
+  }
+  return isWeekend?[{time:'10:00 AM',period:'Morning',sort:0,iconClass:'morning'}]:[];
+}
 const DAY_NAMES_SHORT=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const DAY_NAMES_LONG=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const MON_NAMES=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -1077,7 +1301,7 @@ async function initSlots(){
   daysData=[];
   const cursor=new Date(START_DATE);
   while(cursor.getTime()<=END_DATE.getTime()){
-    daysData.push({dateStr:fmtDate(cursor),dateObj:new Date(cursor),slots:DEFAULT_SLOTS.map(s=>({...s,booked:false,id:null}))});
+    daysData.push({dateStr:fmtDate(cursor),dateObj:new Date(cursor),slots:slotsForDate(cursor).map(s=>({...s,booked:false,id:null}))});
     cursor.setDate(cursor.getDate()+1);
   }
   try{
@@ -1223,10 +1447,21 @@ function showSuccess(){
 
 // ===== SUBMIT =====
 async function submitBooking(){
+  const btnEl=document.getElementById('submitBtn');
+  // Block submission if the button is in its "locked" (un-acknowledged) state
+  if(btnEl?.classList.contains('locked')){
+    flashHoseReq();
+    showToast('Please confirm the hose requirement to book.','error');
+    return;
+  }
+  // Also block if Firestore round-trip is in progress (real disabled)
+  if(btnEl?.disabled) return;
+
   const name=document.getElementById('bName').value.trim();
   const phone=document.getElementById('bPhone').value.trim();
   const email=document.getElementById('bEmail').value.trim();
   const address=document.getElementById('bAddress').value.trim();
+  const hoseOk=!!document.getElementById('hoseAck')?.checked;
 
   let firstErrEl=null;
   let slotErr=false;
@@ -1239,6 +1474,13 @@ async function submitBooking(){
   if(firstErrEl||slotErr){
     if(firstErrEl){ firstErrEl.scrollIntoView({behavior:'smooth',block:'center'}); setTimeout(()=>firstErrEl.focus(),350); }
     else if(slotErr) flashSlotPrompt();
+    return;
+  }
+
+  // Hose acknowledgment must be checked — last gate before Firestore write
+  if(!hoseOk){
+    flashHoseReq();
+    showToast('Please confirm the hose requirement to book.','error');
     return;
   }
 

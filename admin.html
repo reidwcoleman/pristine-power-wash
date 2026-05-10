@@ -471,9 +471,12 @@ const db = firebase.firestore();
 const auth = firebase.auth();
 
 const TIME_SLOTS = [
-  { time: '10:00 AM', period: 'Morning',   sort: 0 },
-  { time: '12:00 PM', period: 'Midday',    sort: 1 },
-  { time: '2:00 PM',  period: 'Afternoon', sort: 2 }
+  { time: '9:00 AM',  period: 'Morning',      sort: 0 },
+  { time: '10:00 AM', period: 'Morning',      sort: 1 },
+  { time: '11:00 AM', period: 'Late Morning', sort: 2 },
+  { time: '11:30 AM', period: 'Late Morning', sort: 3 },
+  { time: '12:00 PM', period: 'Midday',       sort: 4 },
+  { time: '2:00 PM',  period: 'Afternoon',    sort: 5 }
 ];
 
 auth.onAuthStateChanged(user => {
@@ -546,7 +549,7 @@ async function loadAllSlots() {
 }
 
 // Booking opens June 11, 2026 — admin grid starts from max(today, START_DATE)
-const BOOKING_START = new Date(2026, 5, 11);
+const BOOKING_START = new Date(2026, 4, 10); // May 10, 2026
 BOOKING_START.setHours(0,0,0,0);
 
 function buildDayGrid() {

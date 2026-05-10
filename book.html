@@ -1338,6 +1338,10 @@ function dayDiff(date){
 let slotsInitialized=false;
 const slotsCache=new Map();    // key: doc.id -> {date, time, booked, ...}
 let slotsUnsub=null;
+// True while the user's own booking is being written to Firestore. Suppresses
+// the "that time was just booked" toast that would otherwise fire when the
+// snapshot listener sees the user's own slot become unavailable.
+let isBookingInFlight=false;
 
 function iconClassFor(period,time){
   const p=(period||'').toLowerCase();
@@ -1404,7 +1408,9 @@ function applyFirestoreState(){
 function onFirestoreChanged(){
   applyFirestoreState();
   // If the slot the user had picked was just booked by someone else, clear it & alert.
-  if(selectedSlot){
+  // Skip this if the user is currently submitting their OWN booking — their write
+  // to availableSlots fires this same listener and would falsely look like a steal.
+  if(selectedSlot&&!isBookingInFlight){
     const day=daysData.find(d=>d.dateStr===selectedSlot.date);
     const slot=day?.slots.find(s=>s.time===selectedSlot.time);
     if(!slot||slot.booked){
@@ -1666,6 +1672,7 @@ async function submitBooking(){
     timestamp:new Date().toISOString(),status:'pending'
   };
 
+  isBookingInFlight=true;
   try{
     if(selectedSlot.id){
       // Admin pre-created an availableSlots doc — flip it to booked atomically.
@@ -1694,6 +1701,7 @@ async function submitBooking(){
       }catch(slotErr){ console.warn('Public slot lock failed',slotErr); }
     }
   }catch(e){
+    isBookingInFlight=false;
     if(e.message==='SLOT_TAKEN'){
       btn.innerHTML='Confirm &amp; Book <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
       btn.disabled=false;
@@ -1706,6 +1714,9 @@ async function submitBooking(){
     const local=JSON.parse(localStorage.getItem('bookings')||'[]');
     local.push(bookingData); localStorage.setItem('bookings',JSON.stringify(local));
   }
+  // Booking succeeded (or fell through to localStorage) — flag stays set
+  // through the success-screen render so the snapshot listener stays quiet.
+  // It gets reset on the next page load.
 
   // Notifications
   const friendlyTime=slotLabel(selectedSlot);

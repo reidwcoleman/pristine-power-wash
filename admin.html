@@ -259,32 +259,91 @@ a{color:var(--accent);text-decoration:none}
 .chart-wrap .bar-bk{fill:url(#bkGrad);rx:3}
 .chart-wrap .chart-empty{font-size:13px;fill:var(--text-muted);font-weight:500}
 
-/* DAY GRID */
-.day-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
-.day-card{
-  padding:16px 12px;border:1px solid var(--border);
-  border-radius:12px;text-align:center;cursor:pointer;
-  transition:all .2s;background:var(--surface-2);
-  position:relative;
+/* MONTH CALENDAR */
+.month-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;margin-bottom:18px;padding:4px 2px;
 }
-.day-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:var(--shadow)}
-.day-card.selected{border-color:var(--accent);background:var(--bg-alt);box-shadow:0 0 0 3px var(--ring)}
-.day-card.today{border-color:var(--amber-400)}
-.day-card.today::before{
-  content:'TODAY';position:absolute;top:-8px;right:8px;
-  background:linear-gradient(135deg,var(--amber-400),var(--amber-500));color:#3a2a0a;
-  font-size:8px;font-weight:800;letter-spacing:.15em;
-  padding:3px 8px;border-radius:4px;
+.month-nav-title{
+  font-family:'Fraunces',serif;font-weight:800;font-size:22px;
+  color:var(--text);letter-spacing:-.02em;text-align:center;
+  flex:1;line-height:1.2;
 }
-.day-card .day-name{font-weight:700;font-size:13px;color:var(--text);letter-spacing:.04em}
-.day-card .day-date{font-family:'Fraunces',serif;font-weight:900;font-size:26px;color:var(--text);margin:2px 0;letter-spacing:-.02em}
-.day-card .day-month{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:var(--text-subtle)}
-.day-card .day-slots{
-  margin-top:10px;font-size:10px;font-weight:700;color:var(--accent);
-  padding:4px 9px;background:var(--bg-alt);border-radius:5px;display:inline-block;
-  letter-spacing:.04em;
+.month-nav-title .yr{color:var(--text-subtle);font-weight:500;margin-left:6px}
+.month-nav-btn{
+  width:38px;height:38px;border-radius:10px;flex-shrink:0;
+  background:var(--surface-2);border:1px solid var(--border);
+  color:var(--text-muted);cursor:pointer;display:grid;place-items:center;
+  transition:color .2s, background .2s, border-color .2s, transform .15s;
 }
-.day-card .day-slots.none{color:var(--text-subtle);background:var(--surface)}
+.month-nav-btn:hover:not(:disabled){color:var(--text);background:var(--bg-alt);border-color:var(--border-strong)}
+.month-nav-btn:active:not(:disabled){transform:scale(.96)}
+.month-nav-btn:disabled{opacity:.35;cursor:not-allowed}
+.month-nav-btn svg{width:16px;height:16px}
+
+.weekday-row{
+  display:grid;grid-template-columns:repeat(7,1fr);
+  gap:8px;margin-bottom:10px;padding:0 2px;
+}
+.weekday-row span{
+  text-align:center;font-size:10px;font-weight:700;
+  letter-spacing:.22em;text-transform:uppercase;
+  color:var(--text-subtle);
+}
+
+.month-grid{
+  display:grid;grid-template-columns:repeat(7,1fr);
+  gap:8px;transition:opacity .16s ease-out;
+}
+.month-grid.fading{opacity:0}
+
+.day-cell{
+  position:relative;aspect-ratio:1/1;min-height:64px;
+  padding:8px 6px 6px;border:1px solid var(--border);
+  border-radius:12px;background:var(--surface-2);
+  cursor:pointer;transition:border-color .2s, background .2s, transform .15s, box-shadow .2s;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+  gap:4px;text-align:center;
+}
+.day-cell:hover:not(.unavailable):not(.empty){
+  border-color:var(--accent);transform:translateY(-1px);box-shadow:var(--shadow);
+}
+.day-cell.selected{
+  border-color:var(--accent);background:var(--bg-alt);
+  box-shadow:0 0 0 3px var(--ring);
+}
+.day-cell.today{border-color:var(--amber-400)}
+.day-cell.today::before{
+  content:'';position:absolute;top:7px;right:8px;
+  width:6px;height:6px;border-radius:50%;
+  background:var(--amber-400);
+  box-shadow:0 0 0 0 rgba(251,191,36,.55);
+  animation:pulseDot 1.8s ease-out infinite;
+}
+@keyframes pulseDot{
+  0%{box-shadow:0 0 0 0 rgba(251,191,36,.55)}
+  70%{box-shadow:0 0 0 7px rgba(251,191,36,0)}
+  100%{box-shadow:0 0 0 0 rgba(251,191,36,0)}
+}
+.day-cell.unavailable{
+  cursor:not-allowed;opacity:.32;background:transparent;
+  border-color:transparent;
+}
+.day-cell.empty{
+  cursor:default;background:transparent;border-color:transparent;
+}
+.day-cell .cell-num{
+  font-family:'Fraunces',serif;font-weight:700;font-size:20px;
+  color:var(--text);letter-spacing:-.02em;line-height:1;
+}
+.day-cell.unavailable .cell-num{color:var(--text-subtle)}
+.day-cell .cell-status{
+  font-size:10px;font-weight:600;letter-spacing:.02em;
+  color:var(--accent);line-height:1.2;margin-top:auto;
+}
+.day-cell .cell-status.none{color:var(--text-subtle)}
+.day-cell .cell-status .bkd{color:var(--amber-400);font-weight:700}
+.day-cell .cell-status.full{color:var(--red-light)}
 
 /* SLOT MANAGER */
 .slot-manager{
@@ -385,13 +444,22 @@ a{color:var(--accent);text-decoration:none}
 /* RESPONSIVE */
 @media(max-width:768px){
   .dashboard{padding:20px 16px 40px}
-  .day-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px}
+  .month-grid,.weekday-row{gap:5px}
+  .day-cell{min-height:54px;padding:6px 3px 5px;border-radius:10px}
+  .day-cell .cell-num{font-size:16px}
+  .day-cell .cell-status{font-size:9px;letter-spacing:0}
+  .day-cell.today::before{top:5px;right:5px;width:5px;height:5px}
+  .month-nav-title{font-size:18px}
   .slot-list{grid-template-columns:1fr}
   .booking-item{grid-template-columns:1fr;gap:14px}
   .booking-detail{grid-template-columns:1fr 1fr}
   .tabs{width:100%}
   .tab{flex:1;text-align:center;padding:10px 12px;font-size:13px}
   .btn-site span{display:none}
+}
+@media(max-width:380px){
+  .day-cell{min-height:48px}
+  .day-cell .cell-status{display:none}
 }
 @media (prefers-reduced-motion: reduce){
   *{animation-duration:.01ms!important;transition-duration:.01ms!important}
@@ -498,7 +566,19 @@ a{color:var(--accent);text-decoration:none}
           <span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
           Select a Day
         </h3>
-        <div class="day-grid" id="dayGrid"></div>
+        <div class="month-nav">
+          <button class="month-nav-btn" id="adminCalPrev" aria-label="Previous month" onclick="shiftAdminMonth(-1)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <div class="month-nav-title" id="adminCalTitle">—</div>
+          <button class="month-nav-btn" id="adminCalNext" aria-label="Next month" onclick="shiftAdminMonth(1)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+        <div class="weekday-row" aria-hidden="true">
+          <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+        </div>
+        <div class="month-grid" id="monthGrid"></div>
       </div>
 
       <div class="slot-manager" id="slotManager">
@@ -627,7 +707,7 @@ let currentFilter = 'all';
 
 async function initDashboard() {
   await loadAllSlots();
-  buildDayGrid();
+  renderMonthGrid();
   loadBookings();
 }
 
@@ -818,48 +898,146 @@ async function loadAllSlots() {
   } catch (e) { console.warn('Failed to load slots:', e); }
 }
 
-// Booking opens June 11, 2026 — admin grid starts from max(today, START_DATE)
+// Booking window — admin can manage slots between these dates only.
 const BOOKING_START = new Date(2026, 4, 10); // May 10, 2026
 BOOKING_START.setHours(0,0,0,0);
+const END_DATE = new Date(2026, 7, 19); // Aug 19, 2026
+END_DATE.setHours(23,59,59,999);
 
-function buildDayGrid() {
-  const grid = document.getElementById('dayGrid');
-  grid.innerHTML = '';
-  const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MONTH_NAMES_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+// Calendar state — defaults to month containing today, clamped into the bookable window.
+let adminCalYear, adminCalMonth;
+(function initAdminCal(){
   const now = new Date();
   const today0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const startDate = today0.getTime() >= BOOKING_START.getTime() ? today0 : BOOKING_START;
+  const anchor = today0.getTime() >= BOOKING_START.getTime() ? today0 : BOOKING_START;
+  adminCalYear = anchor.getFullYear();
+  adminCalMonth = anchor.getMonth();
+  // Clamp to end-month if today is past END_DATE.
+  if (adminCalYear > END_DATE.getFullYear() ||
+      (adminCalYear === END_DATE.getFullYear() && adminCalMonth > END_DATE.getMonth())) {
+    adminCalYear = END_DATE.getFullYear();
+    adminCalMonth = END_DATE.getMonth();
+  }
+})();
 
-  for (let i = 0; i < 21; i++) {
-    const date = new Date(startDate);
-    date.setDate(startDate.getDate() + i);
+function renderMonthGrid() {
+  const grid = document.getElementById('monthGrid');
+  const title = document.getElementById('adminCalTitle');
+  const prevBtn = document.getElementById('adminCalPrev');
+  const nextBtn = document.getElementById('adminCalNext');
+  if (!grid || !title) return;
+
+  title.innerHTML = `${MONTH_NAMES_FULL[adminCalMonth]}<span class="yr">${adminCalYear}</span>`;
+
+  const atStart = (adminCalYear === BOOKING_START.getFullYear() && adminCalMonth === BOOKING_START.getMonth());
+  const atEnd   = (adminCalYear === END_DATE.getFullYear()       && adminCalMonth === END_DATE.getMonth());
+  prevBtn.disabled = atStart;
+  nextBtn.disabled = atEnd;
+
+  const now = new Date();
+  const today0 = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const firstOfMonth = new Date(adminCalYear, adminCalMonth, 1);
+  const leadingBlanks = firstOfMonth.getDay(); // 0 = Sunday
+  const daysInMonth = new Date(adminCalYear, adminCalMonth + 1, 0).getDate();
+  const totalCells = Math.ceil((leadingBlanks + daysInMonth) / 7) * 7;
+
+  grid.innerHTML = '';
+  const frag = document.createDocumentFragment();
+
+  for (let i = 0; i < totalCells; i++) {
+    const dayNum = i - leadingBlanks + 1;
+    if (dayNum < 1 || dayNum > daysInMonth) {
+      const empty = document.createElement('div');
+      empty.className = 'day-cell empty';
+      empty.setAttribute('aria-hidden', 'true');
+      frag.appendChild(empty);
+      continue;
+    }
+
+    const date = new Date(adminCalYear, adminCalMonth, dayNum);
     const dateStr = formatDate(date);
-    const isToday = date.getTime() === today0.getTime();
-    const isSunday = date.getDay() === 0;
+    const dateMs = date.getTime();
+    const beforeWindow = dateMs < BOOKING_START.getTime();
+    const afterWindow  = dateMs > END_DATE.getTime();
+    const isInWindow   = !beforeWindow && !afterWindow;
+    const isToday      = dateMs === today0;
+
     const slotsForDay = allSlots[dateStr] || {};
     const slotCount = Object.keys(slotsForDay).length;
     const bookedCount = Object.values(slotsForDay).filter(s => s.booked).length;
 
-    const card = document.createElement('div');
-    card.className = 'day-card' + (isToday ? ' today' : '') + (selectedDate === dateStr ? ' selected' : '');
-    if (isSunday) card.style.opacity = '.45';
+    const cell = document.createElement('div');
+    let cls = 'day-cell';
+    if (!isInWindow) cls += ' unavailable';
+    if (isToday && isInWindow) cls += ' today';
+    if (selectedDate === dateStr && isInWindow) cls += ' selected';
+    cell.className = cls;
 
-    let slotText = slotCount === 0 ? 'No slots' : `${slotCount} slot${slotCount > 1 ? 's' : ''}`;
-    if (bookedCount > 0) slotText += ` · ${bookedCount} bkd`;
+    let statusHTML = '';
+    if (isInWindow) {
+      let statusClass = 'cell-status';
+      let inner = '';
+      if (slotCount === 0) {
+        statusClass += ' none';
+        inner = 'no slots';
+      } else {
+        const allBooked = bookedCount === slotCount && slotCount > 0;
+        if (allBooked) statusClass += ' full';
+        inner = `${slotCount} slot${slotCount > 1 ? 's' : ''}`;
+        if (bookedCount > 0) inner += ` · <span class="bkd">${bookedCount} bkd</span>`;
+      }
+      statusHTML = `<div class="${statusClass}">${inner}</div>`;
+    }
 
-    card.innerHTML = `
-      <div class="day-name">${dayNames[date.getDay()]}</div>
-      <div class="day-date">${date.getDate()}</div>
-      <div class="day-month">${monthNames[date.getMonth()]}</div>
-      <div class="day-slots ${slotCount === 0 ? 'none' : ''}">${slotText}</div>
-    `;
-    card.addEventListener('click', () => selectDay(dateStr, date));
-    grid.appendChild(card);
+    cell.innerHTML = `<div class="cell-num">${dayNum}</div>${statusHTML}`;
+
+    if (isInWindow) {
+      cell.addEventListener('click', () => selectDay(dateStr, date));
+    } else {
+      cell.setAttribute('aria-disabled', 'true');
+    }
+
+    frag.appendChild(cell);
+  }
+
+  grid.appendChild(frag);
+}
+
+function shiftAdminMonth(direction) {
+  const next = adminCalMonth + direction;
+  const tentativeDate = new Date(adminCalYear, next, 1);
+  const ty = tentativeDate.getFullYear();
+  const tm = tentativeDate.getMonth();
+  // Bounds: don't go before BOOKING_START month or past END_DATE month.
+  const beforeStart = (ty < BOOKING_START.getFullYear()) ||
+                      (ty === BOOKING_START.getFullYear() && tm < BOOKING_START.getMonth());
+  const afterEnd   = (ty > END_DATE.getFullYear()) ||
+                     (ty === END_DATE.getFullYear() && tm > END_DATE.getMonth());
+  if (beforeStart || afterEnd) return;
+
+  const grid = document.getElementById('monthGrid');
+  const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const commit = () => {
+    adminCalYear = ty;
+    adminCalMonth = tm;
+    renderMonthGrid();
+    if (!reduced && grid) {
+      requestAnimationFrame(() => grid.classList.remove('fading'));
+    }
+  };
+
+  if (reduced || !grid) {
+    commit();
+  } else {
+    grid.classList.add('fading');
+    setTimeout(commit, 160);
   }
 }
 
-function selectDay(dateStr, dateObj) { selectedDate = dateStr; buildDayGrid(); showSlotManager(dateStr, dateObj); }
+function selectDay(dateStr, dateObj) { selectedDate = dateStr; renderMonthGrid(); showSlotManager(dateStr, dateObj); }
 
 function showSlotManager(dateStr, dateObj) {
   const manager = document.getElementById('slotManager');
@@ -925,7 +1103,7 @@ async function toggleSlot(dateStr, time, period, sort, turnOn) {
       delete allSlots[dateStr][time];
     } catch (e) { console.error('Failed to remove slot:', e); alert('Failed to remove slot. Check your connection.'); renderSlots(dateStr); return; }
   }
-  buildDayGrid();
+  renderMonthGrid();
   renderSlots(dateStr);
 }
 
@@ -943,7 +1121,7 @@ async function addAllSlots() {
       allSlots[selectedDate][ts.time] = { id: docRef.id, booked: false, bookingId: null };
     } catch (e) { console.error('Failed to add slot:', e); }
   }
-  buildDayGrid();
+  renderMonthGrid();
   renderSlots(selectedDate);
 }
 
@@ -959,7 +1137,7 @@ async function removeAllSlots() {
       delete allSlots[selectedDate][time];
     } catch (e) { console.error('Failed to remove slot:', e); }
   }
-  buildDayGrid();
+  renderMonthGrid();
   renderSlots(selectedDate);
 }
 
@@ -1047,7 +1225,7 @@ async function deleteBooking(id) {
     renderBookings();
     renderStats();
     await loadAllSlots();
-    buildDayGrid();
+    renderMonthGrid();
     if (selectedDate) renderSlots(selectedDate);
   } catch (e) { console.error('Failed to delete:', e); alert('Failed to delete booking.'); }
 }

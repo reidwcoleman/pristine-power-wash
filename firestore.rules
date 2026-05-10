@@ -8,10 +8,15 @@ service cloud.firestore {
       allow read, update, delete: if request.auth != null;
     }
 
-    // Available time slots: anyone can read, only admin can create/update/delete
+    // Available time slots: public-readable; admin can fully manage; anonymous
+    // bookers can create a doc only when claiming a slot (booked:true) or flip
+    // an existing unbooked doc to booked.
     match /availableSlots/{slot} {
       allow read: if true;
-      allow create, delete: if request.auth != null;
+      allow delete: if request.auth != null;
+      allow create: if request.auth != null
+        || (request.resource.data.booked == true
+            && request.resource.data.keys().hasAll(['date','time','booked']));
       allow update: if request.auth != null
         || (resource.data.booked == false
             && request.resource.data.booked == true);

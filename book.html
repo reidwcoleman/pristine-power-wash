@@ -1360,7 +1360,14 @@ function dayDiff(date){
   return Math.round((date.getTime()-t.getTime())/86400000);
 }
 
-async function initSlots(){
+// Real-time slot tracking: live cache updated by Firestore listener.
+// availableSlots is the public source of truth — booking writes a doc here
+// with booked:true so every other viewer sees it disappear instantly.
+let slotsInitialized=false;
+const slotsCache=new Map();    // key: doc.id -> {date, time, booked, ...}
+let slotsUnsub=null;
+
+function rebuildDaysData(){
   const now=new Date();
   const today0=new Date(now.getFullYear(),now.getMonth(),now.getDate());
   daysData=[];
@@ -1369,34 +1376,53 @@ async function initSlots(){
     daysData.push({dateStr:fmtDate(cursor),dateObj:new Date(cursor),slots:slotsForDate(cursor).map(s=>({...s,booked:false,id:null}))});
     cursor.setDate(cursor.getDate()+1);
   }
-  try{
-    const fromStr=fmtDate(START_DATE);
-    const [bSnap,sSnap]=await Promise.all([
-      db.collection('bookings').where('slotDate','>=',fromStr).get().catch(()=>null),
-      db.collection('availableSlots').where('date','>=',fromStr).get().catch(()=>null)
-    ]);
-    if(bSnap) bSnap.forEach(doc=>{
-      const b=doc.data(); const ts=b.timeSlot||'';
-      const match=ts.match(/^(\d{4}-\d{2}-\d{2})\s+(.+)$/);
-      if(!match) return;
-      const day=daysData.find(x=>x.dateStr===match[1]);
-      const slot=day?.slots.find(s=>s.time===match[2]);
-      if(slot) slot.booked=true;
-    });
-    if(sSnap) sSnap.forEach(doc=>{
-      const d=doc.data();
-      const day=daysData.find(x=>x.dateStr===d.date);
-      const slot=day?.slots.find(s=>s.time===d.time);
-      if(slot){ slot.id=doc.id; if(d.booked) slot.booked=true; }
-    });
-  }catch(e){ console.warn('Firestore merge failed',e); }
-
   const todayStr=fmtDate(today0);
   const todayDay=daysData.find(d=>d.dateStr===todayStr);
   if(todayDay){
     const nowH=now.getHours()+now.getMinutes()/60;
     todayDay.slots=todayDay.slots.filter(s=>parseTimeToHour(s.time)>nowH+0.25);
   }
+}
+
+function applyFirestoreState(){
+  rebuildDaysData();
+  for(const d of slotsCache.values()){
+    const day=daysData.find(x=>x.dateStr===d.date);
+    const slot=day?.slots.find(s=>s.time===d.time);
+    if(slot){ slot.id=d.id; if(d.booked) slot.booked=true; }
+  }
+}
+
+function onFirestoreChanged(){
+  applyFirestoreState();
+  // If the slot the user had picked was just booked by someone else, clear it & alert.
+  if(selectedSlot){
+    const day=daysData.find(d=>d.dateStr===selectedSlot.date);
+    const slot=day?.slots.find(s=>s.time===selectedSlot.time);
+    if(!slot||slot.booked){
+      selectedSlot=null;
+      try{ showToast('That time was just booked — please pick another.','error'); }catch(e){}
+      try{ updateSummary&&updateSummary(); }catch(e){}
+    }
+  }
+  renderMonth();
+  renderSlotGrid();
+}
+
+function startSnapshotListeners(){
+  if(slotsUnsub) slotsUnsub();
+  const fromStr=fmtDate(START_DATE);
+  slotsUnsub=db.collection('availableSlots').where('date','>=',fromStr).onSnapshot(snap=>{
+    slotsCache.clear();
+    snap.forEach(doc=>slotsCache.set(doc.id,{...doc.data(),id:doc.id}));
+    onFirestoreChanged();
+  },err=>console.warn('availableSlots snapshot failed',err));
+}
+
+async function initSlots(){
+  if(slotsInitialized){ onFirestoreChanged(); return; }
+  slotsInitialized=true;
+
   // Build month list spanning START_DATE to END_DATE
   monthList=[];
   const mc=new Date(START_DATE.getFullYear(),START_DATE.getMonth(),1);
@@ -1405,6 +1431,9 @@ async function initSlots(){
     monthList.push({year:mc.getFullYear(),month:mc.getMonth()});
     mc.setMonth(mc.getMonth()+1);
   }
+
+  // Initial scaffold from schedule (Firestore data merges in shortly)
+  rebuildDaysData();
 
   const firstOpenIdx=daysData.findIndex(d=>d.slots.some(s=>!s.booked));
   if(firstOpenIdx>=0){
@@ -1421,6 +1450,9 @@ async function initSlots(){
   const next=document.getElementById('calNext');
   if(prev&&!prev.__wired){ prev.__wired=true; prev.addEventListener('click',()=>shiftMonth(-1)); }
   if(next&&!next.__wired){ next.__wired=true; next.addEventListener('click',()=>shiftMonth(1)); }
+
+  // Live updates — taken slots disappear instantly for every viewer.
+  startSnapshotListeners();
 }
 
 function monthIdxFor(year,month){
@@ -1628,6 +1660,7 @@ async function submitBooking(){
 
   try{
     if(selectedSlot.id){
+      // Admin pre-created an availableSlots doc — flip it to booked atomically.
       const slotRef=db.collection('availableSlots').doc(selectedSlot.id);
       const bookingRef=db.collection('bookings').doc();
       await db.runTransaction(async tx=>{
@@ -1637,7 +1670,20 @@ async function submitBooking(){
         if(slotDoc.exists) tx.update(slotRef,{booked:true,bookingId:bookingRef.id});
       });
     } else {
-      await db.collection('bookings').add(bookingData);
+      // No pre-created slot — write the booking AND claim a public availableSlots doc
+      // (booked:true) so every other viewer's real-time listener sees the slot disappear.
+      // Check the live cache first so we fail fast if someone else just grabbed it.
+      const taken=Array.from(slotsCache.values()).some(d=>d.date===selectedSlot.date&&d.time===selectedSlot.time&&d.booked);
+      if(taken) throw new Error('SLOT_TAKEN');
+      const bookingRef=db.collection('bookings').doc();
+      await bookingRef.set(bookingData);
+      try{
+        await db.collection('availableSlots').add({
+          date:selectedSlot.date,time:selectedSlot.time,
+          period:selectedSlot.period||'',sort:selectedSlot.sort||0,
+          booked:true,bookingId:bookingRef.id
+        });
+      }catch(slotErr){ console.warn('Public slot lock failed',slotErr); }
     }
   }catch(e){
     if(e.message==='SLOT_TAKEN'){

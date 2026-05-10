@@ -287,78 +287,106 @@ a{color:var(--accent);text-decoration:none}
 .field-error svg{flex-shrink:0}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
-/* ── CALENDAR ────────────────────────────────────────── */
+/* ── CALENDAR (MONTH GRID) ──────────────────────────── */
 .cal-wrap{
   background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius-md);padding:14px;margin-bottom:12px;
+  border-radius:var(--radius-lg);padding:18px 16px 14px;margin-bottom:14px;
   max-width:100%;overflow:hidden;
 }
 .cal-nav-row{
   display:flex;align-items:center;justify-content:space-between;
-  gap:8px;margin-bottom:12px;
+  gap:10px;margin-bottom:14px;padding:0 2px;
 }
-.cal-title-block{flex:1;text-align:center}
+.cal-title-block{flex:1;text-align:center;min-width:0}
 .cal-title-block .cal-month{
-  font-family:'Fraunces',serif;font-weight:800;font-size:16px;
+  font-family:'Fraunces',serif;font-weight:800;font-size:19px;
   color:var(--text);letter-spacing:-.02em;line-height:1.1;
 }
-.cal-title-block .cal-range{
-  font-size:10.5px;font-weight:600;color:var(--text-subtle);
-  letter-spacing:.08em;text-transform:uppercase;margin-top:2px;
-}
 .cal-nav{
-  width:30px;height:30px;border-radius:8px;flex-shrink:0;
+  width:36px;height:36px;border-radius:10px;flex-shrink:0;
   border:1px solid var(--border);background:var(--bg-alt);
   color:var(--text-muted);display:grid;place-items:center;
-  cursor:pointer;transition:all .15s;
+  cursor:pointer;transition:all .18s cubic-bezier(0.16,1,0.3,1);
   -webkit-tap-highlight-color:transparent;
 }
-.cal-nav:hover:not(:disabled){color:var(--accent);border-color:var(--accent)}
-.cal-nav:disabled{opacity:.3;cursor:not-allowed}
-.cal-nav svg{width:15px;height:15px}
-
-/* ── DAY PILLS ───────────────────────────────────────── */
-.week-row{
-  display:grid;grid-template-columns:repeat(7,1fr);
-  gap:4px;width:100%;min-width:0;overflow:hidden;
+.cal-nav:hover:not(:disabled){
+  color:var(--accent);border-color:var(--accent);
+  background:var(--surface-2);transform:translateY(-1px);
 }
-.day-pill{
-  padding:8px 2px 6px;border-radius:8px;
-  background:var(--bg-alt);border:1.5px solid var(--border);
+.cal-nav:active:not(:disabled){transform:translateY(0)}
+.cal-nav:disabled{opacity:.28;cursor:not-allowed}
+.cal-nav svg{width:16px;height:16px}
+
+/* Weekday headers */
+.cal-weekdays{
+  display:grid;grid-template-columns:repeat(7,1fr);
+  gap:6px;margin-bottom:8px;padding:0 2px;
+}
+.cal-weekdays span{
+  text-align:center;font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.18em;
+  color:var(--text-subtle);padding:4px 0;
+}
+
+/* Month grid container — animates between months */
+.month-grid{
+  display:grid;grid-template-columns:repeat(7,1fr);
+  gap:6px;width:100%;min-width:0;
+  transition:opacity .22s cubic-bezier(0.16,1,0.3,1),transform .22s cubic-bezier(0.16,1,0.3,1);
+}
+.month-grid.fading{opacity:0;transform:translateY(-3px)}
+
+/* Day cells */
+.day-cell{
+  position:relative;
+  min-height:54px;padding:6px 2px 5px;border-radius:10px;
+  background:transparent;border:1.5px solid transparent;
   cursor:pointer;
-  display:flex;flex-direction:column;align-items:center;gap:2px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
   font-family:'Inter',sans-serif;color:var(--text);
-  transition:border-color .22s cubic-bezier(0.16,1,0.3,1),background .22s,transform .22s cubic-bezier(0.16,1,0.3,1),box-shadow .22s;
+  transition:border-color .2s cubic-bezier(0.16,1,0.3,1),background .2s,transform .2s cubic-bezier(0.16,1,0.3,1),box-shadow .22s,color .2s;
   -webkit-tap-highlight-color:transparent;min-width:0;
 }
-.day-pill:hover:not(.unavailable):not(.selected){
-  border-color:var(--border-strong);background:var(--surface);
-  transform:translateY(-1px) scale(1.02);
+.day-cell:hover:not(.unavailable):not(.selected):not(.ghost){
+  background:var(--bg-alt);border-color:var(--border-strong);
+  transform:translateY(-1px);
 }
-.day-pill.selected{
+.day-cell.selected{
   background:var(--accent);border-color:var(--accent);
-  box-shadow:0 8px 22px -6px rgba(96,165,250,.62),0 0 0 1px rgba(96,165,250,.3);
-  transform:translateY(-2px);
+  box-shadow:0 10px 26px -10px rgba(96,165,250,.62),0 0 0 1px rgba(96,165,250,.28);
+  transform:translateY(-1px);
 }
-.day-pill.today{border-color:var(--amber-400)}
-.day-pill.today.selected{border-color:var(--accent)}
-.day-pill.unavailable{opacity:.28;cursor:not-allowed}
-.day-pill .day-name{
-  font-size:8.5px;font-weight:700;text-transform:uppercase;
-  letter-spacing:.1em;color:var(--text-subtle);
+.day-cell.today:not(.selected){
+  border-color:var(--amber-400);
+  box-shadow:inset 0 0 0 1px rgba(251,191,36,.28);
 }
-.day-pill.selected .day-name{color:rgba(255,255,255,.75)}
-.day-pill .day-num{
-  font-family:'Fraunces',serif;font-weight:800;font-size:19px;
+.day-cell.unavailable{
+  opacity:.32;cursor:not-allowed;
+  pointer-events:none;
+}
+.day-cell.ghost{
+  cursor:default;pointer-events:none;
+  opacity:0;
+}
+.day-cell .day-num{
+  font-family:'Fraunces',serif;font-weight:700;font-size:17px;
   letter-spacing:-.02em;line-height:1;color:var(--text);
 }
-.day-pill.selected .day-num{color:var(--accent-contrast)}
-.day-pill .day-avail{
-  font-size:8px;font-weight:700;color:var(--accent);
-  letter-spacing:.04em;text-transform:uppercase;
+.day-cell.selected .day-num{color:var(--accent-contrast);font-weight:800}
+.day-cell.today .day-num{color:var(--amber-500)}
+.day-cell.today.selected .day-num{color:var(--accent-contrast)}
+[data-theme="light"] .day-cell.today .day-num{color:#b45309}
+[data-theme="light"] .day-cell.today.selected .day-num{color:var(--accent-contrast)}
+.day-cell.unavailable .day-num{color:var(--text-subtle)}
+
+.day-cell .day-avail{
+  font-size:9px;font-weight:700;letter-spacing:.04em;
+  color:var(--accent);line-height:1;
+  text-transform:none;
 }
-.day-pill.unavailable .day-avail{color:var(--text-subtle)}
-.day-pill.selected .day-avail{color:rgba(255,255,255,.65)}
+.day-cell.unavailable .day-avail{color:var(--text-subtle);font-weight:500}
+.day-cell.selected .day-avail{color:rgba(255,255,255,.85)}
+[data-theme="light"] .day-cell.selected .day-avail{color:rgba(255,255,255,.92)}
 
 /* ── TIME SLOT PILLS ─────────────────────────────────── */
 .slot-section{margin-top:0}
@@ -404,24 +432,24 @@ a{color:var(--accent);text-decoration:none}
 /* ── HOSE ACKNOWLEDGMENT CARD ────────────────────────── */
 .hose-card{
   position:relative;overflow:hidden;
-  display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:flex-start;
-  padding:20px 22px;margin:0 0 16px;
-  background:linear-gradient(135deg,rgba(251,191,36,.12),rgba(251,191,36,.04));
-  border:1px solid rgba(251,191,36,.42);
-  border-left:4px solid var(--amber-400);
+  display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:flex-start;
+  padding:30px 32px;margin:0 0 18px;
+  background:linear-gradient(135deg,rgba(251,191,36,.14),rgba(251,191,36,.04));
+  border:1px solid rgba(251,191,36,.46);
+  border-left:6px solid var(--amber-400);
   border-radius:var(--radius-lg);
-  box-shadow:0 6px 22px -10px rgba(251,191,36,.32);
+  box-shadow:0 10px 28px -12px rgba(251,191,36,.36);
   transition:background .35s cubic-bezier(0.16,1,0.3,1),border-color .35s,box-shadow .35s;
 }
 .hose-card::before{
   content:'';position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(70% 100% at 0% 0%,rgba(251,191,36,.1),transparent 55%);
+  background:radial-gradient(70% 100% at 0% 0%,rgba(251,191,36,.12),transparent 55%);
 }
 .hose-card.acknowledged{
   background:linear-gradient(135deg,rgba(52,211,153,.13),rgba(52,211,153,.04));
   border-color:rgba(52,211,153,.45);
   border-left-color:var(--green-400);
-  box-shadow:0 6px 22px -10px rgba(52,211,153,.32);
+  box-shadow:0 10px 28px -12px rgba(52,211,153,.36);
 }
 .hose-card.acknowledged::before{
   background:radial-gradient(70% 100% at 0% 0%,rgba(52,211,153,.12),transparent 55%);
@@ -435,43 +463,45 @@ a{color:var(--accent);text-decoration:none}
 }
 .hose-ic{
   position:relative;z-index:1;flex-shrink:0;
-  width:44px;height:44px;border-radius:12px;
+  width:60px;height:60px;border-radius:16px;
   background:linear-gradient(135deg,var(--amber-400),var(--amber-500));color:#3a2a0a;
   display:grid;place-items:center;
-  box-shadow:0 6px 16px -6px rgba(251,191,36,.5),inset 0 1px 0 rgba(255,255,255,.4);
+  box-shadow:0 10px 22px -8px rgba(251,191,36,.55),inset 0 1px 0 rgba(255,255,255,.4);
   transition:background .35s cubic-bezier(0.16,1,0.3,1),box-shadow .35s;
 }
+.hose-ic svg{width:30px;height:30px}
 .hose-card.acknowledged .hose-ic{
   background:linear-gradient(135deg,#10b981,#34d399);color:#04261b;
-  box-shadow:0 6px 16px -6px rgba(52,211,153,.55),inset 0 1px 0 rgba(255,255,255,.35);
+  box-shadow:0 10px 22px -8px rgba(52,211,153,.6),inset 0 1px 0 rgba(255,255,255,.35);
 }
 .hose-body{position:relative;z-index:1;min-width:0}
 .hose-kicker{
-  font-size:10px;font-weight:800;letter-spacing:.24em;text-transform:uppercase;
-  color:var(--amber-500);margin-bottom:3px;
+  font-size:11px;font-weight:800;letter-spacing:.26em;text-transform:uppercase;
+  color:var(--amber-500);margin-bottom:6px;
   transition:color .35s;
 }
 .hose-card.acknowledged .hose-kicker{color:var(--green-400)}
 [data-theme="light"] .hose-kicker{color:#b45309}
 [data-theme="light"] .hose-card.acknowledged .hose-kicker{color:#047857}
 .hose-title{
-  font-family:'Fraunces',serif;font-weight:800;font-size:18px;
-  letter-spacing:-.02em;color:var(--text);margin-bottom:10px;line-height:1.2;
+  font-family:'Fraunces',serif;font-weight:800;font-size:24px;
+  letter-spacing:-.022em;color:var(--text);margin-bottom:16px;line-height:1.18;
 }
-.hose-list{list-style:none;display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+.hose-list{list-style:none;display:flex;flex-direction:column;gap:11px;margin-bottom:20px}
 .hose-list li{
-  display:flex;align-items:flex-start;gap:10px;
-  font-size:13.5px;color:var(--text-muted);line-height:1.5;
+  display:flex;align-items:flex-start;gap:13px;
+  font-size:15.5px;color:var(--text-muted);line-height:1.5;
 }
 .hose-list li strong{color:var(--text);font-weight:600}
 .hose-list .hose-check{
-  flex-shrink:0;margin-top:2px;
-  width:18px;height:18px;min-width:18px;border-radius:50%;
-  background:rgba(251,191,36,.2);color:var(--amber-500);
-  border:1px solid rgba(251,191,36,.4);
+  flex-shrink:0;margin-top:1px;
+  width:24px;height:24px;min-width:24px;border-radius:50%;
+  background:rgba(251,191,36,.22);color:var(--amber-500);
+  border:1px solid rgba(251,191,36,.45);
   display:grid;place-items:center;
   transition:background .35s,color .35s,border-color .35s;
 }
+.hose-list .hose-check svg{width:13px;height:13px}
 .hose-card.acknowledged .hose-list .hose-check{
   background:rgba(52,211,153,.22);color:var(--green-400);border-color:rgba(52,211,153,.46);
 }
@@ -480,9 +510,9 @@ a{color:var(--accent);text-decoration:none}
 /* Styled checkbox */
 .hose-confirm{
   position:relative;
-  display:flex;align-items:flex-start;gap:11px;
-  padding:11px 14px;background:var(--surface);
-  border:1.5px solid var(--border-strong);border-radius:10px;
+  display:flex;align-items:center;gap:14px;
+  padding:16px 18px;background:var(--surface);
+  border:1.5px solid var(--border-strong);border-radius:12px;
   cursor:pointer;user-select:none;
   transition:border-color .25s,background .25s,box-shadow .25s;
 }
@@ -492,14 +522,14 @@ a{color:var(--accent);text-decoration:none}
 }
 .hose-confirm input{position:absolute;opacity:0;pointer-events:none}
 .hose-box{
-  flex-shrink:0;margin-top:1px;
-  width:20px;height:20px;border-radius:6px;
-  background:var(--bg-alt);border:1.5px solid var(--border-strong);
+  flex-shrink:0;
+  width:26px;height:26px;border-radius:8px;
+  background:var(--bg-alt);border:2px solid var(--border-strong);
   display:grid;place-items:center;
   transition:all .22s cubic-bezier(0.16,1,0.3,1);
 }
 .hose-box svg{
-  width:13px;height:13px;color:#fff;
+  width:16px;height:16px;color:#fff;
   opacity:0;transform:scale(.5);
   transition:opacity .22s cubic-bezier(0.16,1,0.3,1),transform .22s cubic-bezier(0.16,1,0.3,1);
 }
@@ -509,13 +539,42 @@ a{color:var(--accent);text-decoration:none}
 .hose-confirm input:checked + .hose-box svg{opacity:1;transform:scale(1)}
 .hose-confirm input:focus-visible + .hose-box{box-shadow:0 0 0 3px var(--ring)}
 .hose-confirm-txt{
-  font-size:13.5px;font-weight:600;color:var(--text);line-height:1.45;
+  font-size:15.5px;font-weight:600;color:var(--text);line-height:1.4;
+  display:flex;flex-direction:column;gap:5px;min-width:0;
 }
-.hose-confirm-txt small{display:block;font-size:11.5px;font-weight:500;color:var(--text-subtle);margin-top:1px}
+.hose-required-pill{
+  display:inline-flex;align-items:center;gap:5px;align-self:flex-start;
+  font-size:10.5px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;
+  color:#7a3d00;
+  background:linear-gradient(135deg,var(--amber-400),var(--amber-500));
+  padding:4px 10px 4px 8px;border-radius:999px;
+  box-shadow:0 2px 8px -2px rgba(251,191,36,.55),inset 0 1px 0 rgba(255,255,255,.35);
+  transition:background .35s,color .35s,box-shadow .35s;
+}
+.hose-required-pill::before{
+  content:'';width:6px;height:6px;border-radius:50%;
+  background:#7a3d00;flex-shrink:0;
+}
+.hose-card.acknowledged .hose-required-pill{
+  background:linear-gradient(135deg,#10b981,#34d399);
+  color:#04261b;
+  box-shadow:0 2px 8px -2px rgba(52,211,153,.55),inset 0 1px 0 rgba(255,255,255,.3);
+}
+.hose-card.acknowledged .hose-required-pill::before{background:#04261b}
+.hose-card.acknowledged .hose-required-pill .hose-required-pill-txt::after{content:' confirmed'}
+[data-theme="light"] .hose-required-pill{color:#5a2c00}
+[data-theme="light"] .hose-required-pill::before{background:#5a2c00}
 @media(max-width:640px){
-  .hose-card{grid-template-columns:1fr;gap:12px;padding:18px 18px}
-  .hose-ic{width:38px;height:38px;border-radius:11px}
-  .hose-title{font-size:16.5px}
+  .hose-card{grid-template-columns:1fr;gap:14px;padding:22px 20px;border-left-width:5px}
+  .hose-ic{width:50px;height:50px;border-radius:14px}
+  .hose-ic svg{width:26px;height:26px}
+  .hose-title{font-size:20px;margin-bottom:12px}
+  .hose-list{gap:9px;margin-bottom:16px}
+  .hose-list li{font-size:14.5px;gap:11px}
+  .hose-list .hose-check{width:22px;height:22px;min-width:22px}
+  .hose-confirm{padding:13px 14px;gap:12px}
+  .hose-confirm-txt{font-size:14.5px}
+  .hose-box{width:24px;height:24px}
 }
 
 /* ── MINI SUMMARY (mobile) ───────────────────────────── */
@@ -744,14 +803,16 @@ a{color:var(--accent);text-decoration:none}
   .field{margin-bottom:8px}
   .field input,.field textarea{height:44px;font-size:15px;padding:0 11px}
   .field textarea{height:auto;padding:10px 11px}
-  .cal-wrap{padding:12px}
-  .cal-nav-row{margin-bottom:10px}
-  .cal-title-block .cal-month{font-size:14px}
-  .week-row{gap:3px}
-  .day-pill{padding:7px 1px 5px;border-radius:7px}
-  .day-pill .day-num{font-size:16px}
-  .day-pill .day-name{font-size:8px}
-  .day-pill .day-avail{display:none}
+  .cal-wrap{padding:14px 12px 12px}
+  .cal-nav-row{margin-bottom:12px}
+  .cal-title-block .cal-month{font-size:16.5px}
+  .cal-nav{width:34px;height:34px}
+  .cal-weekdays{gap:4px;margin-bottom:6px}
+  .cal-weekdays span{font-size:9.5px;letter-spacing:.16em}
+  .month-grid{gap:4px}
+  .day-cell{min-height:48px;border-radius:9px;padding:5px 1px 4px;gap:2px}
+  .day-cell .day-num{font-size:15.5px}
+  .day-cell .day-avail{font-size:8.5px}
   .field-row{grid-template-columns:1fr}
   .time-pill{padding:9px 6px}
   .tp-time{font-size:13.5px}
@@ -910,18 +971,20 @@ a{color:var(--accent);text-decoration:none}
           <div class="section-lbl">Pick a Date &amp; Time</div>
           <div class="cal-wrap">
             <div class="cal-nav-row">
-              <button type="button" class="cal-nav" id="calPrev" aria-label="Previous week">
+              <button type="button" class="cal-nav" id="calPrev" aria-label="Previous month">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
               </button>
               <div class="cal-title-block">
-                <div class="cal-month" id="calMonth">June 2026</div>
-                <div class="cal-range" id="calRange">Jun 11 – Jun 17</div>
+                <div class="cal-month" id="calMonth">May 2026</div>
               </div>
-              <button type="button" class="cal-nav" id="calNext" aria-label="Next week">
+              <button type="button" class="cal-nav" id="calNext" aria-label="Next month">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
               </button>
             </div>
-            <div class="week-row" id="weekRow"></div>
+            <div class="cal-weekdays" aria-hidden="true">
+              <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+            </div>
+            <div class="month-grid" id="monthGrid"></div>
           </div>
           <div class="slot-section" id="slotSection">
             <div class="slot-day-label" id="slotDayLabel" style="display:none"></div>
@@ -952,7 +1015,7 @@ a{color:var(--accent);text-decoration:none}
         <!-- HOSE REQUIREMENT — must acknowledge before booking -->
         <div class="hose-card" id="hoseCard">
           <div class="hose-ic" aria-hidden="true">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 2v6"/>
               <path d="M12 8c-3 2-5 5-5 9a5 5 0 0 0 10 0c0-4-2-7-5-9z"/>
             </svg>
@@ -962,15 +1025,15 @@ a{color:var(--accent);text-decoration:none}
             <div class="hose-title">You'll need a garden hose set up</div>
             <ul class="hose-list">
               <li>
-                <span class="hose-check" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></span>
+                <span class="hose-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></span>
                 <span><strong>Working garden hose</strong> connected to your outdoor spigot, water turned on.</span>
               </li>
               <li>
-                <span class="hose-check" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></span>
+                <span class="hose-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></span>
                 <span><strong>Hose positioned within reach</strong> of the area being cleaned — it has to reach the spot we're washing.</span>
               </li>
               <li>
-                <span class="hose-check" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></span>
+                <span class="hose-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></span>
                 <span>We bring everything else — pressure washer, soap, nozzles. We hook into your hose for water.</span>
               </li>
             </ul>
@@ -980,8 +1043,8 @@ a{color:var(--accent);text-decoration:none}
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg>
               </span>
               <span class="hose-confirm-txt">
+                <span class="hose-required-pill"><span class="hose-required-pill-txt">Required</span></span>
                 I'll have a garden hose hooked up and within reach.
-                <small>Required to confirm your booking</small>
               </span>
             </label>
           </div>
@@ -1279,7 +1342,8 @@ const MON_NAMES_LONG=['January','February','March','April','May','June','July','
 let daysData=[];
 let selectedDateStr=null;
 let selectedSlot=null;
-let weekStartIdx=0;
+let currentMonthIdx=0;     // 0-based month offset from START_DATE month
+let monthList=[];          // [{year, month}] of bookable months
 
 function fmtDate(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 function parseTimeToHour(t){
@@ -1332,65 +1396,129 @@ async function initSlots(){
     const nowH=now.getHours()+now.getMinutes()/60;
     todayDay.slots=todayDay.slots.filter(s=>parseTimeToHour(s.time)>nowH+0.25);
   }
+  // Build month list spanning START_DATE to END_DATE
+  monthList=[];
+  const mc=new Date(START_DATE.getFullYear(),START_DATE.getMonth(),1);
+  const mEnd=new Date(END_DATE.getFullYear(),END_DATE.getMonth(),1);
+  while(mc.getTime()<=mEnd.getTime()){
+    monthList.push({year:mc.getFullYear(),month:mc.getMonth()});
+    mc.setMonth(mc.getMonth()+1);
+  }
+
   const firstOpenIdx=daysData.findIndex(d=>d.slots.some(s=>!s.booked));
-  weekStartIdx=firstOpenIdx>=0?Math.floor(firstOpenIdx/7)*7:0;
-  renderWeek();
+  if(firstOpenIdx>=0){
+    const fd=daysData[firstOpenIdx].dateObj;
+    currentMonthIdx=monthIdxFor(fd.getFullYear(),fd.getMonth());
+  } else {
+    currentMonthIdx=0;
+  }
+  renderMonth();
   if(firstOpenIdx>=0) selectDay(daysData[firstOpenIdx].dateStr);
   else renderSlotGrid();
 
   const prev=document.getElementById('calPrev');
   const next=document.getElementById('calNext');
-  if(prev&&!prev.__wired){ prev.__wired=true; prev.addEventListener('click',()=>shiftWeek(-1)); }
-  if(next&&!next.__wired){ next.__wired=true; next.addEventListener('click',()=>shiftWeek(1)); }
+  if(prev&&!prev.__wired){ prev.__wired=true; prev.addEventListener('click',()=>shiftMonth(-1)); }
+  if(next&&!next.__wired){ next.__wired=true; next.addEventListener('click',()=>shiftMonth(1)); }
 }
 
-function shiftWeek(dir){
-  const n=weekStartIdx+dir*7;
-  if(n<0||n>=daysData.length) return;
-  weekStartIdx=n; renderWeek();
+function monthIdxFor(year,month){
+  return monthList.findIndex(m=>m.year===year&&m.month===month);
 }
 
-function renderWeek(){
-  const row=document.getElementById('weekRow');
-  row.innerHTML='';
-  const start=weekStartIdx;
-  const end=Math.min(start+7,daysData.length);
-  for(let i=start;i<end;i++){
-    const day=daysData[i];
-    const open=day.slots.filter(s=>!s.booked).length;
-    const diff=dayDiff(day.dateObj);
-    const isToday=diff===0;
-    const isSelected=selectedDateStr===day.dateStr;
-    const pill=document.createElement('button');
-    pill.type='button';
-    const dayName=isToday?'Today':DAY_NAMES_SHORT[day.dateObj.getDay()];
-    pill.className='day-pill'+(isToday?' today':'')+(isSelected?' selected':'')+(open===0?' unavailable':'');
-    pill.innerHTML=`<div class="day-name">${dayName}</div><div class="day-num">${day.dateObj.getDate()}</div><div class="day-avail">${open===0?'—':open+' open'}</div>`;
-    if(open>0) pill.addEventListener('click',()=>selectDay(day.dateStr));
-    row.appendChild(pill);
+function shiftMonth(dir){
+  const n=currentMonthIdx+dir;
+  if(n<0||n>=monthList.length) return;
+  currentMonthIdx=n;
+  // Subtle fade transition between months (respects prefers-reduced-motion via CSS)
+  const grid=document.getElementById('monthGrid');
+  if(grid){
+    grid.classList.add('fading');
+    setTimeout(()=>{ renderMonth(); grid.classList.remove('fading'); },140);
+  } else {
+    renderMonth();
   }
-  const padCount=7-(end-start);
-  for(let i=0;i<padCount;i++){
+}
+
+function renderMonth(){
+  const grid=document.getElementById('monthGrid');
+  if(!grid) return;
+  grid.innerHTML='';
+
+  const m=monthList[currentMonthIdx];
+  if(!m){ return; }
+  const firstOfMonth=new Date(m.year,m.month,1);
+  const daysInMonth=new Date(m.year,m.month+1,0).getDate();
+  const leadingBlanks=firstOfMonth.getDay(); // 0 (Sun) .. 6 (Sat)
+
+  // Reference today
+  const today0=new Date(); today0.setHours(0,0,0,0);
+
+  // Leading ghost cells (days before the 1st)
+  for(let i=0;i<leadingBlanks;i++){
     const g=document.createElement('div');
-    g.className='day-pill unavailable'; g.style.visibility='hidden';
-    row.appendChild(g);
+    g.className='day-cell ghost';
+    g.setAttribute('aria-hidden','true');
+    grid.appendChild(g);
   }
-  const first=daysData[start].dateObj, last=daysData[end-1].dateObj;
-  const mEl=document.getElementById('calMonth'), rEl=document.getElementById('calRange');
-  mEl.textContent=first.getMonth()===last.getMonth()
-    ? MON_NAMES_LONG[first.getMonth()]+' '+first.getFullYear()
-    : MON_NAMES[first.getMonth()]+' → '+MON_NAMES[last.getMonth()]+' '+last.getFullYear();
-  rEl.textContent=MON_NAMES[first.getMonth()]+' '+first.getDate()+' – '+MON_NAMES[last.getMonth()]+' '+last.getDate();
-  document.getElementById('calPrev').disabled=start===0;
-  document.getElementById('calNext').disabled=end>=daysData.length;
+
+  // In-month day cells
+  for(let d=1;d<=daysInMonth;d++){
+    const dateObj=new Date(m.year,m.month,d);
+    const dateStr=fmtDate(dateObj);
+    const dayData=daysData.find(x=>x.dateStr===dateStr);
+    const open=dayData?dayData.slots.filter(s=>!s.booked).length:0;
+
+    const beforeStart=dateObj.getTime()<START_DATE.getTime();
+    const afterEnd=dateObj.getTime()>END_DATE.getTime();
+    const isPast=dateObj.getTime()<today0.getTime();
+    const isToday=dateObj.getTime()===today0.getTime();
+    const isSelected=selectedDateStr===dateStr;
+    const isOutOfRange=beforeStart||afterEnd;
+    const unavailable=isOutOfRange||isPast||open===0;
+
+    const cell=document.createElement('button');
+    cell.type='button';
+    cell.className='day-cell'
+      +(isToday?' today':'')
+      +(isSelected?' selected':'')
+      +(unavailable?' unavailable':'');
+    cell.setAttribute('aria-label',
+      MON_NAMES_LONG[m.month]+' '+d+', '+m.year+
+      (unavailable?' (unavailable)':' ('+open+' open)')
+    );
+
+    const availTxt=unavailable?'—':open+' open';
+    cell.innerHTML=
+      `<div class="day-num">${d}</div>`
+      +`<div class="day-avail">${availTxt}</div>`;
+
+    if(!unavailable) cell.addEventListener('click',()=>selectDay(dateStr));
+    else cell.disabled=true;
+    grid.appendChild(cell);
+  }
+
+  // Title
+  const mEl=document.getElementById('calMonth');
+  if(mEl) mEl.textContent=MON_NAMES_LONG[m.month]+' '+m.year;
+
+  // Disable prev/next at boundaries
+  const prev=document.getElementById('calPrev');
+  const next=document.getElementById('calNext');
+  if(prev) prev.disabled=currentMonthIdx===0;
+  if(next) next.disabled=currentMonthIdx>=monthList.length-1;
 }
 
 function selectDay(dateStr){
   selectedDateStr=dateStr;
   if(selectedSlot&&selectedSlot.date!==dateStr) selectedSlot=null;
-  const idx=daysData.findIndex(d=>d.dateStr===dateStr);
-  if(idx>=0&&(idx<weekStartIdx||idx>=weekStartIdx+7)) weekStartIdx=Math.floor(idx/7)*7;
-  renderWeek(); renderSlotGrid(); updateSummary();
+  // Snap calendar to the month containing this date
+  const day=daysData.find(d=>d.dateStr===dateStr);
+  if(day){
+    const idx=monthIdxFor(day.dateObj.getFullYear(),day.dateObj.getMonth());
+    if(idx>=0&&idx!==currentMonthIdx) currentMonthIdx=idx;
+  }
+  renderMonth(); renderSlotGrid(); updateSummary();
 }
 
 function renderSlotGrid(){

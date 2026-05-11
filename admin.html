@@ -262,6 +262,15 @@ a{color:var(--accent);text-decoration:none}
              box-shadow .22s cubic-bezier(.16,1,.3,1),
              border-color .22s cubic-bezier(.16,1,.3,1);
   display:flex;flex-direction:column;
+  animation:cardIn .55s cubic-bezier(.16,1,.3,1) both;
+}
+.stat-card:nth-child(1){animation-delay:.02s}
+.stat-card:nth-child(2){animation-delay:.06s}
+.stat-card:nth-child(3){animation-delay:.10s}
+.stat-card:nth-child(4){animation-delay:.14s}
+@keyframes cardIn{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
 }
 .stat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:var(--border-strong)}
 .stat-card::before{
@@ -425,7 +434,7 @@ a{color:var(--accent);text-decoration:none}
 }
 .day-cell.unavailable .cell-num{color:var(--text-subtle)}
 .day-cell .cell-status{
-  font-size:10px;font-weight:600;letter-spacing:.02em;
+  font-size:10.5px;font-weight:700;letter-spacing:0;
   color:var(--accent);line-height:1.2;margin-top:auto;
 }
 .day-cell .cell-status.none{color:var(--text-subtle)}
@@ -435,7 +444,7 @@ a{color:var(--accent);text-decoration:none}
 /* Availability pip indicator bar */
 .day-cell .cell-pips{
   display:flex;gap:2px;justify-content:center;align-items:center;
-  margin-top:auto;height:4px;width:100%;max-width:42px;
+  margin-top:3px;height:4px;width:100%;max-width:42px;
 }
 .day-cell .cell-pip{
   flex:1;height:3px;border-radius:2px;background:var(--border);
@@ -455,7 +464,17 @@ a{color:var(--accent);text-decoration:none}
 }
 .slot-manager.show{display:block}
 .slot-manager-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
-.slot-manager-header h4{font-family:'Fraunces',serif;font-weight:800;font-size:18px;color:var(--text);letter-spacing:-.02em}
+.slot-manager-header h4{
+  font-family:'Fraunces',serif;font-weight:800;font-size:20px;
+  color:var(--text);letter-spacing:-.02em;line-height:1.2;
+  display:flex;align-items:center;gap:10px;
+}
+.slot-manager-header h4::before{
+  content:'';width:8px;height:8px;border-radius:50%;
+  background:linear-gradient(135deg,var(--brand-400),var(--ice-500));
+  box-shadow:0 0 0 4px rgba(96,165,250,.16);
+  flex-shrink:0;
+}
 .slot-manager-actions{display:flex;gap:8px}
 .slot-manager-actions .btn-sm{font-size:12px;padding:7px 14px;border-radius:7px}
 .btn-add-all{background:linear-gradient(135deg,var(--brand-400),var(--ice-400));color:#051226}
@@ -496,13 +515,26 @@ a{color:var(--accent);text-decoration:none}
 [data-theme="light"] .slot-row .slot-status.booked{color:#b45309}
 
 /* Toggle */
-.toggle{position:relative;width:44px;height:24px;flex-shrink:0}
+.toggle{position:relative;width:46px;height:26px;flex-shrink:0}
 .toggle input{opacity:0;width:0;height:0}
-.toggle .slider{position:absolute;cursor:pointer;inset:0;background:var(--border-strong);border-radius:24px;transition:.25s}
-.toggle .slider::before{content:'';position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.25s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
-.toggle input:checked+.slider{background:linear-gradient(135deg,var(--brand-500),var(--ice-500))}
+.toggle .slider{
+  position:absolute;cursor:pointer;inset:0;
+  background:var(--border-strong);border-radius:26px;
+  transition:background .25s cubic-bezier(.16,1,.3,1);
+}
+.toggle .slider::before{
+  content:'';position:absolute;height:20px;width:20px;left:3px;bottom:3px;
+  background:#fff;border-radius:50%;
+  transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .25s;
+  box-shadow:0 2px 5px rgba(0,0,0,.22),0 0 0 1px rgba(0,0,0,.04);
+}
+.toggle input:checked+.slider{
+  background:linear-gradient(135deg,var(--brand-500),var(--ice-500));
+  box-shadow:0 0 0 1px rgba(96,165,250,.3),inset 0 1px 0 rgba(255,255,255,.18);
+}
 .toggle input:checked+.slider::before{transform:translateX(20px)}
 .toggle input:disabled+.slider{opacity:.5;cursor:not-allowed}
+.toggle input:focus-visible+.slider{box-shadow:0 0 0 3px var(--ring)}
 
 /* BOOKINGS */
 .booking-filters{
@@ -535,7 +567,7 @@ a{color:var(--accent);text-decoration:none}
 .bookings-list{display:flex;flex-direction:column;gap:10px}
 .booking-item{
   display:grid;grid-template-columns:1fr auto;gap:20px;align-items:flex-start;
-  padding:20px 22px;background:var(--surface);border-radius:14px;
+  padding:20px 22px 20px 26px;background:var(--surface);border-radius:14px;
   border:1px solid var(--border);
   transition:border-color .22s cubic-bezier(.16,1,.3,1),
              box-shadow .22s cubic-bezier(.16,1,.3,1),
@@ -769,7 +801,7 @@ a{color:var(--accent);text-decoration:none}
           Upcoming Bookings
         </h3>
         <div class="bookings-list" id="upcomingList">
-          <div class="empty-state"><div class="spinner" style="margin:0 auto 12px;display:block"></div><p>Loading…</p></div>
+          <div class="loading-block"><div class="spinner"></div><span>Loading…</span></div>
         </div>
       </div>
     </div>
@@ -814,13 +846,13 @@ a{color:var(--accent);text-decoration:none}
           Bookings
         </h3>
         <div class="booking-filters">
-          <button class="filter-btn active" data-filter="all" onclick="filterBookings('all')">All</button>
-          <button class="filter-btn" data-filter="pending" onclick="filterBookings('pending')">Pending</button>
-          <button class="filter-btn" data-filter="confirmed" onclick="filterBookings('confirmed')">Confirmed</button>
-          <button class="filter-btn" data-filter="completed" onclick="filterBookings('completed')">Completed</button>
+          <button class="filter-btn active" data-filter="all" onclick="filterBookings('all')">All <span class="count">0</span></button>
+          <button class="filter-btn" data-filter="pending" onclick="filterBookings('pending')">Pending <span class="count">0</span></button>
+          <button class="filter-btn" data-filter="confirmed" onclick="filterBookings('confirmed')">Confirmed <span class="count">0</span></button>
+          <button class="filter-btn" data-filter="completed" onclick="filterBookings('completed')">Completed <span class="count">0</span></button>
         </div>
         <div class="bookings-list" id="bookingsList">
-          <div class="empty-state"><div class="spinner" style="margin:0 auto 12px;display:block"></div><p>Loading bookings…</p></div>
+          <div class="loading-block"><div class="spinner"></div><span>Loading bookings…</span></div>
         </div>
       </div>
     </div>
@@ -957,13 +989,11 @@ function renderStats() {
 
   const fmt = n => '$' + n.toLocaleString('en-US');
 
-  // Trends — last 7 days vs prior 7 days, computed from real timestamps only
+  // Trends — last 7 days, computed from real booking timestamps only (no fake data)
   const now = Date.now();
   const WEEK = 7 * 86400000;
   const inLast7 = b => { const t = bookingTimestampMs(b); return t && t >= now - WEEK; };
-  const inPrior7 = b => { const t = bookingTimestampMs(b); return t && t < now - WEEK && t >= now - 2*WEEK; };
   const last7Revenue = sum(allBookings.filter(b => (b.status === 'completed' || b.status === 'confirmed') && inLast7(b)));
-  const prior7Revenue = sum(allBookings.filter(b => (b.status === 'completed' || b.status === 'confirmed') && inPrior7(b)));
   const last7Count = allBookings.filter(inLast7).length;
 
   document.getElementById('statRevenue').textContent = fmt(revenueAll);
@@ -995,7 +1025,7 @@ function renderStats() {
 function renderStatsChart() {
   const svg = document.getElementById('statsChart');
   if (!svg) return;
-  const W = 720, H = 280, PAD_L = 56, PAD_R = 36, PAD_T = 18, PAD_B = 44;
+  const W = 720, H = 280, PAD_L = 60, PAD_R = 26, PAD_T = 20, PAD_B = 46;
   const innerW = W - PAD_L - PAD_R;
   const innerH = H - PAD_T - PAD_B;
 
@@ -1015,19 +1045,24 @@ function renderStatsChart() {
 
   const hasData = points.length > 0;
 
+  const gradDefs = `
+    <defs>
+      <linearGradient id="lineGrad" x1="1" y1="0" x2="0" y2="0">
+        <stop offset="0%" stop-color="#60a5fa"/>
+        <stop offset="100%" stop-color="#0ea5e9"/>
+      </linearGradient>
+      <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#60a5fa" stop-opacity="0.38"/>
+        <stop offset="100%" stop-color="#60a5fa" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+  `;
+
   if (!hasData) {
     svg.innerHTML = `
-      <defs>
-        <linearGradient id="lineGrad" x1="1" y1="0" x2="0" y2="0">
-          <stop offset="0%" stop-color="#60a5fa"/>
-          <stop offset="100%" stop-color="#0ea5e9"/>
-        </linearGradient>
-        <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#60a5fa" stop-opacity="0.35"/>
-          <stop offset="100%" stop-color="#60a5fa" stop-opacity="0"/>
-        </linearGradient>
-      </defs>
-      <text class="chart-empty" x="${W/2}" y="${H/2}" text-anchor="middle">No bookings yet — your revenue line will start filling in once your first booking comes in.</text>
+      ${gradDefs}
+      <text class="chart-empty" x="${W/2}" y="${H/2 - 8}" text-anchor="middle">No revenue yet</text>
+      <text class="chart-empty-sub" x="${W/2}" y="${H/2 + 14}" text-anchor="middle">Your cumulative line will start tracking once your first confirmed booking comes in.</text>
     `;
     return;
   }
@@ -1040,16 +1075,25 @@ function renderStatsChart() {
   const xForIdx = i => N === 1 ? (PAD_L + innerW / 2) : (xRight - ((i) / (N - 1)) * innerW);
 
   const maxRev = Math.max(1, points[points.length - 1].revenue);
+  // Round maxRev up to a "nice" number for clean Y-axis ticks
+  function niceCeil(v) {
+    if (v <= 100) return Math.ceil(v / 25) * 25;
+    if (v <= 1000) return Math.ceil(v / 100) * 100;
+    if (v <= 5000) return Math.ceil(v / 500) * 500;
+    return Math.ceil(v / 1000) * 1000;
+  }
+  const niceMax = niceCeil(maxRev);
   const yTicks = 4;
-  const yForRev = v => PAD_T + innerH - (v / maxRev) * innerH;
+  const yForRev = v => PAD_T + innerH - (v / niceMax) * innerH;
 
   // Y-axis gridlines + $ labels on the left
   let gridHTML = '';
   for (let i = 0; i <= yTicks; i++) {
     const y = PAD_T + (innerH * i / yTicks);
-    const revVal = Math.round(maxRev * (1 - i / yTicks));
-    gridHTML += `<line class="gridline" x1="${PAD_L}" y1="${y}" x2="${W - PAD_R}" y2="${y}"/>`;
-    gridHTML += `<text class="axis-label" x="${PAD_L - 10}" y="${y + 3}" text-anchor="end">$${revVal.toLocaleString('en-US')}</text>`;
+    const revVal = Math.round(niceMax * (1 - i / yTicks));
+    const isBase = i === yTicks;
+    gridHTML += `<line class="${isBase ? 'gridline-base' : 'gridline'}" x1="${PAD_L}" y1="${y}" x2="${W - PAD_R}" y2="${y}"/>`;
+    gridHTML += `<text class="axis-label-y" x="${PAD_L - 12}" y="${y + 3.5}" text-anchor="end">$${revVal.toLocaleString('en-US')}</text>`;
   }
 
   // X-axis tick labels (booking #)
@@ -1058,47 +1102,62 @@ function renderStatsChart() {
   for (let i = 0; i < N; i++) {
     if (i === 0 || i === N - 1 || i % xLabelStep === 0) {
       const x = xForIdx(i);
-      xAxisHTML += `<text class="axis-label" x="${x}" y="${H - PAD_B + 16}" text-anchor="middle">#${points[i].idx}</text>`;
+      xAxisHTML += `<text class="axis-label" x="${x}" y="${H - PAD_B + 18}" text-anchor="middle">#${points[i].idx}</text>`;
     }
   }
 
   // Axis titles
-  const yTitle = `<text class="axis-title" transform="rotate(-90)" x="${-H/2}" y="14" text-anchor="middle">Revenue ($)</text>`;
-  const xTitle = `<text class="axis-title" x="${PAD_L + innerW/2}" y="${H - 6}" text-anchor="middle">Bookings (← newest · oldest →)</text>`;
+  const yTitle = `<text class="axis-title" transform="rotate(-90)" x="${-H/2}" y="14" text-anchor="middle">Revenue</text>`;
+  const xTitle = `<text class="axis-title" x="${PAD_L + innerW/2}" y="${H - 4}" text-anchor="middle">← newest · oldest →</text>`;
 
-  // Build line path (single point handled gracefully)
-  let pathD;
-  let areaD;
+  // Build smooth path (cubic Bezier through points for refined curve)
+  // Use a Catmull-Rom-to-Bezier conversion with low tension so the curve
+  // stays visually faithful to the points and doesn't overshoot.
+  function smoothPath(pts) {
+    if (pts.length === 0) return '';
+    if (pts.length === 1) return `M${pts[0].x},${pts[0].y}`;
+    if (pts.length === 2) return `M${pts[0].x},${pts[0].y} L${pts[1].x},${pts[1].y}`;
+    let d = `M${pts[0].x},${pts[0].y}`;
+    const tension = 0.18; // low so curve stays close to actual cumulative data
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[i - 1] || pts[i];
+      const p1 = pts[i];
+      const p2 = pts[i + 1];
+      const p3 = pts[i + 2] || p2;
+      const c1x = p1.x + (p2.x - p0.x) * tension;
+      const c1y = p1.y + (p2.y - p0.y) * tension;
+      const c2x = p2.x - (p3.x - p1.x) * tension;
+      const c2y = p2.y - (p3.y - p1.y) * tension;
+      d += ` C${c1x.toFixed(2)},${c1y.toFixed(2)} ${c2x.toFixed(2)},${c2y.toFixed(2)} ${p2.x.toFixed(2)},${p2.y.toFixed(2)}`;
+    }
+    return d;
+  }
+
+  const xyPoints = points.map((p, i) => ({ x: xForIdx(i), y: yForRev(p.revenue) }));
+  let pathD, areaD;
   if (N === 1) {
     const x = xForIdx(0), y = yForRev(points[0].revenue);
-    pathD = `M${x},${y} L${x},${y}`;
-    areaD = `M${x},${PAD_T + innerH} L${x},${y} L${x},${PAD_T + innerH} Z`;
+    pathD = `M${x},${y}`;
+    areaD = `M${PAD_L},${PAD_T + innerH} L${x},${y} L${xRight},${PAD_T + innerH} Z`;
   } else {
-    const segs = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${xForIdx(i)},${yForRev(p.revenue)}`);
-    pathD = segs.join(' ');
-    // Closed area underneath the line for a subtle filled glow
-    const firstX = xForIdx(0), lastX = xForIdx(N - 1);
+    pathD = smoothPath(xyPoints);
+    const firstX = xyPoints[0].x, lastX = xyPoints[xyPoints.length - 1].x;
     areaD = `${pathD} L${lastX},${PAD_T + innerH} L${firstX},${PAD_T + innerH} Z`;
   }
 
-  // Dots at each booking point
+  // Dots — filled core + outer ring for a refined "ringed" look
   let dotsHTML = '';
   points.forEach((p, i) => {
     const x = xForIdx(i), y = yForRev(p.revenue);
-    dotsHTML += `<circle class="line-dot" cx="${x}" cy="${y}" r="4"><title>Booking #${p.idx} · cumulative $${p.revenue.toLocaleString('en-US')}</title></circle>`;
+    const isLast = i === N - 1;
+    // Outer halo (subtle ring)
+    dotsHTML += `<circle class="line-dot-outer" cx="${x}" cy="${y}" r="${isLast ? 7 : 5.5}" fill="${isLast ? 'rgba(56,189,248,.18)' : 'rgba(96,165,250,.14)'}"/>`;
+    // Inner filled dot
+    dotsHTML += `<circle class="line-dot${isLast ? ' last' : ''}" cx="${x}" cy="${y}" r="${isLast ? 4.5 : 3.5}"><title>Booking #${p.idx} · cumulative $${p.revenue.toLocaleString('en-US')}</title></circle>`;
   });
 
   svg.innerHTML = `
-    <defs>
-      <linearGradient id="lineGrad" x1="1" y1="0" x2="0" y2="0">
-        <stop offset="0%" stop-color="#60a5fa"/>
-        <stop offset="100%" stop-color="#0ea5e9"/>
-      </linearGradient>
-      <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#60a5fa" stop-opacity="0.32"/>
-        <stop offset="100%" stop-color="#60a5fa" stop-opacity="0"/>
-      </linearGradient>
-    </defs>
+    ${gradDefs}
     ${gridHTML}
     <path class="line-area" d="${areaD}"/>
     <path class="line-rev" d="${pathD}"/>
@@ -1130,7 +1189,20 @@ function renderUpcoming() {
     .slice(0, 5);
 
   if (upcoming.length === 0) {
-    list.innerHTML = '<div class="empty-state"><div class="icon">📅</div><p>No upcoming bookings yet.</p></div>';
+    list.innerHTML = `
+      <div class="empty-state">
+        <div class="icon-bubble">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+        </div>
+        <h4>No upcoming bookings</h4>
+        <p>When a customer books a slot, you'll see it here ranked by time.</p>
+      </div>
+    `;
     return;
   }
 
@@ -1139,19 +1211,20 @@ function renderUpcoming() {
     const item = document.createElement('div');
     item.className = 'booking-item';
     const status = b.status || 'pending';
+    item.setAttribute('data-status', status);
     const friendlyTime = b.slotDate
       ? new Date(b.slotDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) + ' · ' + (b.timeSlot || '—')
       : (b.timeSlot || '—');
 
     item.innerHTML = `
       <div class="booking-detail">
-        <div class="bd"><strong>Customer</strong><span class="val">${esc(b.name || '—')}</span></div>
-        <div class="bd"><strong>Service</strong><span class="val">${esc(b.service || '—')} — $${b.price || '—'}</span></div>
+        <div class="bd bd-customer"><strong>Customer</strong><span class="val">${esc(b.name || '—')}</span></div>
+        <div class="bd bd-price"><strong>Service</strong><span class="val">${esc(b.service || '—')} — $${b.price || '—'}</span></div>
         <div class="bd"><strong>When</strong><span class="val">${esc(friendlyTime)}</span></div>
         <div class="bd"><strong>Phone</strong><span class="val">${esc(b.phone || '—')}</span></div>
         <div class="bd"><strong>Address</strong><span class="val">${esc(b.address || '—')}</span></div>
       </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:10px">
+      <div class="booking-side">
         <span class="badge-status ${status}">${status}</span>
       </div>
     `;
@@ -1250,22 +1323,36 @@ function renderMonthGrid() {
     cell.className = cls;
 
     let statusHTML = '';
+    let pipsHTML = '';
     if (isInWindow) {
       let statusClass = 'cell-status';
       let inner = '';
       if (slotCount === 0) {
         statusClass += ' none';
-        inner = 'no slots';
+        inner = '—';
       } else {
         const allBooked = bookedCount === slotCount && slotCount > 0;
         if (allBooked) statusClass += ' full';
-        inner = `${slotCount} slot${slotCount > 1 ? 's' : ''}`;
-        if (bookedCount > 0) inner += ` · <span class="bkd">${bookedCount} bkd</span>`;
+        if (bookedCount > 0) {
+          inner = `${slotCount}<span style="opacity:.55;margin:0 2px">·</span><span class="bkd">${bookedCount}</span>`;
+        } else {
+          inner = `${slotCount}`;
+        }
+
+        // Build pip indicator (max 5 pips, scaled to slotCount)
+        const PIP_MAX = 5;
+        const pipsToShow = Math.min(PIP_MAX, slotCount);
+        const bookedPips = Math.round((bookedCount / slotCount) * pipsToShow);
+        const availPips = pipsToShow - bookedPips;
+        let pips = '';
+        for (let p = 0; p < availPips; p++) pips += '<span class="cell-pip on"></span>';
+        for (let p = 0; p < bookedPips; p++) pips += '<span class="cell-pip bkd"></span>';
+        pipsHTML = `<div class="cell-pips" aria-hidden="true">${pips}</div>`;
       }
       statusHTML = `<div class="${statusClass}">${inner}</div>`;
     }
 
-    cell.innerHTML = `<div class="cell-num">${dayNum}</div>${statusHTML}`;
+    cell.innerHTML = `<div class="cell-num">${dayNum}</div>${statusHTML}${pipsHTML}`;
 
     if (isInWindow) {
       cell.addEventListener('click', () => selectDay(dateStr, date));
@@ -1339,7 +1426,10 @@ function renderSlots(dateStr) {
     else statusHTML = '<span class="slot-status off">Off</span>';
 
     const row = document.createElement('div');
-    row.className = 'slot-row';
+    let rowCls = 'slot-row';
+    if (isBooked) rowCls += ' booked-row';
+    else if (isOn) rowCls += ' on';
+    row.className = rowCls;
     row.innerHTML = `
       <div class="slot-info">
         <label class="toggle">
@@ -1417,7 +1507,7 @@ async function removeAllSlots() {
 
 async function loadBookings() {
   const list = document.getElementById('bookingsList');
-  list.innerHTML = '<div class="empty-state"><div class="spinner" style="margin:0 auto 12px;display:block"></div><p>Loading bookings…</p></div>';
+  list.innerHTML = '<div class="loading-block"><div class="spinner"></div><span>Loading bookings…</span></div>';
   try {
     const snap = await db.collection('bookings').orderBy('timestamp', 'desc').limit(500).get();
     allBookings = [];
@@ -1426,7 +1516,19 @@ async function loadBookings() {
     renderStats();
   } catch (e) {
     console.error('Failed to load bookings:', e);
-    list.innerHTML = '<div class="empty-state"><p>Failed to load bookings. Make sure Firestore rules allow admin reads.</p></div>';
+    list.innerHTML = `
+      <div class="empty-state">
+        <div class="icon-bubble">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+        <h4>Couldn't load bookings</h4>
+        <p>Check your connection or Firestore rules — admin reads must be allowed.</p>
+      </div>
+    `;
   }
 }
 
@@ -1434,8 +1536,40 @@ function renderBookings() {
   const list = document.getElementById('bookingsList');
   const filtered = currentFilter === 'all' ? allBookings : allBookings.filter(b => b.status === currentFilter);
 
+  // Update filter counts
+  const counts = {
+    all: allBookings.length,
+    pending: allBookings.filter(b => b.status === 'pending').length,
+    confirmed: allBookings.filter(b => b.status === 'confirmed').length,
+    completed: allBookings.filter(b => b.status === 'completed').length,
+  };
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    const k = btn.dataset.filter;
+    const countEl = btn.querySelector('.count');
+    if (countEl) countEl.textContent = counts[k] ?? 0;
+  });
+
   if (filtered.length === 0) {
-    list.innerHTML = '<div class="empty-state"><div class="icon">📋</div><p>No ' + (currentFilter === 'all' ? '' : currentFilter + ' ') + 'bookings found.</p></div>';
+    const friendly = currentFilter === 'all'
+      ? 'No bookings yet'
+      : `No ${currentFilter} bookings`;
+    const tip = currentFilter === 'all'
+      ? "When your first customer books a slot, they'll appear here."
+      : `Switch the filter above to see other bookings.`;
+    list.innerHTML = `
+      <div class="empty-state">
+        <div class="icon-bubble">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+        </div>
+        <h4>${friendly}</h4>
+        <p>${tip}</p>
+      </div>
+    `;
     return;
   }
 
@@ -1443,8 +1577,17 @@ function renderBookings() {
   filtered.forEach(b => {
     const item = document.createElement('div');
     item.className = 'booking-item';
-    const ts = b.timestamp ? new Date(b.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : '—';
     const status = b.status || 'pending';
+    item.setAttribute('data-status', status);
+
+    const submitted = b.timestamp
+      ? new Date(typeof b.timestamp === 'number' ? b.timestamp : (b.timestamp.toMillis ? b.timestamp.toMillis() : b.timestamp))
+          .toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+      : '—';
+
+    const whenLabel = b.slotDate
+      ? new Date(b.slotDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) + ' · ' + (b.timeSlot || '—')
+      : (b.timeSlot || '—');
 
     let actionsHTML = '';
     if (status === 'pending') actionsHTML = `<button class="btn-action confirm" onclick="updateBookingStatus('${b.id}','confirmed')">Confirm</button>`;
@@ -1453,16 +1596,16 @@ function renderBookings() {
 
     item.innerHTML = `
       <div class="booking-detail">
-        <div class="bd"><strong>Customer</strong><span class="val">${esc(b.name || '—')}</span></div>
-        <div class="bd"><strong>Service</strong><span class="val">${esc(b.service || '—')} — $${b.price || '—'}</span></div>
+        <div class="bd bd-customer"><strong>Customer</strong><span class="val">${esc(b.name || '—')}</span></div>
+        <div class="bd bd-price"><strong>Service</strong><span class="val">${esc(b.service || '—')} — $${b.price || '—'}</span></div>
+        <div class="bd"><strong>When</strong><span class="val">${esc(whenLabel)}</span></div>
         <div class="bd"><strong>Phone</strong><span class="val">${esc(b.phone || '—')}</span></div>
         ${b.email ? `<div class="bd"><strong>Email</strong><span class="val">${esc(b.email)}</span></div>` : ''}
-        <div class="bd"><strong>Time Slot</strong><span class="val">${esc(b.timeSlot || '—')}</span></div>
         <div class="bd"><strong>Address</strong><span class="val">${esc(b.address || '—')}</span></div>
-        <div class="bd"><strong>Submitted</strong><span class="val">${ts}</span></div>
+        <div class="bd"><strong>Submitted</strong><span class="val">${submitted}</span></div>
         ${b.notes ? `<div class="bd"><strong>Notes</strong><span class="val">${esc(b.notes)}</span></div>` : ''}
       </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:10px">
+      <div class="booking-side">
         <span class="badge-status ${status}">${status}</span>
         <div class="booking-actions">${actionsHTML}</div>
       </div>

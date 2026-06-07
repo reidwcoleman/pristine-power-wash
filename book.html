@@ -183,6 +183,20 @@ a{color:var(--accent);text-decoration:none}
   background:linear-gradient(135deg,#fcd34d,#fbbf24);
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
+/* ── PROMO ($15 off) ── */
+.promo-banner{display:flex;align-items:center;gap:13px;margin:0 0 16px;padding:13px 16px;border-radius:14px;
+  background:linear-gradient(100deg,rgba(16,185,129,.18),rgba(16,185,129,.05));
+  border:1px solid rgba(16,185,129,.36)}
+.promo-badge{flex:none;font-family:'Fraunces',serif;font-weight:900;font-size:14px;letter-spacing:-.01em;color:#fff;
+  background:linear-gradient(135deg,#10b981,#059669);padding:6px 12px;border-radius:999px;white-space:nowrap;
+  box-shadow:0 6px 14px -6px rgba(16,185,129,.7)}
+.promo-copy{font-size:13.5px;line-height:1.45;color:var(--text-muted)}
+.promo-copy strong{color:var(--text);font-weight:700}
+/* Struck original price inside the gradient-clipped price — opt out of the clip so it stays visible */
+.svc-bar-price .svc-old{-webkit-text-fill-color:var(--text-subtle);color:var(--text-subtle);background:none;
+  font-size:.58em;font-weight:700;text-decoration:line-through;text-decoration-thickness:2px;margin-right:8px;
+  vertical-align:middle;opacity:.85}
+@media(max-width:560px){ .promo-copy{font-size:12.5px} }
 .svc-bar-desc{
   position:relative;z-index:1;
   font-size:12.5px;color:rgba(255,255,255,.62);line-height:1.4;
@@ -949,6 +963,12 @@ a{color:var(--accent);text-decoration:none}
   <!-- BOOKING FORM -->
   <div id="bookForm">
 
+    <!-- Limited-time promo — JS reveals this only while the promo window is live -->
+    <div class="promo-banner" id="promoBanner" hidden>
+      <span class="promo-badge">$15 OFF</span>
+      <span class="promo-copy">Summer Savings on <strong>every service</strong> — now through <strong>June&nbsp;25</strong>. Your discount is applied automatically.</span>
+    </div>
+
     <!-- Service bar -->
     <div class="svc-bar" id="svcBar">
       <div class="svc-bar-top">
@@ -1161,10 +1181,23 @@ const params = new URLSearchParams(window.location.search);
 const serviceName = params.get('service') || 'Sidewalks';
 const svc = services[serviceName] || services['Sidewalks'];
 
+// ===== PROMOTION: $15 off any service, the two weeks after June 11, 2026 =====
+// Date-driven, so it shows + applies automatically during the window and
+// disappears on its own afterward. Months are 0-based (5 = June).
+const PROMO = { off:15, start:new Date(2026,5,11,0,0,0), end:new Date(2026,5,25,23,59,59) };
+const PROMO_ON = (()=>{ const n=new Date(); return n>=PROMO.start && n<=PROMO.end; })();
+const basePrice = svc.price;
+const finalPrice = PROMO_ON ? Math.max(0, basePrice - PROMO.off) : basePrice;
+
 // ===== POPULATE SERVICE BAR =====
 document.getElementById('heroName').textContent = serviceName;
 document.getElementById('heroTag').textContent = svc.tag;
-document.getElementById('heroPrice').textContent = svc.price;
+document.getElementById('heroPrice').textContent = finalPrice;
+if(PROMO_ON){
+  document.getElementById('promoBanner').hidden = false;
+  const wrap = document.querySelector('.svc-bar-price');
+  if(wrap) wrap.innerHTML = `<span class="svc-old">$${basePrice}</span>$<span id="heroPrice">${finalPrice}</span>`;
+}
 document.getElementById('heroDesc').textContent = svc.desc;
 if(svc.premium) document.getElementById('svcBar').classList.add('premium');
 document.getElementById('svcBar').classList.add('expanded');
@@ -1268,7 +1301,7 @@ function updateSummary(){
   const addr=document.getElementById('bAddress')?.value.trim()||'';
   const set=(key,val)=>document.querySelectorAll('[data-s="'+key+'"]').forEach(el=>el.textContent=val||'—');
   set('service',serviceName);
-  set('price','$'+svc.price);
+  set('price','$'+finalPrice);
   set('name',name);
   set('phone',phone);
   set('time',selectedSlot?slotLabel(selectedSlot):'');
@@ -1711,7 +1744,7 @@ async function submitBooking(){
 
   const notes=document.getElementById('bNotes').value.trim();
   const bookingData={
-    service:serviceName,price:svc.price,
+    service:serviceName,price:finalPrice,basePrice,promo:PROMO_ON,
     name,phone,email,address,notes,
     timeSlot:selectedSlot.date+' '+selectedSlot.time,
     slotId:selectedSlot.id||null,
@@ -1776,7 +1809,8 @@ async function submitBooking(){
   if(smsHref) pushHeaders['Click']=smsHref;
   try{ await fetch('https://ntfy.sh/pristine-pwash-reid-bookings',{method:'POST',headers:pushHeaders,body:pushLines.join('\n')}); }catch(e){}
 
-  const emailLines=['NEW PRISTINE POWERWASHING BOOKING','','— Service —',bookingData.service+'  ($'+bookingData.price+')',friendlyTime,'','— Customer —',name,phone,email,'','— Address —',address];
+  const priceLine = bookingData.promo ? bookingData.service+'  ($'+bookingData.price+')  · $'+PROMO.off+' summer promo applied (was $'+bookingData.basePrice+')' : bookingData.service+'  ($'+bookingData.price+')';
+  const emailLines=['NEW PRISTINE POWERWASHING BOOKING','','— Service —',priceLine,friendlyTime,'','— Customer —',name,phone,email,'','— Address —',address];
   if(notes) emailLines.push('','— Notes —',notes);
   emailLines.push('','— Next step —','Text '+phone+' to confirm.');
   try{ await fetch('https://ntfy.sh/pristine-pwash-reid-bookings',{method:'POST',headers:{'Email':'reidwcoleman@gmail.com','Title':'New booking · '+bookingData.service+' · '+friendlyTime,'Tags':'droplet'},body:emailLines.join('\n')}); }catch(e){}
@@ -1788,7 +1822,7 @@ async function submitBooking(){
     <div class="row"><span class="lbl">Service</span><span class="val">${escapeHtml(serviceName)}</span></div>
     <div class="row"><span class="lbl">Time</span><span class="val">${escapeHtml(slotLabel(selectedSlot))}</span></div>
     <div class="row"><span class="lbl">Address</span><span class="val">${escapeHtml(address)}</span></div>
-    <div class="row"><span class="lbl">Total</span><span class="val">$${svc.price}</span></div>`;
+    <div class="row"><span class="lbl">Total</span><span class="val">${PROMO_ON?`<span style="text-decoration:line-through;opacity:.6;font-weight:600;margin-right:7px">$${basePrice}</span>`:''}$${finalPrice}${PROMO_ON?' <span style="font-size:.8em;color:#10b981;font-weight:700">· $'+PROMO.off+' off</span>':''}</span></div>`;
   const calSection=document.getElementById('calSection');
   const gcalLink=document.getElementById('gcalLink');
   const icsBtn=document.getElementById('icsBtn');

@@ -530,6 +530,25 @@ section.alt{background:var(--bg-alt)}
 .cta-aside .btn.lg{width:100%}
 
 /* =============================================================
+   PROMO BANNER ($15 off — services section, JS-revealed in-window)
+   ============================================================= */
+.promo-banner{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;
+  max-width:760px;margin:0 auto 30px;padding:16px 22px;border-radius:18px;text-align:center;
+  background:linear-gradient(100deg,rgba(16,185,129,.18),rgba(16,185,129,.05));
+  border:1px solid rgba(16,185,129,.38);box-shadow:0 18px 40px -24px rgba(16,185,129,.55)}
+.promo-banner .promo-badge{flex:none;font-family:'Fraunces',serif;font-weight:900;font-size:17px;letter-spacing:-.01em;
+  color:#fff;background:linear-gradient(135deg,#10b981,#059669);padding:8px 15px;border-radius:999px;white-space:nowrap;
+  box-shadow:0 8px 18px -8px rgba(16,185,129,.7)}
+.promo-banner .promo-copy{font-size:15px;line-height:1.45;color:var(--text-muted)}
+.promo-banner .promo-copy strong{color:var(--text);font-weight:700}
+/* Struck original price on a discounted service card */
+.svc .amt .amt-old{font-size:.5em;font-weight:700;color:var(--text-muted);opacity:.7;text-decoration:line-through;
+  text-decoration-thickness:3px;margin-right:10px;letter-spacing:-.03em;vertical-align:middle}
+.svc .amt.promo{color:#10b981}
+.svc.feat .amt.promo{color:#34d399}
+@media(max-width:560px){ .promo-banner{padding:14px 16px;gap:10px} .promo-banner .promo-copy{font-size:13.5px} }
+
+/* =============================================================
    PAY-AFTER BANNER (services section)
    ============================================================= */
 .pay-banner{
@@ -1066,6 +1085,12 @@ footer a{color:var(--accent);font-weight:500}
       <p>Click any service below to schedule your appointment — it takes about 30 seconds.</p>
     </div>
 
+    <!-- Limited-time promo — JS reveals + applies the discount only during the window -->
+    <div class="promo-banner reveal" id="promoBanner" hidden>
+      <span class="promo-badge">$15 OFF</span>
+      <span class="promo-copy">Summer Savings on <strong>any service</strong> — now through <strong>June&nbsp;25</strong>. Discount applied automatically at checkout.</span>
+    </div>
+
     <div class="svc-note reveal">
       <span class="dot"></span>
       <span>Soap wash included on every service <strong>except the standard Driveway.</strong></span>
@@ -1477,6 +1502,35 @@ footer a{color:var(--accent);font-weight:500}
 </footer>
 
 <script>
+// ===== PROMOTION: $15 off any service, the two weeks after June 11, 2026 =====
+// Date-driven: the banner + discounted prices show only during the window and
+// vanish on their own afterward (months are 0-based, 5 = June).
+(function(){
+  const PROMO = { off:15, start:new Date(2026,5,11,0,0,0), end:new Date(2026,5,25,23,59,59) };
+  const now = new Date();
+  if(!(now >= PROMO.start && now <= PROMO.end)) return;   // not live → leave base prices as-is
+  const apply = () => {
+    const banner = document.getElementById('promoBanner');
+    if(banner) banner.hidden = false;
+    // Service-card prices: $X → $(X-15), with the original struck through.
+    document.querySelectorAll('#services .svc .amt').forEach(amt => {
+      if(amt.dataset.promoed) return;
+      const base = parseInt(amt.textContent.replace(/[^\d.]/g,''), 10);
+      if(!isFinite(base)) return;
+      const off = Math.max(0, base - PROMO.off);
+      amt.dataset.promoed = '1';
+      amt.innerHTML = `<span class="amt-old">$${base}</span><span class="d">$</span>${off}`;
+      amt.classList.add('promo');
+    });
+    // Footer "Service — $X" quick links (plain-text anchors, not the cards).
+    document.querySelectorAll('.footer-link-col a[href^="book.html?service="]').forEach(a => {
+      a.textContent = a.textContent.replace(/\$(\d+)/, (m,n) => '$' + Math.max(0, parseInt(n,10) - PROMO.off));
+    });
+  };
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply);
+  else apply();
+})();
+
 // ===== THEME MANAGEMENT — defaults to dark =====
 (function(){
   const root = document.documentElement;

@@ -1485,15 +1485,26 @@ async function initSlots(){
   // Initial scaffold from schedule (Firestore data merges in shortly)
   rebuildDaysData();
 
-  const firstOpenIdx=daysData.findIndex(d=>d.slots.some(s=>!s.booked));
-  if(firstOpenIdx>=0){
-    const fd=daysData[firstOpenIdx].dateObj;
-    currentMonthIdx=monthIdxFor(fd.getFullYear(),fd.getMonth());
-  } else {
-    currentMonthIdx=0;
-  }
+  // Open the calendar on the CURRENT month (clamped to the bookable range) so it
+  // always lands on the month customers are actually booking, and rolls forward
+  // on its own as the real month changes. (It used to open on the month of the
+  // first open slot — stuck back at START_DATE — forcing a scroll to "today".)
+  const now=new Date();
+  const monthKey=(y,mo)=>y*12+mo;
+  const nowKey=monthKey(now.getFullYear(),now.getMonth());
+  const firstKey=monthKey(monthList[0].year,monthList[0].month);
+  const lastKey=monthKey(monthList[monthList.length-1].year,monthList[monthList.length-1].month);
+  const clampKey=Math.max(firstKey,Math.min(lastKey,nowKey));
+  currentMonthIdx=Math.max(0,monthList.findIndex(m=>monthKey(m.year,m.month)===clampKey));
   renderMonth();
-  if(firstOpenIdx>=0) selectDay(daysData[firstOpenIdx].dateStr);
+
+  // Default selection: the soonest open day that's today-or-later, so we never
+  // snap the view back to a past month. Fall back to any open day, else just
+  // render the current month's grid.
+  const today0=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  let pickIdx=daysData.findIndex(d=>d.dateObj>=today0 && d.slots.some(s=>!s.booked));
+  if(pickIdx<0) pickIdx=daysData.findIndex(d=>d.slots.some(s=>!s.booked));
+  if(pickIdx>=0) selectDay(daysData[pickIdx].dateStr);
   else renderSlotGrid();
 
   const prev=document.getElementById('calPrev');
